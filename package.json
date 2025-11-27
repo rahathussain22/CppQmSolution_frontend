@@ -18,9 +18,11 @@
     "@mui/material": "^7.3.5",
     "@mui/styled-engine-sc": "^7.3.5",
     "@tailwindcss/vite": "^4.1.17",
+    "axios": "^1.13.2",
     "lucide-react": "^0.553.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.6",
     "styled-components": "^6.1.19",
     "tailwindcss": "^4.1.17"
   },
