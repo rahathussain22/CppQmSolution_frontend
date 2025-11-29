@@ -1,71 +1,36 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import TestingNavbar from "./components/TestingNavbar";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/Login";
 import Home from "./pages/Home";
-
-// Layout component to conditionally show Navbar
-const Layout = ({ children }) => {
-  const location = useLocation();
-  const hideNavbar = location.pathname === "/login"; // Hide Navbar only on login
-
-  return (
-    <div className="bg-gray-50 min-h-screen w-full">
-      {!hideNavbar && <TestingNavbar />}
-      {children}
-    </div>
-  );
-};
+import ReactQueryProvider from "./providers/ReactQueryProvider";
+import MainLayout from "./layouts/MainLayout";
+import AuthLayout from "./layouts/AuthLayout";
+import AppLayout from "./layouts/AppLayout";
+import Projects from "./pages/Projects";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // Check localStorage on mount
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) setIsLoggedIn(true);
-  }, []);
-
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          {/* Login route */}
-          <Route
-            path="/login"
-            element={
-              isLoggedIn ? (
-                <Navigate to="/home" replace />
-              ) : (
-                <LoginPage onLogin={() => setIsLoggedIn(true)} />
-              )
-            }
-          />
-
-          {/* Home route */}
-          <Route
-            path="/home"
-            element={
-              isLoggedIn ? <Home /> : <Navigate to="/login" replace />
-            }
-          />
-
-          {/* Default route */}
-          <Route
-            path="/"
-            element={
-              isLoggedIn ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />
-            }
-          />
-
-          {/* Catch-all route */}
-          <Route
-            path="*"
-            element={<Navigate to={isLoggedIn ? "/home" : "/login"} replace />}
-          />
-        </Routes>
-      </Layout>
-    </Router>
+    <ReactQueryProvider>
+      <Router>
+        <MainLayout>
+          <Routes>
+            {/* Auth Routes */}
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<LoginPage />} />
+            </Route>
+            {/* App (Protected) Routes */}
+            <Route element={<AppLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/projects" element={<Projects />} />
+            </Route>
+            {/* Default */}
+            <Route path="/" element={<LoginPage />} />
+            {/* Catch-all */}
+            <Route path="*" element={<LoginPage />} />
+          </Routes>
+        </MainLayout>
+      </Router>
+    </ReactQueryProvider>
   );
 }
 
