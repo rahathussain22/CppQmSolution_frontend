@@ -5,12 +5,8 @@ import { ChevronDown } from "lucide-react";
 const navItems = [
   {
     label: "Home",
-    pathname: "/",
-    hasDropdown: true,
-    dropdown: [
-      { label: "Dashboard", pathname: "/" },
-      { label: "Projects", pathname: "/projects" },
-    ],
+    pathname: "/home",
+    hasDropdown: false,
   },
   {
     label: "Companies & Projects",

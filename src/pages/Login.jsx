@@ -13,15 +13,18 @@ const LoginPage = () => {
   const { mutate: login, isPending: isLoading } = useLogin();
   const navigate = useNavigate();
   const setUser = useAuthStore((state) => state.setUser);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     login(
       { employeeId, password, role },
       {
-        onSuccess: ({ user }) => {
-          setUser(user[0]);
-          navigate("/", { replace: true });
+        onSuccess: ({ user, accessToken }) => {
+          setUser(user);
+          setAccessToken(accessToken);
+          localStorage.setItem("accessToken", accessToken);
+          navigate("/home", { replace: true });
         },
         onError: (error) => {
           if (error.response?.status === 401) {

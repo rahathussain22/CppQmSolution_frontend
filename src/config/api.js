@@ -12,13 +12,30 @@ class API {
     // Add request interceptor for token
     this.axios.interceptors.request.use(
       (config) => {
+        // Always get accessToken live from localStorage to support multi-tab auth
         const token = localStorage.getItem("accessToken");
         if (token) {
           config.headers["Authorization"] = `Bearer ${token}`;
+        } else {
+          delete config.headers["Authorization"];
         }
         return config;
       },
       (error) => Promise.reject(error)
+    );
+    // Add response interceptor to auto logout on 401 (token expired)
+    this.axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response && error.response.status === 401) {
+          // Token expired or invalid, clear storage and reload
+          localStorage.removeItem("user");
+          localStorage.removeItem("accessToken");
+          // Optionally can redirect to /login directly, but reload ensures state reset
+          window.location.reload();
+        }
+        return Promise.reject(error);
+      }
     );
   }
 
@@ -55,8 +72,8 @@ class API {
   put(endpoint, body, options) {
     return this.request(endpoint, { ...options, method: "PUT", body });
   }
-  delete(endpoint, options) {
-    return this.request(endpoint, { ...options, method: "DELETE" });
+  delete(endpoint, body, options) {
+    return this.request(endpoint, { ...options, method: "DELETE", body });
   }
 }
 

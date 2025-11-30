@@ -7,6 +7,7 @@ import MainLayout from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import AppLayout from "./layouts/AppLayout";
 import Projects from "./pages/Projects";
+import Lots from "./pages/Lots";
 
 function App() {
   return (
@@ -20,8 +21,11 @@ function App() {
             </Route>
             {/* App (Protected) Routes */}
             <Route element={<AppLayout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/projects" element={<Projects />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/companies-projects">
+                <Route path="projects" element={<Projects />} />
+                <Route path="lots" element={<Lots />} />
+              </Route>
             </Route>
             {/* Default */}
             <Route path="/" element={<LoginPage />} />

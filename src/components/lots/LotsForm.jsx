@@ -1,36 +1,56 @@
 import { useState, useEffect } from "react";
+import { useAuthStore } from "../../store/authStore";
+import { useQuery } from "@tanstack/react-query";
+import { getProjects } from "../../api/project";
 import { Button } from "@/components/ui/button";
 
-export function ProjectForm({
-  project,
-  isEditing,
-  onSave,
-  onCancel,
-  isSaving,
-}) {
+const statusOptions = [
+  { value: "not-started", label: "Not Started" },
+  { value: "active", label: "Active" },
+  { value: "substantially-complete", label: "Substantially Complete" },
+  { value: "complete", label: "Complete" },
+  { value: "on-hold", label: "On Hold" },
+];
+
+export function LotForm({ lot, isEditing, onSave, onCancel, isSaving }) {
   const [formData, setFormData] = useState({
+    projectId: 0,
     projectCode: "",
+    lotCode: "",
     name: "",
-    clientName: "",
-    location: "",
+    description: "",
     startDate: "",
     cuttOffDate: "",
+    status: "not-started",
+  });
+
+  const user = useAuthStore((state) => state.user);
+  const {
+    data: availableProjects = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => getProjects({ createdBy: user.id }),
+    select: (data) => (data && data.projects) || [],
   });
 
   useEffect(() => {
-    if (project && isEditing) {
-      setFormData(project);
+    if (lot && isEditing) {
+      setFormData(lot);
     } else if (!isEditing) {
       setFormData({
+        projectId: 0,
         projectCode: "",
+        lotCode: "",
         name: "",
-        clientName: "",
-        location: "",
+        description: "",
         startDate: "",
         cuttOffDate: "",
+        status: "not-started",
       });
     }
-  }, [project, isEditing]);
+  }, [lot, isEditing]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,60 +61,100 @@ export function ProjectForm({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleProjectChange = (projectId) => {
+    const project = availableProjects.find((p) => p.id === projectId);
+    if (project) {
+      setFormData((prev) => ({
+        ...prev,
+        projectId: project.id,
+        projectCode: project.projectCode,
+      }));
+    }
+  };
+
   return (
     <div className="bg-linear-to-b from-blue-50 to-blue-100 border-2 border-blue-300 rounded shadow-md mb-4">
-      {/* Form Fields */}
       <form onSubmit={handleSubmit} className="p-4">
         <div className="grid grid-cols-12 gap-3 mb-3">
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              Project *:
+            </label>
+            <select
+              value={formData.projectId}
+              onChange={(e) => handleProjectChange(Number(e.target.value))}
+              disabled={!isEditing || isLoading || error}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            >
+              {error ? (
+                <option>Error loading projects</option>
+              ) : (
+                <option value={0}>Select Project</option>
+              )}
+              {availableProjects.map((project) => (
+                <option key={project.id} value={project.id}>
+                  {project.projectCode} - {project.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="col-span-2">
             <label className="block text-xs text-gray-700 mb-1">
-              Project Code *:
+              Lot Code *:
             </label>
             <input
               type="text"
-              value={formData.projectCode}
-              onChange={(e) => updateField("projectCode", e.target.value)}
+              value={formData.lotCode}
+              onChange={(e) => updateField("lotCode", e.target.value)}
               disabled={!isEditing}
+              placeholder="e.g., LOT-A"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
-          <div className="col-span-3">
+          <div className="col-span-4">
             <label className="block text-xs text-gray-700 mb-1">Name *:</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => updateField("name", e.target.value)}
               disabled={!isEditing}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-4">
-            <label className="block text-xs text-gray-700 mb-1">
-              Client Name *:
-            </label>
-            <input
-              type="text"
-              value={formData.clientName}
-              onChange={(e) => updateField("clientName", e.target.value)}
-              disabled={!isEditing}
+              placeholder="e.g., Pipeline Section A"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Location *:
+              Status *:
             </label>
-            <input
-              type="text"
-              value={formData.location}
-              onChange={(e) => updateField("location", e.target.value)}
+            <select
+              value={formData.status}
+              onChange={(e) => updateField("status", e.target.value)}
               disabled={!isEditing}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
+            >
+              {statusOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <div className="grid grid-cols-12 gap-3 mb-3">
           <div className="col-span-6">
+            <label className="block text-xs text-gray-700 mb-1">
+              Description:
+            </label>
+            <input
+              type="text"
+              value={formData.description}
+              onChange={(e) => updateField("description", e.target.value)}
+              disabled={!isEditing}
+              placeholder="e.g., Northern segment from Station KP 0 to KP 25"
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Start Date *:
             </label>
@@ -106,7 +166,7 @@ export function ProjectForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
-          <div className="col-span-6">
+          <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Cutoff Date *:
             </label>
@@ -131,6 +191,7 @@ export function ProjectForm({
             type="button"
             onClick={onCancel}
             className="px-4 py-1 text-sm border border-gray-400 rounded bg-white hover:bg-gray-50"
+            disabled={isSaving}
           >
             Cancel
           </Button>

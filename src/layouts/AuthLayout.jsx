@@ -2,8 +2,8 @@ import { useAuthStore } from "../store/authStore";
 import { Navigate, Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
-  const user = useAuthStore((state) => state.user);
-  if (user) return <Navigate to="/" replace />;
+  const accessToken = useAuthStore((state) => state.accessToken);
+  if (accessToken) return <Navigate to="/home" replace />;
   return <Outlet />;
 };
 

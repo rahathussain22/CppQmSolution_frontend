@@ -16,15 +16,18 @@ export async function createProject({
     location,
     startDate,
     cuttOffDate,
-    adminId,
+    userId: adminId,
   });
 }
 
-export async function getProjects({ createdBy }) {
-  const response = await api.get(`/project/getAllProjects/${createdBy}`);
+export async function getProjects() {
+  const response = await api.get(`/project/getAllProjects`);
   return response;
 }
 
 export async function deleteProject({ projectCode, adminId }) {
-  return await api.post("/project/deleteProject", { projectCode, adminId });
+  return await api.post("/project/deleteProject", {
+    projectCode,
+    userId: adminId,
+  });
 }

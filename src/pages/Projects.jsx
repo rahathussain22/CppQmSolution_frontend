@@ -33,7 +33,7 @@ export default function Projects() {
     error,
   } = useQuery({
     queryKey: ["projects"],
-    queryFn: () => getProjects({ createdBy: user.id }),
+    queryFn: getProjects,
     select: (data) => (data && data.projects) || [],
   });
 
