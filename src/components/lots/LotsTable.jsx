@@ -50,7 +50,7 @@ export function LotsTable({ lots, onEditRow, onDeleteRow, isDeleting }) {
                 <tr key={lot.id} className="border-b border-gray-300">
                   <td className="px-3 py-2">
                     <button
-                      className="text-blue-600 hover:text-blue-800"
+                      className="text-blue-600 hover:text-blue-800 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         onEditRow(lot);
@@ -61,7 +61,7 @@ export function LotsTable({ lots, onEditRow, onDeleteRow, isDeleting }) {
                   </td>
                   <td className="px-3 py-2">
                     <button
-                      className="text-red-600 hover:text-red-800"
+                      className="text-red-600 hover:text-red-800 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         onDeleteRow(lot);

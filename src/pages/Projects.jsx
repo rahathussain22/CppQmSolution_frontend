@@ -122,7 +122,7 @@ export default function Projects() {
           {mode === "idle" && (
             <Button
               onClick={handleAdd}
-              className="bg-blue-600 text-white rounded"
+              className="bg-blue-600 text-white rounded cursor-pointer"
             >
               <Plus className="size-4" />
               Add Project

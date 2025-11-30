@@ -110,7 +110,7 @@ export default function Lots() {
         {mode === "idle" && (
           <Button
             onClick={handleAdd}
-            className="bg-blue-600 text-white rounded"
+            className="bg-blue-600 text-white rounded cursor-pointer"
           >
             + Add Lot
           </Button>
