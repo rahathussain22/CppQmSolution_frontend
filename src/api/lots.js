@@ -24,8 +24,12 @@ export async function createLot({
   });
 }
 
-export async function getLots() {
-  const response = await api.get(`/lot/getAllLots`);
+export async function getLots({ projectId }) {
+  const queryParams = new URLSearchParams();
+  if (projectId) {
+    queryParams.append("projectId", projectId);
+  }
+  const response = await api.get(`/lot/getAllLots?${queryParams.toString()}`);
   return response;
 }
 

@@ -98,6 +98,17 @@ export default function Lots() {
   return (
     <>
       <div className="p-4 space-y-4">
+        <div className="flex justify-between items-center">
+          <h4 className="text-3xl font-bold">Lots</h4>
+          {mode === "idle" && (
+            <Button
+              onClick={handleAdd}
+              className="bg-blue-600 text-white rounded"
+            >
+              + Add Lot
+            </Button>
+          )}
+        </div>
         {(mode === "adding" || mode === "editing") && (
           <LotForm
             lot={editingLot}
@@ -106,14 +117,6 @@ export default function Lots() {
             onCancel={handleCancel}
             isSaving={createLotMutation.isPending}
           />
-        )}
-        {mode === "idle" && (
-          <Button
-            onClick={handleAdd}
-            className="bg-blue-600 text-white rounded"
-          >
-            + Add Lot
-          </Button>
         )}
 
         {isLoading ? (

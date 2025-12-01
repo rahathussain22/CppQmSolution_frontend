@@ -107,6 +107,20 @@ export default function Projects() {
     <>
       <div className="min-h-screen bg-gray-100">
         <div className="p-4 space-y-4">
+          <div className="flex justify-between items-center">
+            <h4 className="text-3xl font-bold">Projects</h4>
+            {/* Always show add button if not in form view */}
+            {mode === "idle" && (
+              <Button
+                onClick={handleAdd}
+                className="bg-blue-600 text-white rounded"
+              >
+                <Plus className="size-4" />
+                Add Project
+              </Button>
+            )}
+          </div>
+
           {/* Show form only if adding or editing */}
           {(mode === "adding" || mode === "editing") && (
             <ProjectForm
@@ -116,17 +130,6 @@ export default function Projects() {
               onCancel={handleCancel}
               isSaving={createProjectMutation.isPending}
             />
-          )}
-
-          {/* Always show add button if not in form view */}
-          {mode === "idle" && (
-            <Button
-              onClick={handleAdd}
-              className="bg-blue-600 text-white rounded"
-            >
-              <Plus className="size-4" />
-              Add Project
-            </Button>
           )}
 
           {isLoading ? (

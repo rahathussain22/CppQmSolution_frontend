@@ -8,6 +8,7 @@ import AuthLayout from "./layouts/AuthLayout";
 import AppLayout from "./layouts/AppLayout";
 import Projects from "./pages/Projects";
 import Lots from "./pages/Lots";
+import Pipelines from "./pages/Pipelines";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               <Route path="/companies-projects">
                 <Route path="projects" element={<Projects />} />
                 <Route path="lots" element={<Lots />} />
+                <Route path="pipelines" element={<Pipelines />} />
               </Route>
             </Route>
             {/* Default */}
