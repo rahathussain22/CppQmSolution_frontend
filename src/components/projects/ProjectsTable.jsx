@@ -35,7 +35,7 @@ export function ProjectsTable({
                 <tr key={project.id} className="border-b border-gray-300">
                   <td className="px-3 py-2">
                     <button
-                      className="text-blue-600 hover:text-blue-800"
+                      className="text-blue-600 hover:text-blue-800 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         onEditRow(project);
@@ -46,7 +46,7 @@ export function ProjectsTable({
                   </td>
                   <td className="px-3 py-2">
                     <button
-                      className="text-red-600 hover:text-red-800"
+                      className="text-red-600 hover:text-red-800 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         onDeleteRow(project);
