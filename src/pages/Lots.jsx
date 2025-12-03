@@ -100,7 +100,7 @@ export default function Lots() {
       <div className="p-4 space-y-4">
         <div className="flex justify-between items-center">
           <h4 className="text-3xl font-bold">Lots</h4>
-          {mode === "idle" && (
+          {user.permissions === "all" && mode === "idle" && (
             <Button
               onClick={handleAdd}
               className="bg-blue-600 text-white rounded"

@@ -110,7 +110,7 @@ export default function Projects() {
           <div className="flex justify-between items-center">
             <h4 className="text-3xl font-bold">Projects</h4>
             {/* Always show add button if not in form view */}
-            {mode === "idle" && (
+            {user.permissions === "all" && mode === "idle" && (
               <Button
                 onClick={handleAdd}
                 className="bg-blue-600 text-white rounded"

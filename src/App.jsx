@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import LoginPage from "./pages/Login";
 import Home from "./pages/Home";
 import ReactQueryProvider from "./providers/ReactQueryProvider";
@@ -9,6 +14,7 @@ import AppLayout from "./layouts/AppLayout";
 import Projects from "./pages/Projects";
 import Lots from "./pages/Lots";
 import Pipelines from "./pages/Pipelines";
+import ISODrawings from "./pages/ISODrawings";
 
 function App() {
   return (
@@ -27,12 +33,13 @@ function App() {
                 <Route path="projects" element={<Projects />} />
                 <Route path="lots" element={<Lots />} />
                 <Route path="pipelines" element={<Pipelines />} />
+                <Route path="iso-drawings" element={<ISODrawings />} />
               </Route>
             </Route>
             {/* Default */}
-            <Route path="/" element={<LoginPage />} />
+            <Route path="/" element={<Navigate to={"/home"} />} />
             {/* Catch-all */}
-            <Route path="*" element={<LoginPage />} />
+            <Route path="*" element={<Navigate to={"/home"} />} />
           </Routes>
         </MainLayout>
       </Router>

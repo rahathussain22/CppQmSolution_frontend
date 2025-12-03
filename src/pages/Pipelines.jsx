@@ -13,9 +13,12 @@ import {
   AlertDialogDescription,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
+import { useAuthStore } from "../store/authStore";
 
 export default function Pipelines() {
   const queryClient = useQueryClient();
+
+  const user = useAuthStore((state) => state.user);
 
   // mode: 'idle', 'adding', 'editing'
   const [mode, setMode] = useState("idle");
@@ -99,7 +102,7 @@ export default function Pipelines() {
       <div className="p-4 space-y-4">
         <div className="flex justify-between items-center">
           <h4 className="text-3xl font-bold">Pipelines</h4>
-          {mode === "idle" && (
+          {user.permissions === "all" && mode === "idle" && (
             <button
               onClick={handleAdd}
               className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-semibold"

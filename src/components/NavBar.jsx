@@ -17,6 +17,7 @@ const navItems = [
       { label: "Companies", pathname: "/companies-projects/companies" },
       { label: "Lots", pathname: "/companies-projects/lots" },
       { label: "Pipelines", pathname: "/companies-projects/pipelines" },
+      { label: "ISO Drawings", pathname: "/companies-projects/iso-drawings" },
     ],
   },
   {

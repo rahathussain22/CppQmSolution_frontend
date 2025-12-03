@@ -1,4 +1,5 @@
 import { Pencil, Trash2 } from "lucide-react";
+import { useAuthStore } from "../../store/authStore";
 
 export function PipelinesTable({
   pipelines,
@@ -8,6 +9,8 @@ export function PipelinesTable({
   error = null,
   isDeleting = false,
 }) {
+  const user = useAuthStore((state) => state.user);
+
   if (isLoading) {
     return <div className="p-4 text-gray-600">Loading pipelines...</div>;
   }
@@ -27,8 +30,12 @@ export function PipelinesTable({
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
-              <th className="px-3 py-2 text-left text-xs w-[40px]"></th>
-              <th className="px-3 py-2 text-left text-xs w-[40px]"></th>
+              {user.permissions === "all" && (
+                <>
+                  <th className="px-3 py-2 text-left text-xs w-10"></th>
+                  <th className="px-3 py-2 text-left text-xs w-10"></th>
+                </>
+              )}
               <th className="px-3 py-2 text-left text-xs">#</th>
               <th className="px-3 py-2 text-left text-xs">Project Code</th>
               <th className="px-3 py-2 text-left text-xs">Lot Code</th>
@@ -46,29 +53,33 @@ export function PipelinesTable({
                   "border-b border-gray-300 cursor-pointer transition-colors hover:bg-gray-50"
                 }
               >
-                <td className="px-3 py-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEdit && onEdit(pipeline);
-                    }}
-                    className="text-blue-600 hover:text-blue-800"
-                  >
-                    <Pencil size={16} />
-                  </button>
-                </td>
-                <td className="px-3 py-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDelete && onDelete(pipeline);
-                    }}
-                    className="text-red-600 hover:text-red-800"
-                    disabled={isDeleting}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </td>
+                {user.permissions === "all" && (
+                  <>
+                    <td className="px-3 py-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEdit && onEdit(pipeline);
+                        }}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        <Pencil size={16} />
+                      </button>
+                    </td>
+                    <td className="px-3 py-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete && onDelete(pipeline);
+                        }}
+                        className="text-red-600 hover:text-red-800"
+                        disabled={isDeleting}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  </>
+                )}
                 <td className="px-3 py-2 text-gray-600">{index + 1}</td>
                 <td className="px-3 py-2">{pipeline.projectCode}</td>
                 <td className="px-3 py-2">{pipeline.lotCode}</td>

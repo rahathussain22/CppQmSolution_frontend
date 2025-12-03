@@ -7,31 +7,42 @@ class API {
   constructor(baseURL) {
     this.axios = axios.create({
       baseURL,
-      headers: { "Content-Type": "application/json" },
+      // Remove the default Content-Type header
+      // headers: { "Content-Type": "application/json" },
     });
-    // Add request interceptor for token
+
+    // Add request interceptor for token AND content-type
     this.axios.interceptors.request.use(
       (config) => {
-        // Always get accessToken live from localStorage to support multi-tab auth
+        // Always get accessToken live from localStorage
         const token = localStorage.getItem("accessToken");
         if (token) {
           config.headers["Authorization"] = `Bearer ${token}`;
         } else {
           delete config.headers["Authorization"];
         }
+
+        // Set Content-Type to application/json only if not already set
+        // and if data is not FormData
+        if (
+          !config.headers["Content-Type"] &&
+          !(config.data instanceof FormData)
+        ) {
+          config.headers["Content-Type"] = "application/json";
+        }
+
         return config;
       },
       (error) => Promise.reject(error)
     );
-    // Add response interceptor to auto logout on 401 (token expired)
+
+    // Response interceptor remains the same
     this.axios.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response && error.response.status === 401) {
-          // Token expired or invalid, clear storage and reload
           localStorage.removeItem("user");
           localStorage.removeItem("accessToken");
-          // Optionally can redirect to /login directly, but reload ensures state reset
           window.location.reload();
         }
         return Promise.reject(error);
@@ -47,10 +58,11 @@ class API {
       const config = {
         url: endpoint,
         method,
-        headers,
+        headers: { ...headers },
         ...options,
       };
       if (body) config.data = body;
+
       const response = await this.axios(config);
       return response.data;
     } catch (error) {
@@ -74,6 +86,9 @@ class API {
   }
   delete(endpoint, body, options) {
     return this.request(endpoint, { ...options, method: "DELETE", body });
+  }
+  patch(endpoint, body, options) {
+    return this.request(endpoint, { ...options, method: "PATCH", body });
   }
 }
 
