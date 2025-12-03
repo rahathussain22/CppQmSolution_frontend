@@ -26,7 +26,7 @@ export async function getProjects() {
 }
 
 export async function deleteProject({ projectCode, adminId }) {
-  return await api.post("/project/deleteProject", {
+  return await api.delete("/project/deleteProject", {
     projectCode,
     userId: adminId,
   });

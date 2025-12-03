@@ -52,7 +52,9 @@ export default function Projects() {
   const deleteProjectMutation = useMutation({
     mutationFn: deleteProject,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({
+        queryKey: ["projects", "lots", "pipelines", "isoDrawings"],
+      });
       setDeleteDialog({ open: false, project: null });
       toast.success("Project has been deleted.");
     },
