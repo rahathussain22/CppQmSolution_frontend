@@ -1,6 +1,6 @@
 import { useAuthStore } from "../store/authStore";
 import { Navigate, Outlet } from "react-router-dom";
-import { NavBar } from "../components/NavBar";
+import NavBar from "../components/NavBar";
 
 const AppLayout = () => {
   const accessToken = useAuthStore((state) => state.accessToken);

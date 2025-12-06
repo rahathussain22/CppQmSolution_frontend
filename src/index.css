@@ -1,1 +1,14 @@
 @import "tailwindcss";
+/* Center the right-arrow in nested rc-menu submenus */
+.rc-menu-submenu-arrow {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+/* Make submenu titles align nicely with the arrow */
+.rc-menu-submenu-title {
+  display: flex !important;
+  align-items: center !important;
+  line-height: 1.25 !important;
+}
+
