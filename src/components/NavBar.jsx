@@ -32,36 +32,23 @@ function NavItem({ item, isActive, level = 0, openPath, setOpenPath, close, ance
     }
   };
 
-  // Close submenu on outside click
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
-        close();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [close]);
-
-const dropdownClasses =
-  level === 0
-    ? `absolute top-full ${topPosition} mt-1 min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-40`
-    : `absolute top-0 ${
-        submenuPosition === "right"
-          ? "left-full ml-1 mt-9" 
-          : "right-full mr-1 mt-5"
+  const dropdownClasses =
+    level === 0
+      ? `absolute top-full ${topPosition} mt-1 min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-40`
+      : `absolute top-0 ${submenuPosition === "right"
+        ? "left-full ml-1 mt-9"
+        : "right-full mr-1 mt-5"
       } min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-40`;
 
-
   return (
-    <div ref={containerRef} className="relative" 
-    onClick={handleMouseEnter}
-    onMouseEnter={handleMouseEnter}>
-      {/* Parent Link: make sure z-50 so it is above submenu */}
+    <div
+      ref={containerRef}
+      className="relative"
+      onMouseEnter={handleMouseEnter}
+    >
       <Link
-        // to={fullPath}
-        // onClick={() => console.log("Clicked link:", fullPath)}
-        className={`relative z-50 flex items-center gap-1 px-4 rounded text-sm whitespace-nowrap h-10
+        to={fullPath}
+        className={`relative z-20 flex items-center gap-1 px-4 rounded text-sm whitespace-nowrap h-10
           ${isActive(item.pathname) ? "bg-white/30 text-gray-900 font-bold" : ""}
           ${isOpen ? "bg-gray-200 font-bold" : "text-gray-900 hover:bg-gray-200 hover:font-bold"}
         `}
@@ -70,9 +57,9 @@ const dropdownClasses =
         {hasChildren && <ChevronDown className="h-4 w-4" />}
       </Link>
 
-      {/* Submenu: z-40 so below parent link */}
       {hasChildren && isOpen && (
-        <div className={dropdownClasses}>
+        <div
+          className={dropdownClasses}>
           {item.children.map((child) => (
             <NavItem
               key={child.pathname}
@@ -99,6 +86,7 @@ function NavBar() {
   const isActive = (pathname) => location.pathname.startsWith(pathname);
 
   const [openPath, setOpenPath] = useState([]); // track open path
+  const navRef = useRef(null); // ADD THIS
 
   const handleOpen = (levelPath) => {
     setOpenPath(levelPath);
@@ -108,8 +96,23 @@ function NavBar() {
     setOpenPath([]);
   };
 
+  // ➤ Close dropdown when clicking outside the navbar
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        handleClose(); // close all dropdowns
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <nav className="bg-linear-to-b from-cyan-400 to-cyan-500 border-b-2 border-cyan-600 shadow-md px-2 py-1">
+    <nav
+      ref={navRef}  // ATTACH REF HERE
+      className="bg-linear-to-b from-cyan-400 to-cyan-500 border-b-2 border-cyan-600 shadow-md px-2 py-1"
+    >
       <div className="flex gap-1 flex-wrap">
         {navItems.map((item) => (
           <NavItem
@@ -120,12 +123,13 @@ function NavBar() {
             openPath={openPath}
             setOpenPath={handleOpen}
             close={handleClose}
-            ancestors={[]} // track parent path
+            ancestors={[]}
           />
         ))}
       </div>
     </nav>
   );
 }
+
 
 export default NavBar;

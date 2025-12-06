@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -40,13 +40,11 @@ function App() {
             </Route>
             {/* App (Protected) Routes */}
             <Route element={<AppLayout />}>
-              <Route element={<RouteLogger />}>
-                <Route path="/home" element={<Home />} />
-                <Route path="/dcl/projects" element={<Projects />} />
-              </Route>
+              <Route path="/home" element={<Home />} />
+              <Route path="/dcl/projects" element={<Projects />} />
             </Route>
             {/* Default */}
-            {/* <Route path="/" element={<Navigate to={"/home"} />} />
+            <Route path="/" element={<Navigate to={"/home"} />} />
             {/* Catch-all */}
             {/* <Route path="*" element={<Navigate to={"/home"} />} /> */}
           </Routes>
