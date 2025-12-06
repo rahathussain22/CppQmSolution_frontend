@@ -29,7 +29,7 @@ function App() {
             {/* App (Protected) Routes */}
             <Route element={<AppLayout />}>
               <Route path="/home" element={<Home />} />
-              <Route path="/companies-projects">
+              <Route path="/dcl">
                 <Route path="projects" element={<Projects />} />
                 <Route path="lots" element={<Lots />} />
                 <Route path="pipelines" element={<Pipelines />} />

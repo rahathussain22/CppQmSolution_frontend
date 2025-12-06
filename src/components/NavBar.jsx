@@ -1,79 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { ChevronDown } from "lucide-react";
-
-const navItems = [
-  {
-    label: "Home",
-    pathname: "/home",
-    hasDropdown: false,
-  },
-  {
-    label: "Companies & Projects",
-    pathname: "/companies-projects",
-    hasDropdown: true,
-    dropdown: [
-      { label: "Projects", pathname: "/companies-projects/projects" },
-      { label: "Companies", pathname: "/companies-projects/companies" },
-      { label: "Lots", pathname: "/companies-projects/lots" },
-      { label: "Pipelines", pathname: "/companies-projects/pipelines" },
-      { label: "ISO Drawings", pathname: "/companies-projects/iso-drawings" },
-    ],
-  },
-  {
-    label: "WPS & Weld Details",
-    pathname: "/wps-weld-details",
-    hasDropdown: true,
-    dropdown: [
-      { label: "WPS List", pathname: "/wps-weld-details/wps-list" },
-      { label: "Weld Details", pathname: "/wps-weld-details/weld-details" },
-      { label: "Welders", pathname: "/wps-weld-details/welders" },
-    ],
-  },
-  {
-    label: "Reports & Personnels",
-    pathname: "/reports-personnels",
-    hasDropdown: true,
-    dropdown: [
-      { label: "Reports", pathname: "/reports-personnels/reports" },
-      { label: "Personnels", pathname: "/reports-personnels/personnels" },
-      { label: "Statistics", pathname: "/reports-personnels/statistics" },
-    ],
-  },
-  {
-    label: "Inspection/NDT Masters",
-    pathname: "/inspection-ndt-masters",
-    hasDropdown: true,
-    dropdown: [
-      { label: "Inspections", pathname: "/inspection-ndt-masters/inspections" },
-      { label: "NDT", pathname: "/inspection-ndt-masters/ndt" },
-      { label: "Masters", pathname: "/inspection-ndt-masters/masters" },
-    ],
-  },
-  {
-    label: "Components",
-    pathname: "/components",
-    hasDropdown: true,
-    dropdown: [
-      { label: "Component List", pathname: "/components/list" },
-      { label: "Add Component", pathname: "/components/add" },
-    ],
-  },
-  {
-    label: "Permissions",
-    pathname: "/permissions",
-    hasDropdown: true,
-    dropdown: [
-      { label: "Roles", pathname: "/permissions/roles" },
-      { label: "Access", pathname: "/permissions/access" },
-    ],
-  },
-];
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { navItems } from "../constants/constants";
 
 function NavItem({ item, isActive }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
   const timeoutRef = useRef(null);
+  const [submenuPosition, setSubmenuPosition] = useState('left-0');  // Default submenu position
+  const [mainMenuPosition, setMainMenuPosition] = useState('left-0'); // Default main menu position
 
   useEffect(() => {
     return () => {
@@ -100,15 +35,35 @@ function NavItem({ item, isActive }) {
     }, 100);
   };
 
+  useEffect(() => {
+    if (containerRef.current && open) {
+      // Calculate the space from the right edge of the screen for the submenu
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const screenWidth = window.innerWidth;
+      const submenuWidth = containerRect.width;
+
+      // Adjust main menu position to prevent overflow
+      if (screenWidth - containerRect.left < submenuWidth) {
+        setMainMenuPosition('right-0');  // Move the main menu to the right if it's overflowing
+      } else {
+        setMainMenuPosition('left-0');  // Default position if there's no overflow
+      }
+      if (screenWidth - containerRect.right < submenuWidth) {
+        setSubmenuPosition('right-0');  // If it does, align the submenu to the right
+      } else {
+        setSubmenuPosition('left-0');  // Default position if there's no overflow
+      }
+    }
+  }, [open]);
+
   if (!item.hasDropdown) {
     return (
       <Link
         to={item.pathname}
-        className={`flex items-center h-9 px-4 rounded text-sm font-medium transition-colors ${
-          isActive(item.pathname)
-            ? "bg-white/30 text-gray-900"
-            : "text-gray-900 hover:bg-white/20"
-        }`}
+        className={`flex items-center h-9 px-4 rounded text-sm font-medium transition-colors ${isActive(item.pathname)
+          ? "bg-white/30 text-gray-900"
+          : "text-gray-900 hover:bg-white/20"
+          }`}
       >
         {item.label}
       </Link>
@@ -123,29 +78,49 @@ function NavItem({ item, isActive }) {
       onMouseLeave={handleMouseLeave}
     >
       <button
-        className={`flex items-center gap-1 h-9 px-4 rounded text-sm font-medium transition-colors ${
-          isActive(item.pathname)
-            ? "bg-white/30 text-gray-900"
-            : "text-gray-900 hover:bg-white/20"
-        }`}
+        className={`flex items-center gap-1 h-9 px-4 rounded text-sm font-medium transition-colors ${isActive(item.pathname)
+          ? "bg-white/30 text-gray-900"
+          : "text-gray-900 hover:bg-white/20"
+          }`}
       >
         {item.label}
         <ChevronDown className="h-4 w-4" />
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-1 min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+        <div
+          className={`absolute top-full mt-1 min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50 ${submenuPosition} ${mainMenuPosition}`}
+        >
           {item.dropdown.map((dropdownItem) => (
-            <Link
-              key={dropdownItem.pathname}
-              to={dropdownItem.pathname}
-              className={`block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition-colors ${
-                isActive(dropdownItem.pathname)
+            <div key={dropdownItem.pathname} className="relative group">
+              <Link
+                to={dropdownItem.pathname}
+                className={`block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition-colors ${isActive(dropdownItem.pathname)
                   ? "font-semibold bg-blue-100"
                   : ""
-              }`}
-            >
-              {dropdownItem.label}
-            </Link>
+                  }`}
+              >
+                {dropdownItem.label}
+                {dropdownItem.dropdown && (
+                  <ChevronRight className="h-4 w-4 absolute right-2 top-1/2 transform -translate-y-1/2 opacity-50 group-hover:opacity-100" />
+                )}
+              </Link>
+              {dropdownItem.dropdown && (
+                <div className="absolute left-full top-0 mt-0.5 min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50 hidden group-hover:block">
+                  {dropdownItem.dropdown.map((subItem) => (
+                    <Link
+                      key={subItem.pathname}
+                      to={subItem.pathname}
+                      className={`block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition-colors ${isActive(subItem.pathname)
+                        ? "font-semibold bg-blue-100"
+                        : ""
+                        }`}
+                    >
+                      {subItem.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
         </div>
       )}
