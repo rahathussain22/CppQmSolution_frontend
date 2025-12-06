@@ -2,15 +2,20 @@ import { Link, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { navItems } from "../constants/constants";
+import Alert from "@mui/material/Alert";
 
 function NavItem({ item, isActive, level = 0, openPath, setOpenPath, close, ancestors }) {
-  const [submenuPosition, setSubmenuPosition] = useState("right"); // for submenus
-  const [topPosition, setTopPosition] = useState("left-0"); // for top-level
+  const [submenuPosition, setSubmenuPosition] = useState("right");
+  const [topPosition, setTopPosition] = useState("left-0");
   const containerRef = useRef(null);
 
   const hasChildren = item.children && item.children.length > 0;
   const currentPath = [...ancestors, item.pathname];
   const isOpen = openPath.join(",").startsWith(currentPath.join(","));
+
+  const fullPath = item.pathname.startsWith("/")
+    ? item.pathname
+    : [...ancestors, item.pathname].join("/").replace(/\/\/+/g, "/");
 
   const handleMouseEnter = () => {
     if (hasChildren) setOpenPath(currentPath);
@@ -20,23 +25,14 @@ function NavItem({ item, isActive, level = 0, openPath, setOpenPath, close, ance
       const viewportWidth = window.innerWidth;
 
       if (level === 0) {
-        // top-level menu: adjust left/right to avoid overflow
-        if (rect.left + 200 > viewportWidth) {
-          setTopPosition("right-0");
-        } else {
-          setTopPosition("left-0");
-        }
+        setTopPosition(rect.left + 200 > viewportWidth ? "right-0" : "left-0");
       } else {
-        // submenus: adjust left/right
-        if (rect.right + 200 > viewportWidth) {
-          setSubmenuPosition("left");
-        } else {
-          setSubmenuPosition("right");
-        }
+        setSubmenuPosition(rect.right + 200 > viewportWidth ? "left" : "right");
       }
     }
   };
 
+  // Close submenu on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -47,21 +43,25 @@ function NavItem({ item, isActive, level = 0, openPath, setOpenPath, close, ance
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [close]);
 
-  const dropdownClasses =
-    level === 0
-      ? `absolute top-full ${topPosition} mt-1 min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50`
-      : `absolute top-0 ${submenuPosition === "right" ? "left-full ml-1" : "right-full mr-1"
-      } mt-0 min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50`;
+const dropdownClasses =
+  level === 0
+    ? `absolute top-full ${topPosition} mt-1 min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-40`
+    : `absolute top-0 ${
+        submenuPosition === "right"
+          ? "left-full ml-1 mt-9" 
+          : "right-full mr-1 mt-5"
+      } min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-40`;
+
 
   return (
-    <div
-      ref={containerRef}
-      className="relative"
-      onMouseEnter={handleMouseEnter}
-    >
+    <div ref={containerRef} className="relative" 
+    onClick={handleMouseEnter}
+    onMouseEnter={handleMouseEnter}>
+      {/* Parent Link: make sure z-50 so it is above submenu */}
       <Link
-        to={item.pathname}
-        className={`flex items-center gap-1 px-4 rounded text-sm transition-colors whitespace-nowrap h-10
+        // to={fullPath}
+        // onClick={() => console.log("Clicked link:", fullPath)}
+        className={`relative z-50 flex items-center gap-1 px-4 rounded text-sm whitespace-nowrap h-10
           ${isActive(item.pathname) ? "bg-white/30 text-gray-900 font-bold" : ""}
           ${isOpen ? "bg-gray-200 font-bold" : "text-gray-900 hover:bg-gray-200 hover:font-bold"}
         `}
@@ -70,6 +70,7 @@ function NavItem({ item, isActive, level = 0, openPath, setOpenPath, close, ance
         {hasChildren && <ChevronDown className="h-4 w-4" />}
       </Link>
 
+      {/* Submenu: z-40 so below parent link */}
       {hasChildren && isOpen && (
         <div className={dropdownClasses}>
           {item.children.map((child) => (
@@ -89,6 +90,7 @@ function NavItem({ item, isActive, level = 0, openPath, setOpenPath, close, ance
     </div>
   );
 }
+
 
 
 

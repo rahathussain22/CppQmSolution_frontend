@@ -1,9 +1,11 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
+  Outlet,
+  useLocation
 } from "react-router-dom";
 import LoginPage from "./pages/Login";
 import Home from "./pages/Home";
@@ -15,6 +17,16 @@ import Projects from "./pages/Projects";
 import Lots from "./pages/Lots";
 import Pipelines from "./pages/Pipelines";
 import ISODrawings from "./pages/ISODrawings";
+
+function RouteLogger() {
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log("Current route:", location.pathname);
+  }, [location]);
+
+  return null; // just logs, doesn't render anything
+}
 
 function App() {
   return (
@@ -28,18 +40,15 @@ function App() {
             </Route>
             {/* App (Protected) Routes */}
             <Route element={<AppLayout />}>
-              <Route path="/home" element={<Home />} />
-              <Route path="/dcl">
-                <Route path="projects" element={<Projects />} />
-                <Route path="lots" element={<Lots />} />
-                <Route path="pipelines" element={<Pipelines />} />
-                <Route path="iso-drawings" element={<ISODrawings />} />
+              <Route element={<RouteLogger />}>
+                <Route path="/home" element={<Home />} />
+                <Route path="/dcl/projects" element={<Projects />} />
               </Route>
             </Route>
             {/* Default */}
-            <Route path="/" element={<Navigate to={"/home"} />} />
+            {/* <Route path="/" element={<Navigate to={"/home"} />} />
             {/* Catch-all */}
-            <Route path="*" element={<Navigate to={"/home"} />} />
+            {/* <Route path="*" element={<Navigate to={"/home"} />} /> */}
           </Routes>
         </MainLayout>
       </Router>
