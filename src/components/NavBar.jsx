@@ -8,7 +8,7 @@ function NavItem({ item, isActive }) {
   const containerRef = useRef(null);
   const timeoutRef = useRef(null);
   const [submenuPosition, setSubmenuPosition] = useState('left-0');  // Default submenu position
-  const [mainMenuPosition, setMainMenuPosition] = useState('left-0'); // Default main menu position
+  const [mainMenuPosition, setMainMenuPosition] = useState('left-0'); 
 
   useEffect(() => {
     return () => {
