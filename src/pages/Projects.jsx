@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProjectForm } from "@/components/projects/ProjectForm";
-import { ProjectsTable } from "@/components/projects/ProjectsTable";
+import ProjectsList from "@/components/projects/ProjectsTable";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProjects, createProject, deleteProject } from "../api/project";
 import { useAuthStore } from "../store/authStore";
@@ -16,6 +16,7 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { usePipelines } from "../hooks/usePipelines";
 
 export default function Projects() {
   const queryClient = useQueryClient();
@@ -27,6 +28,13 @@ export default function Projects() {
   });
   const user = useAuthStore((state) => state.user);
 
+  const { data: pipelines, isLoading: pipelinesLoading, isError: pipelinesError } = usePipelines();
+
+  useEffect(() => {
+    if (pipelines && !pipelinesLoading && !pipelinesError) {
+      console.log("Fetched pipelines:", pipelines);
+    }
+  }, [pipelines, pipelinesLoading, pipelinesError]);
   const {
     data: projects = [],
     isLoading,
@@ -141,11 +149,12 @@ export default function Projects() {
               Error loading projects: {error.message}
             </div>
           ) : (
-            <ProjectsTable
+            <ProjectsList
               projects={projects}
               onEditRow={handleEditRow}
               onDeleteRow={handleDeleteRow}
               isDeleting={deleteProjectMutation.isPending}
+              pipelines={pipelines}
             />
           )}
         </div>
