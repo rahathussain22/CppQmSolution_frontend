@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { ISODrawingForm } from "@/components/iso-drawings/ISODrawingForm";
 import { ISODrawingsTable } from "@/components/iso-drawings/ISODrawingsTable";
+import SpoolsSection from "@/components/iso-drawings/SpoolsSection";
 import { createISODrawing, getISODrawings } from "../api/iso-drawings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuthStore } from "../store/authStore";
+import { Button } from "@/components/ui/button";
 
 export default function ISODrawings() {
   const queryClient = useQueryClient();
@@ -71,12 +73,12 @@ export default function ISODrawings() {
         <div className="flex justify-between items-center">
           <h4 className="text-3xl font-bold">ISO Drawings</h4>
           {user.permissions === "all" && mode === "idle" && (
-            <button
+            <Button
               onClick={handleAdd}
               className="bg-red-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-red-700"
             >
               + Add ISO Drawing
-            </button>
+            </Button>
           )}
         </div>
         {(mode === "adding" || mode === "editing") && (
@@ -101,6 +103,7 @@ export default function ISODrawings() {
             selectedDrawing={selectedDrawing}
             onEdit={handleEdit}
             onSelectDrawing={handleSelectDrawing}
+            SpoolsSection={SpoolsSection}
           />
         )}
       </div>

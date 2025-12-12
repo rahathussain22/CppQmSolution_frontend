@@ -93,13 +93,13 @@ function PipelineSection({ project, pipelines }) {
       <div className="flex items-center justify-between mb-2">
         <p className="font-semibold text-gray-700">Pipelines</p>
 
-        <button
+        <Button
           className="px-3 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 cursor-pointer flex items-center gap-1"
           onClick={handleAddPipelineClick}
         >
           <Plus size={16} />
           <span>Add Pipeline</span>
-        </button>
+        </Button>
       </div>
 
       {showAddPipelineForm && (
@@ -125,19 +125,19 @@ function PipelineSection({ project, pipelines }) {
 
               {/* Actions */}
               <div className="flex items-center gap-2">
-                <button
+                <Button
                   className="text-gray-700 hover:text-gray-900 cursor-pointer"
                   onClick={() => handleEditPipeline(pipe)}
                 >
                   <Pencil size={16} />
-                </button>
+                </Button>
 
-                <button
+                <Button
                   className="text-red-600 hover:text-red-800 cursor-pointer"
                   onClick={() => openDeleteDialog(pipe)}
                 >
                   <Trash2 size={16} />
-                </button>
+                </Button>
               </div>
             </li>
           ))}

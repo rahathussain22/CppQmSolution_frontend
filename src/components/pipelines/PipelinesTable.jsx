@@ -1,5 +1,6 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
+import { Button } from "@/components/ui/button";
 
 export function PipelinesTable({
   pipelines,
@@ -56,7 +57,7 @@ export function PipelinesTable({
                 {user.permissions === "all" && (
                   <>
                     <td className="px-3 py-2">
-                      <button
+                      <Button
                         onClick={(e) => {
                           e.stopPropagation();
                           onEdit && onEdit(pipeline);
@@ -64,10 +65,10 @@ export function PipelinesTable({
                         className="text-blue-600 hover:text-blue-800"
                       >
                         <Pencil size={16} />
-                      </button>
+                      </Button>
                     </td>
                     <td className="px-3 py-2">
-                      <button
+                      <Button
                         onClick={(e) => {
                           e.stopPropagation();
                           onDelete && onDelete(pipeline);
@@ -76,7 +77,7 @@ export function PipelinesTable({
                         disabled={isDeleting}
                       >
                         <Trash2 size={16} />
-                      </button>
+                      </Button>
                     </td>
                   </>
                 )}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Upload, File } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function ISODrawingRevisionForm({
   drawing,
@@ -61,8 +62,8 @@ export function ISODrawingRevisionForm({
     selectedFile;
 
   return (
-    <div className="bg-gradient-to-b from-red-50 to-red-100 border-2 border-red-300 rounded shadow-md mb-4">
-      <div className="bg-gradient-to-b from-red-600 to-red-700 text-white px-3 py-2 flex items-center justify-between">
+    <div className="bg-linear-to-b from-red-50 to-red-100 border-2 border-red-300 rounded shadow-md mb-4">
+      <div className="bg-linear-to-b from-red-600 to-red-700 text-white px-3 py-2 flex items-center justify-between">
         <h2 className="flex items-center gap-2">
           Send Revision - {drawing?.drawingNumber}
         </h2>
@@ -143,21 +144,21 @@ export function ISODrawingRevisionForm({
           </div>
         </div>
         <div className="flex gap-2 mt-4">
-          <button
+          <Button
             type="submit"
             className="px-4 py-1 text-sm bg-red-600 text-white border border-red-700 rounded hover:bg-red-700"
             disabled={isSaving || !isValid}
           >
             {isSaving ? "Sending..." : "Send Revision"}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={onCancel}
             className="px-4 py-1 text-sm border border-gray-400 rounded bg-white hover:bg-gray-50"
             disabled={isSaving}
           >
             Cancel
-          </button>
+          </Button>
         </div>
       </form>
     </div>

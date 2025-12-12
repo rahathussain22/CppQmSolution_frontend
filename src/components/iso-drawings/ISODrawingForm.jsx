@@ -4,6 +4,7 @@ import { useAuthStore } from "../../store/authStore";
 import { useQuery } from "@tanstack/react-query";
 import { getProjects } from "../../api/project";
 import { getPipelines } from "../../api/pipelines";
+import { Button } from "@/components/ui/button";
 
 export function ISODrawingForm({
   drawing,
@@ -63,7 +64,7 @@ export function ISODrawingForm({
         drawing?.approvedDate || new Date().toISOString().slice(0, 10),
     });
     setSelectedFile(null);
-  }, [drawing, isEditing]);
+  }, [drawing, isEditing, user?.name]);
 
   const updateField = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -110,8 +111,8 @@ export function ISODrawingForm({
     (selectedFile || isEditing);
 
   return (
-    <div className="bg-gradient-to-b from-red-50 to-red-100 border-2 border-red-300 rounded shadow-md mb-4">
-      <div className="bg-gradient-to-b from-red-600 to-red-700 text-white px-3 py-2 flex items-center justify-between">
+    <div className="bg-linear-to-b from-red-50 to-red-100 border-2 border-red-300 rounded shadow-md mb-4">
+      <div className="bg-linear-to-b from-red-600 to-red-700 text-white px-3 py-2 flex items-center justify-between">
         <h2 className="flex items-center gap-2">ISO Drawings</h2>
       </div>
       <form onSubmit={handleSubmit} className="p-4">
@@ -304,21 +305,21 @@ export function ISODrawingForm({
           </div>
         </div>
         <div className="flex gap-2 mt-4">
-          <button
+          <Button
             type="submit"
             className="px-4 py-1 text-sm bg-red-600 text-white border border-red-700 rounded hover:bg-red-700"
             disabled={isSaving || !isValid}
           >
             {isSaving ? "Saving..." : "Save"}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={onCancel}
             className="px-4 py-1 text-sm border border-gray-400 rounded bg-white hover:bg-gray-50"
             disabled={isSaving}
           >
             Cancel
-          </button>
+          </Button>
         </div>
       </form>
     </div>

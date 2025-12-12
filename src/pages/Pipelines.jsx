@@ -14,6 +14,7 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { useAuthStore } from "../store/authStore";
+import { Button } from "@/components/ui/button";
 
 export default function Pipelines() {
   const queryClient = useQueryClient();
@@ -104,12 +105,12 @@ export default function Pipelines() {
         <div className="flex justify-between items-center">
           <h4 className="text-3xl font-bold">Pipelines</h4>
           {user.permissions === "all" && mode === "idle" && (
-            <button
+            <Button
               onClick={handleAdd}
               className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-semibold"
             >
               + Add Pipeline
-            </button>
+            </Button>
           )}
         </div>
         {(mode === "adding" || mode === "editing") && (
@@ -163,14 +164,14 @@ export default function Pipelines() {
             >
               Cancel
             </AlertDialogCancel>
-            <button
+            <Button
               type="button"
               onClick={handleDeleteConfirm}
               disabled={deletePipelineMutation.isPending}
               className="bg-red-500 text-white px-4 py-2 rounded font-semibold disabled:opacity-50"
             >
               {deletePipelineMutation.isPending ? "Deleting..." : "Delete"}
-            </button>
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
