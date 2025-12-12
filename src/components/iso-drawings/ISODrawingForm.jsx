@@ -20,6 +20,10 @@ export function ISODrawingForm({
     sheetNumber: drawing?.sheetNumber || "",
     drawingTitle: drawing?.drawingTitle || "",
     issueDate: drawing?.issueDate || "",
+    revision: drawing?.revision != null ? String(drawing.revision) : "",
+    approvedBy: drawing?.approvedBy || user?.name || "",
+    approvedDate:
+      drawing?.approvedDate || new Date().toISOString().slice(0, 10),
   });
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -31,6 +35,7 @@ export function ISODrawingForm({
     queryKey: ["projects"],
     queryFn: () => getProjects({ createdBy: user.id }),
     select: (data) => (data && data.projects) || [],
+    refetchOnWindowFocus: false,
   });
   const {
     data: availablePipelines = [],
@@ -41,6 +46,7 @@ export function ISODrawingForm({
     queryFn: () => getPipelines({ projectId: formData.projectId }),
     select: (data) => (data && data.pipelines) || [],
     enabled: !!formData.projectId,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
@@ -51,6 +57,10 @@ export function ISODrawingForm({
       sheetNumber: drawing?.sheetNumber || "",
       drawingTitle: drawing?.drawingTitle || "",
       issueDate: drawing?.issueDate || "",
+      revision: drawing?.revision != null ? String(drawing.revision) : "",
+      approvedBy: drawing?.approvedBy || user?.name || "",
+      approvedDate:
+        drawing?.approvedDate || new Date().toISOString().slice(0, 10),
     });
     setSelectedFile(null);
   }, [drawing, isEditing]);
@@ -66,14 +76,12 @@ export function ISODrawingForm({
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      const allowedExtensions = ["jpeg", "jpg", "png", "pdf", "dwg"];
+      // Accept only PDFs for ISO Drawings
       const fileExtension = file.name.split(".").pop()?.toLowerCase();
-      if (fileExtension && allowedExtensions.includes(fileExtension)) {
+      if (fileExtension === "pdf") {
         setSelectedFile(file);
       } else {
-        alert(
-          "Invalid file format. Please upload jpeg, jpg, png, pdf, or dwg files only."
-        );
+        alert("Invalid file format. Please upload PDF files only.");
         e.target.value = "";
       }
     }
@@ -83,6 +91,7 @@ export function ISODrawingForm({
     e.preventDefault();
     const fd = new FormData();
     Object.entries(formData).forEach(([k, v]) => {
+      // append all fields (including approved fields). Skip undefined/null
       if (v !== undefined && v !== null) fd.append(k, v);
     });
     if (selectedFile) fd.append("file", selectedFile);
@@ -96,11 +105,13 @@ export function ISODrawingForm({
     formData.sheetNumber &&
     formData.drawingTitle &&
     formData.issueDate &&
+    formData.approvedBy &&
+    formData.approvedDate &&
     (selectedFile || isEditing);
 
   return (
-    <div className="bg-linear-to-b from-blue-50 to-blue-100 border-2 border-blue-300 rounded shadow-md mb-4">
-      <div className="bg-linear-to-b from-blue-600 to-blue-700 text-white px-3 py-2 flex items-center justify-between">
+    <div className="bg-gradient-to-b from-red-50 to-red-100 border-2 border-red-300 rounded shadow-md mb-4">
+      <div className="bg-gradient-to-b from-red-600 to-red-700 text-white px-3 py-2 flex items-center justify-between">
         <h2 className="flex items-center gap-2">ISO Drawings</h2>
       </div>
       <form onSubmit={handleSubmit} className="p-4">
@@ -213,9 +224,47 @@ export function ISODrawingForm({
           </div>
         </div>
         <div className="grid grid-cols-12 gap-3 mb-3">
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">Revision</label>
+            <input
+              type="text"
+              value={formData.revision}
+              onChange={(e) => updateField("revision", e.target.value)}
+              disabled={!isEditing || isSaving}
+              placeholder="e.g., A, 1, rev-1"
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-5">
+            <label className="block text-xs text-gray-700 mb-1">
+              Approved By
+            </label>
+            <input
+              type="text"
+              value={formData.approvedBy}
+              onChange={(e) => updateField("approvedBy", e.target.value)}
+              disabled={!isEditing || isSaving}
+              placeholder="Approver name"
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-4">
+            <label className="block text-xs text-gray-700 mb-1">
+              Approved Date
+            </label>
+            <input
+              type="date"
+              value={formData.approvedDate}
+              onChange={(e) => updateField("approvedDate", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-12 gap-3 mb-3">
           <div className="col-span-12">
             <label className="block text-xs text-gray-700 mb-1">
-              Drawing File (jpeg, jpg, png, pdf, dwg):
+              Drawing File (PDF only):
             </label>
             {isEditing ? (
               <div className="flex items-center gap-2">
@@ -224,17 +273,17 @@ export function ISODrawingForm({
                   <span className="text-sm">Choose File</span>
                   <input
                     type="file"
-                    accept=".jpeg,.jpg,.png,.pdf,.dwg"
+                    accept=".pdf"
                     onChange={handleFileChange}
                     className="hidden"
                     disabled={isSaving}
                   />
                 </label>
                 {selectedFile && (
-                  <div className="flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-300 rounded text-sm">
-                    <File size={16} className="text-blue-600" />
-                    <span className="text-blue-700">{selectedFile.name}</span>
-                    <span className="text-blue-500 text-xs">
+                  <div className="flex items-center gap-2 px-3 py-1 bg-red-50 border border-red-300 rounded text-sm">
+                    <File size={16} className="text-red-600" />
+                    <span className="text-red-700">{selectedFile.name}</span>
+                    <span className="text-red-500 text-xs">
                       ({(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)
                     </span>
                   </div>
@@ -257,7 +306,7 @@ export function ISODrawingForm({
         <div className="flex gap-2 mt-4">
           <button
             type="submit"
-            className="px-4 py-1 text-sm bg-blue-600 text-white border border-blue-700 rounded hover:bg-blue-700"
+            className="px-4 py-1 text-sm bg-red-600 text-white border border-red-700 rounded hover:bg-red-700"
             disabled={isSaving || !isValid}
           >
             {isSaving ? "Saving..." : "Save"}

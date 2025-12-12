@@ -4,8 +4,6 @@ import { useLogin } from "../hooks/useLogin";
 import { useAuthStore } from "../store/authStore";
 import { Button } from "@/components/ui/button";
 
-const primaryBlue = "#1976d2";
-
 const LoginPage = () => {
   const [employeeId, setEmployeeId] = useState("");
   const [password, setPassword] = useState("");
@@ -49,12 +47,16 @@ const LoginPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8 border border-gray-200">
-        <h2
-          className="text-2xl font-bold mb-6 text-center"
-          style={{ color: primaryBlue }}
-        >
+    <div className="w-full max-w-md px-4">
+      <div className="bg-white shadow-xl rounded-lg p-8">
+        <div className="flex justify-center mb-6">
+          <img
+            src="/assets/cppqm-logo.jpeg"
+            alt="CPPQM Logo"
+            className="h-16 w-auto object-contain"
+          />
+        </div>
+        <h2 className="text-2xl font-bold mb-6 text-center text-red-600">
           Login
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -67,17 +69,7 @@ const LoginPage = () => {
               value={employeeId}
               onChange={(e) => setEmployeeId(e.target.value)}
               placeholder="Enter your email"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
-              style={{
-                borderColor: "#CBD5E1",
-                boxShadow: `0 0 0 2px ${primaryBlue}33`,
-              }}
-              onFocus={(e) =>
-                (e.target.style.boxShadow = `0 0 0 2px ${primaryBlue}`)
-              }
-              onBlur={(e) =>
-                (e.target.style.boxShadow = `0 0 0 2px ${primaryBlue}33`)
-              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
               required
             />
           </div>
@@ -91,17 +83,7 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none"
-              style={{
-                borderColor: "#CBD5E1",
-                boxShadow: `0 0 0 2px ${primaryBlue}33`,
-              }}
-              onFocus={(e) =>
-                (e.target.style.boxShadow = `0 0 0 2px ${primaryBlue}`)
-              }
-              onBlur={(e) =>
-                (e.target.style.boxShadow = `0 0 0 2px ${primaryBlue}33`)
-              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
               required
             />
           </div>
@@ -119,7 +101,7 @@ const LoginPage = () => {
                     value={r}
                     checked={role === r}
                     onChange={(e) => setRole(e.target.value)}
-                    className="accent-blue-600 w-4 h-4"
+                    className="accent-red-600 w-4 h-4"
                     required
                   />
                   <span className="text-gray-700">{r}</span>
@@ -129,10 +111,7 @@ const LoginPage = () => {
           </div>
           <Button
             type="submit"
-            className="w-full text-white py-2 rounded-md transition-colors font-medium"
-            style={{ backgroundColor: primaryBlue }}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "#1565c0")}
-            onMouseLeave={(e) => (e.target.style.backgroundColor = primaryBlue)}
+            className="w-full text-white py-2 rounded-md transition-colors font-medium bg-red-600 hover:bg-red-700"
             disabled={isLoading}
           >
             {isLoading ? "Logging in..." : "Login"}
@@ -140,11 +119,7 @@ const LoginPage = () => {
         </form>
         <p className="mt-4 text-center text-gray-500 text-sm">
           Don't have an account?{" "}
-          <a
-            href="#"
-            className="font-medium hover:underline"
-            style={{ color: primaryBlue }}
-          >
+          <a href="#" className="font-medium text-red-600 hover:underline">
             Sign up
           </a>
         </p>

@@ -5,7 +5,7 @@ import {
   Route,
   Navigate,
   Outlet,
-  useLocation
+  useLocation,
 } from "react-router-dom";
 import LoginPage from "./pages/Login";
 import Home from "./pages/Home";
@@ -14,8 +14,6 @@ import MainLayout from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import AppLayout from "./layouts/AppLayout";
 import Projects from "./pages/Projects";
-import Lots from "./pages/Lots";
-import Pipelines from "./pages/Pipelines";
 import ISODrawings from "./pages/ISODrawings";
 
 function RouteLogger() {
@@ -42,11 +40,15 @@ function App() {
             <Route element={<AppLayout />}>
               <Route path="/home" element={<Home />} />
               <Route path="/dcl/projects" element={<Projects />} />
+
+              <Route path="/engineering-design">
+                <Route path="iso-drawings" element={<ISODrawings />} />
+              </Route>
             </Route>
             {/* Default */}
             <Route path="/" element={<Navigate to={"/home"} />} />
             {/* Catch-all */}
-            {/* <Route path="*" element={<Navigate to={"/home"} />} /> */}
+            <Route path="*" element={<Navigate to={"/home"} />} />
           </Routes>
         </MainLayout>
       </Router>

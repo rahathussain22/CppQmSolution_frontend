@@ -61,8 +61,8 @@ export function ISODrawingRevisionForm({
     selectedFile;
 
   return (
-    <div className="bg-linear-to-b from-orange-50 to-orange-100 border-2 border-orange-300 rounded shadow-md mb-4">
-      <div className="bg-linear-to-b from-orange-600 to-orange-700 text-white px-3 py-2 flex items-center justify-between">
+    <div className="bg-gradient-to-b from-red-50 to-red-100 border-2 border-red-300 rounded shadow-md mb-4">
+      <div className="bg-gradient-to-b from-red-600 to-red-700 text-white px-3 py-2 flex items-center justify-between">
         <h2 className="flex items-center gap-2">
           Send Revision - {drawing?.drawingNumber}
         </h2>
@@ -126,10 +126,10 @@ export function ISODrawingRevisionForm({
                 />
               </label>
               {selectedFile && (
-                <div className="flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-300 rounded text-sm">
-                  <File size={16} className="text-blue-600" />
-                  <span className="text-blue-700">{selectedFile.name}</span>
-                  <span className="text-blue-500 text-xs">
+                <div className="flex items-center gap-2 px-3 py-1 bg-red-50 border border-red-300 rounded text-sm">
+                  <File size={16} className="text-red-600" />
+                  <span className="text-red-700">{selectedFile.name}</span>
+                  <span className="text-red-500 text-xs">
                     ({(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)
                   </span>
                 </div>
@@ -145,7 +145,7 @@ export function ISODrawingRevisionForm({
         <div className="flex gap-2 mt-4">
           <button
             type="submit"
-            className="px-4 py-1 text-sm bg-orange-600 text-white border border-orange-700 rounded hover:bg-orange-700"
+            className="px-4 py-1 text-sm bg-red-600 text-white border border-red-700 rounded hover:bg-red-700"
             disabled={isSaving || !isValid}
           >
             {isSaving ? "Sending..." : "Send Revision"}

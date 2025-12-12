@@ -4,7 +4,15 @@ import { ChevronDown } from "lucide-react";
 import { navItems } from "../constants/constants";
 import Alert from "@mui/material/Alert";
 
-function NavItem({ item, isActive, level = 0, openPath, setOpenPath, close, ancestors }) {
+function NavItem({
+  item,
+  isActive,
+  level = 0,
+  openPath,
+  setOpenPath,
+  close,
+  ancestors,
+}) {
   const [submenuPosition, setSubmenuPosition] = useState("right");
   const [topPosition, setTopPosition] = useState("left-0");
   const containerRef = useRef(null);
@@ -35,10 +43,11 @@ function NavItem({ item, isActive, level = 0, openPath, setOpenPath, close, ance
   const dropdownClasses =
     level === 0
       ? `absolute top-full ${topPosition} mt-1 min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-40`
-      : `absolute top-0 ${submenuPosition === "right"
-        ? "left-full ml-1 mt-9"
-        : "right-full mr-1 mt-5"
-      } min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-40`;
+      : `absolute top-0 ${
+          submenuPosition === "right"
+            ? "left-full ml-1 mt-9"
+            : "right-full mr-1 mt-5"
+        } min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-40`;
 
   return (
     <div
@@ -49,8 +58,22 @@ function NavItem({ item, isActive, level = 0, openPath, setOpenPath, close, ance
       <Link
         to={fullPath}
         className={`relative z-20 flex items-center gap-1 px-4 rounded text-sm whitespace-nowrap h-10
-          ${isActive(item.pathname) ? "bg-white/30 text-gray-900 font-bold" : ""}
-          ${isOpen ? "bg-gray-200 font-bold" : "text-gray-900 hover:bg-gray-200 hover:font-bold"}
+          ${
+            isActive(item.pathname)
+              ? level === 0
+                ? "bg-red-700 text-white font-bold"
+                : "bg-red-100 text-red-700 font-bold"
+              : ""
+          }
+          ${
+            isOpen && level === 0
+              ? "bg-red-700 text-white font-bold"
+              : isOpen && level > 0
+              ? "bg-red-100 text-red-700 font-bold"
+              : level === 0
+              ? "text-white hover:bg-red-700 hover:font-bold"
+              : "text-gray-900 hover:bg-red-100 hover:text-red-700 hover:font-bold"
+          }
         `}
       >
         {item.label}
@@ -58,8 +81,7 @@ function NavItem({ item, isActive, level = 0, openPath, setOpenPath, close, ance
       </Link>
 
       {hasChildren && isOpen && (
-        <div
-          className={dropdownClasses}>
+        <div className={dropdownClasses}>
           {item.children.map((child) => (
             <NavItem
               key={child.pathname}
@@ -77,9 +99,6 @@ function NavItem({ item, isActive, level = 0, openPath, setOpenPath, close, ance
     </div>
   );
 }
-
-
-
 
 function NavBar() {
   const location = useLocation();
@@ -110,8 +129,8 @@ function NavBar() {
 
   return (
     <nav
-      ref={navRef}  // ATTACH REF HERE
-      className="bg-linear-to-b from-cyan-400 to-cyan-500 border-b-2 border-cyan-600 shadow-md px-2 py-1"
+      ref={navRef} // ATTACH REF HERE
+      className="bg-linear-to-b from-red-500 to-red-600 border-b-2 border-red-700 shadow-md px-2 py-1"
     >
       <div className="flex gap-1 flex-wrap">
         {navItems.map((item) => (
@@ -130,6 +149,5 @@ function NavBar() {
     </nav>
   );
 }
-
 
 export default NavBar;

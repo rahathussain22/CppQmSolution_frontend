@@ -28,7 +28,11 @@ export default function Projects() {
   });
   const user = useAuthStore((state) => state.user);
 
-  const { data: pipelines, isLoading: pipelinesLoading, isError: pipelinesError } = usePipelines();
+  const {
+    data: pipelines,
+    isLoading: pipelinesLoading,
+    isError: pipelinesError,
+  } = usePipelines();
 
   useEffect(() => {
     if (pipelines && !pipelinesLoading && !pipelinesError) {
@@ -43,6 +47,7 @@ export default function Projects() {
     queryKey: ["projects"],
     queryFn: getProjects,
     select: (data) => (data && data.projects) || [],
+    refetchOnWindowFocus: false,
   });
 
   // Mutate (Create) Project
@@ -61,7 +66,7 @@ export default function Projects() {
     mutationFn: deleteProject,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["projects", "lots", "pipelines", "isoDrawings"],
+        queryKey: ["projects", "pipelines", "isoDrawings"],
       });
       setDeleteDialog({ open: false, project: null });
       toast.success("Project has been deleted.");
@@ -123,7 +128,7 @@ export default function Projects() {
             {user.permissions === "all" && mode === "idle" && (
               <Button
                 onClick={handleAdd}
-                className="bg-blue-600 text-white rounded"
+                className="bg-red-600 text-white rounded hover:bg-red-700"
               >
                 <Plus className="size-4" />
                 Add Project
@@ -193,7 +198,7 @@ export default function Projects() {
               type="button"
               onClick={handleDeleteConfirm}
               disabled={deleteProjectMutation.isPending}
-              className="bg-red-500 text-white rounded px-4 py-2 disabled:opacity-50 disabled:cursor-progress"
+              className="bg-red-600 text-white rounded px-4 py-2 hover:bg-red-700 disabled:opacity-50 disabled:cursor-progress"
               autoFocus
             >
               {deleteProjectMutation.isPending ? "Deleting..." : "Delete"}

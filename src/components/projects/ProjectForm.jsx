@@ -42,7 +42,7 @@ export function ProjectForm({
   };
 
   return (
-    <div className="bg-linear-to-b from-blue-50 to-blue-100 border-2 border-blue-300 rounded shadow-md mb-4">
+    <div className="bg-gradient-to-b from-red-50 to-red-100 border-2 border-red-300 rounded shadow-md mb-4">
       {/* Form Fields */}
       <form onSubmit={handleSubmit} className="p-4">
         <div className="grid grid-cols-12 gap-3 mb-3">
@@ -122,7 +122,7 @@ export function ProjectForm({
         <div className="flex gap-2 mt-4">
           <Button
             type="submit"
-            className="px-4 py-1 text-sm bg-blue-600 text-white border border-blue-700 rounded hover:bg-blue-700"
+            className="px-4 py-1 text-sm bg-red-600 text-white border border-red-700 rounded hover:bg-red-700"
             disabled={isSaving}
           >
             {isSaving ? "Saving..." : "Save"}

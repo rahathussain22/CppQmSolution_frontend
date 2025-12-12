@@ -36,6 +36,7 @@ export default function Pipelines() {
     queryKey: ["pipelines"],
     queryFn: getPipelines,
     select: (data) => (data && data.pipelines) || [],
+    refetchOnWindowFocus: false,
   });
 
   const createPipelineMutation = useMutation({

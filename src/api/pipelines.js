@@ -2,19 +2,29 @@ import api from "../config/api";
 
 export async function createPipeline({
   projectId,
-  lotId,
+  lotCode,
+  name,
+  description,
+  startDate,
+  cuttOffDate,
   lineNumber,
   lineSize,
   lineClass,
   location,
+  status,
 }) {
   return await api.post("/pipeline/create", {
     projectId,
-    lotId,
+    lotCode,
+    name,
+    description,
+    startDate,
+    cuttOffDate,
     lineNumber,
     lineSize,
     lineClass,
     location,
+    status,
   });
 }
 
