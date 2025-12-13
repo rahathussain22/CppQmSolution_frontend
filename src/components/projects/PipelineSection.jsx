@@ -119,11 +119,19 @@ function PipelineSection({ project, pipelines }) {
               key={pipe.id}
               className="flex items-center justify-between p-2 border border-gray-300 rounded hover:bg-gray-100"
             >
-              <a className="font-medium hover:font-bold cursor-pointer">
-                {pipe.lineNumber}
-              </a>
-
-              {/* Actions */}
+              <div>
+                <div className="font-medium">
+                  {pipe.lineNumber} - {pipe.name}
+                </div>
+                <div className="text-xs text-gray-500">
+                  Lot: {pipe.lotCode}, Class: {pipe.lineClass}, Size:{" "}
+                  {pipe.lineSize}, Location: {pipe.location}, Start:{" "}
+                  {pipe.startDate
+                    ? new Date(pipe.startDate).toLocaleDateString()
+                    : "-"}
+                </div>
+                <div className="text-xs text-gray-500">{pipe.description}</div>
+              </div>
               <div className="flex items-center gap-2">
                 <Button
                   className="text-gray-700 hover:text-gray-900 cursor-pointer"
@@ -131,7 +139,6 @@ function PipelineSection({ project, pipelines }) {
                 >
                   <Pencil size={16} />
                 </Button>
-
                 <Button
                   className="text-red-600 hover:text-red-800 cursor-pointer"
                   onClick={() => openDeleteDialog(pipe)}
