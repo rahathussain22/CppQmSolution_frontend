@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
 import { useAuthStore } from "../store/authStore";
 import { Button } from "@/components/ui/button";
-
+import { toast } from "sonner";
 const LoginPage = () => {
   const [employeeId, setEmployeeId] = useState("");
   const [password, setPassword] = useState("");
@@ -26,9 +26,13 @@ const LoginPage = () => {
         },
         onError: (error) => {
           if (error.response?.status === 401) {
-            alert("Invalid employee id or password");
+            toast.error("Invalid employee ID or password", {
+              duration: 5000,
+            });
           } else {
-            alert("Login failed");
+            toast.error("Login failed", {
+              duration: 5000
+            });
           }
         },
       }

@@ -2,7 +2,9 @@ import { Link, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { navItems } from "@/constants/constants.js";
-
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+import { LogOut } from "lucide-react";
 function NavItem({
   item,
   isActive,
@@ -45,7 +47,7 @@ function NavItem({
       }
     }
   };
-  
+
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
@@ -58,11 +60,10 @@ function NavItem({
   const dropdownClasses =
     level === 0
       ? `absolute top-full ${topPosition} mt-1 min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-40`
-      : `absolute top-0 ${
-          submenuPosition === "right"
-            ? "left-full ml-1 mt-9"
-            : "right-full mr-1 mt-5"
-        } min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-40`;
+      : `absolute top-0 ${submenuPosition === "right"
+        ? "left-full ml-1 mt-9"
+        : "right-full mr-1 mt-5"
+      } min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-40`;
 
   return (
     <div
@@ -73,21 +74,19 @@ function NavItem({
       <Link
         to={fullPath}
         className={`relative z-20 flex items-center gap-1 px-4 rounded text-sm whitespace-nowrap h-10
-          ${
-            isActive(item.pathname)
-              ? level === 0
-                ? "bg-red-700 text-white font-bold"
-                : "bg-red-100 text-red-700 font-bold"
-              : ""
-          }
-          ${
-            isOpen && level === 0
+          ${isActive(item.pathname)
+            ? level === 0
               ? "bg-red-700 text-white font-bold"
-              : isOpen && level > 0
+              : "bg-red-100 text-red-700 font-bold"
+            : ""
+          }
+          ${isOpen && level === 0
+            ? "bg-red-700 text-white font-bold"
+            : isOpen && level > 0
               ? "bg-red-100 text-red-700 font-bold"
               : level === 0
-              ? "text-white hover:bg-red-700 hover:font-bold"
-              : "text-gray-900 hover:bg-red-100 hover:text-red-700 hover:font-bold"
+                ? "text-white hover:bg-red-700 hover:font-bold"
+                : "text-gray-900 hover:bg-red-100 hover:text-red-700 hover:font-bold"
           }
         `}
       >
@@ -118,6 +117,8 @@ function NavItem({
 function NavBar() {
   const location = useLocation();
   const isActive = (pathname) => location.pathname.startsWith(pathname);
+  const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
 
   const [openPath, setOpenPath] = useState([]);
   const navRef = useRef(null);
@@ -141,6 +142,11 @@ function NavBar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <nav
       ref={navRef}
@@ -159,6 +165,15 @@ function NavBar() {
             ancestors={[]}
           />
         ))}
+
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-4 h-10 text-sm font-semibold
+             text-white bg-red-600 rounded hover:bg-red-700 transition cursor-pointer"
+        >
+          <LogOut size={16} />
+          Logout
+        </button>
       </div>
     </nav>
   );
