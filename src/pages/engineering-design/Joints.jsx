@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { WeldJointForm } from "../../components/joints/jointForm";
-import { JointTable } from "../../components/joints/jointTable";
+import { WeldJointForm } from "@/components/joints/jointForm";
+import { JointTable } from "@/components/joints/jointTable";
 // import SpoolsSection from "@/components/iso-drawings/SpoolsSection";
 import { createWeldJoint, getWeldJoints } from "@/api/joints"; // updated API
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ export default function Joints() {
   // mode: 'idle', 'adding', 'editing'
   const [mode, setMode] = useState("idle");
   const [editingJoint, setEditingJoint] = useState(null);
-  const [selectedJoint, setSelectedJoint] = useState(null);
+  const [, setSelectedJoint] = useState(null);
 
   const {
     data: joints = [],

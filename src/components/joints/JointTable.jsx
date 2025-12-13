@@ -1,9 +1,14 @@
 import { Pencil } from "lucide-react";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-export function JointTable({ joints = [], onEdit, onSelectJoint, ComponentsSection }) {
+export function JointTable({
+  joints = [],
+  onEdit,
+  onSelectJoint,
+  ComponentsSection,
+}) {
   const user = useAuthStore((state) => state.user);
   const [openJointId, setOpenJointId] = useState(null);
 
@@ -17,7 +22,9 @@ export function JointTable({ joints = [], onEdit, onSelectJoint, ComponentsSecti
         <table className="min-w-max text-sm">
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
-              {user.permissions === "all" && <th className="px-3 py-2 text-left text-xs w-10">&nbsp;</th>}
+              {user.permissions === "all" && (
+                <th className="px-3 py-2 text-left text-xs w-10">&nbsp;</th>
+              )}
               <th className="px-3 py-2 text-left text-xs">#</th>
               <th className="px-3 py-2 text-left text-xs">Project</th>
               <th className="px-3 py-2 text-left text-xs">Pipeline</th>
@@ -61,23 +68,34 @@ export function JointTable({ joints = [], onEdit, onSelectJoint, ComponentsSecti
                       </td>
                     )}
                     <td className="px-3 py-2 text-gray-600">{index + 1}</td>
-                    <td className="px-3 py-2">{joint.project.projectCode || "-"}</td>
-                    <td className="px-3 py-2">{joint.pipeline.name || "-"}</td>
+                    <td className="px-3 py-2">{joint.projectId || "-"}</td>
+                    <td className="px-3 py-2">{joint.pipelineId || "-"}</td>
                     <td className="px-3 py-2">{joint.weldNumber}</td>
                     <td className="px-3 py-2">{joint.wpsId || "-"}</td>
                     <td className="px-3 py-2">{joint.weldType || "-"}</td>
                     <td className="px-3 py-2">{joint.weldLocation || "-"}</td>
-                    <td className="px-3 py-2">{joint.preHeatTempRequired || "-"}</td>
-                    <td className="px-3 py-2">{joint.pwhtRequired ? "Yes" : "No"}</td>
+                    <td className="px-3 py-2">
+                      {joint.preHeatTempRequired || "-"}
+                    </td>
+                    <td className="px-3 py-2">
+                      {joint.pwhtRequired ? "Yes" : "No"}
+                    </td>
                     <td className="px-3 py-2">{joint.weldStatus || "-"}</td>
                     <td className="px-3 py-2">
-                      {joint.finalAcceptanceDate ? new Date(joint.finalAcceptanceDate).toLocaleDateString() : "-"}
+                      {joint.finalAcceptanceDate
+                        ? new Date(
+                            joint.finalAcceptanceDate
+                          ).toLocaleDateString()
+                        : "-"}
                     </td>
                     <td className="px-3 py-2">{joint.remarks || "-"}</td>
                   </tr>
                   {isOpen && ComponentsSection && (
                     <tr className="border-b border-gray-300">
-                      <td colSpan={user.permissions === "all" ? 13 : 12} className="p-4 bg-gray-50">
+                      <td
+                        colSpan={user.permissions === "all" ? 13 : 12}
+                        className="p-4 bg-gray-50"
+                      >
                         <ComponentsSection joint={joint} />
                       </td>
                     </tr>

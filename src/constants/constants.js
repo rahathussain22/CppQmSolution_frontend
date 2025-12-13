@@ -73,6 +73,10 @@ export const navItems = [
     hasDropdown: true,
     children: [
       {
+        label: "Components",
+        pathname: "/materials-documents/components",
+      },
+      {
         label: "Project Reference Documents Archive",
         pathname: "/materials-documents/project-reference-documents",
         hasDropdown: true,

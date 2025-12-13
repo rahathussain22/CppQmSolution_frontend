@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getWeldJointComponents } from "../../api/joints";
+import { getWeldJointComponents } from "@/api/joints";
 import { useQuery } from "@tanstack/react-query";
 
 function ComponentsSection({ joint }) {
@@ -43,7 +43,9 @@ function ComponentsSection({ joint }) {
       </div>
 
       {isLoading && (
-        <div className="p-4 text-gray-600">Loading Weld Joint Components...</div>
+        <div className="p-4 text-gray-600">
+          Loading Weld Joint Components...
+        </div>
       )}
       {error && (
         <div className="p-4 text-red-700">Error loading components</div>
@@ -68,14 +70,22 @@ function ComponentsSection({ joint }) {
             <tbody className="divide-y divide-gray-200">
               {components.map((c) => (
                 <tr key={c.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2">{c.attachedComponent.componentCode}</td>
-                  <td className="px-4 py-2">{c.attachedComponent.componentType}</td>
+                  <td className="px-4 py-2">
+                    {c.attachedComponent.componentCode}
+                  </td>
+                  <td className="px-4 py-2">
+                    {c.attachedComponent.componentType}
+                  </td>
                   <td className="px-4 py-2">{c.attachedComponent.material}</td>
                   <td className="px-4 py-2">{c.attachedComponent.diameter}</td>
                   <td className="px-4 py-2">{c.attachedComponent.length}</td>
                   <td className="px-4 py-2">{c.attachedComponent.thickness}</td>
-                  <td className="px-4 py-2">{c.attachedComponent.pipeNumber}</td>
-                  <td className="px-4 py-2">{c.attachedComponent.heatNumber}</td>
+                  <td className="px-4 py-2">
+                    {c.attachedComponent.pipeNumber}
+                  </td>
+                  <td className="px-4 py-2">
+                    {c.attachedComponent.heatNumber}
+                  </td>
                   <td className="px-4 py-2 text-center flex justify-center gap-2">
                     <Button
                       className="text-gray-700 hover:text-gray-900 p-1"
@@ -96,7 +106,9 @@ function ComponentsSection({ joint }) {
           </table>
         </div>
       ) : (
-        !isLoading && <p className="text-sm text-gray-500 mt-2">No components found.</p>
+        !isLoading && (
+          <p className="text-sm text-gray-500 mt-2">No components found.</p>
+        )
       )}
 
       {/* Delete confirmation */}

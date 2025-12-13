@@ -18,6 +18,8 @@ import ISODrawings from "./pages/engineering-design/ISODrawings";
 import WPS from "./pages/quality-procedures/WPS";
 import Welder from "./pages/quality-procedures/Welder";
 import Joints from "./pages/engineering-design/Joints";
+import Components from "./pages/materials-documents/Components";
+
 function RouteLogger() {
   const location = useLocation();
 
@@ -51,6 +53,10 @@ function App() {
               <Route path="/quality-procedures">
                 <Route path="wps-management" element={<WPS />} />
                 <Route path="welder-management" element={<Welder />} />
+              </Route>
+
+              <Route path="/materials-documents">
+                <Route path="components" element={<Components />} />
               </Route>
             </Route>
             {/* Default */}
