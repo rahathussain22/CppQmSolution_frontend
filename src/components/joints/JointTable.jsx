@@ -1,4 +1,4 @@
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -6,6 +6,7 @@ import { useState } from "react";
 export function JointTable({
   joints = [],
   onEdit,
+  onDelete,
   onSelectJoint,
   ComponentsSection,
 }) {
@@ -19,7 +20,7 @@ export function JointTable({
   return (
     <div className="bg-white border-2 border-gray-300 rounded shadow-md overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-max text-sm">
+        <table className="w-full text-sm">
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
               {user.permissions === "all" && (
@@ -29,11 +30,15 @@ export function JointTable({
               <th className="px-3 py-2 text-left text-xs">Project</th>
               <th className="px-3 py-2 text-left text-xs">Pipeline</th>
               <th className="px-3 py-2 text-left text-xs">Weld Number</th>
+              <th className="px-3 py-2 text-left text-xs">Sequence Number</th>
               <th className="px-3 py-2 text-left text-xs">WPS ID</th>
               <th className="px-3 py-2 text-left text-xs">Weld Type</th>
               <th className="px-3 py-2 text-left text-xs">Location</th>
               <th className="px-3 py-2 text-left text-xs">Pre-Heat Temp</th>
               <th className="px-3 py-2 text-left text-xs">PWHT</th>
+              <th className="px-3 py-2 text-left text-xs">Welding Process</th>
+              <th className="px-3 py-2 text-left text-xs">NDT %</th>
+              <th className="px-3 py-2 text-left text-xs">Is Tracer</th>
               <th className="px-3 py-2 text-left text-xs">Status</th>
               <th className="px-3 py-2 text-left text-xs">Final Acceptance</th>
               <th className="px-3 py-2 text-left text-xs">Remarks</th>
@@ -56,21 +61,33 @@ export function JointTable({
                   >
                     {user.permissions === "all" && (
                       <td className="px-3 py-2">
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onEdit && onEdit(joint);
-                          }}
-                          className="text-red-600 hover:text-red-800"
-                        >
-                          <Pencil size={16} />
-                        </Button>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onEdit && onEdit(joint);
+                            }}
+                            className="text-gray-700 hover:text-gray-900"
+                          >
+                            <Pencil size={16} />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDelete && onDelete(joint);
+                            }}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </td>
                     )}
                     <td className="px-3 py-2 text-gray-600">{index + 1}</td>
                     <td className="px-3 py-2">{joint.projectId || "-"}</td>
                     <td className="px-3 py-2">{joint.pipelineId || "-"}</td>
                     <td className="px-3 py-2">{joint.weldNumber}</td>
+                    <td className="px-3 py-2">{joint.sequenceNumber || "-"}</td>
                     <td className="px-3 py-2">{joint.wpsId || "-"}</td>
                     <td className="px-3 py-2">{joint.weldType || "-"}</td>
                     <td className="px-3 py-2">{joint.weldLocation || "-"}</td>
@@ -79,6 +96,11 @@ export function JointTable({
                     </td>
                     <td className="px-3 py-2">
                       {joint.pwhtRequired ? "Yes" : "No"}
+                    </td>
+                    <td className="px-3 py-2">{joint.weldingProcess || "-"}</td>
+                    <td className="px-3 py-2">{joint.ndtPercentage || "-"}</td>
+                    <td className="px-3 py-2">
+                      {joint.isTracer ? "Yes" : "No"}
                     </td>
                     <td className="px-3 py-2">{joint.weldStatus || "-"}</td>
                     <td className="px-3 py-2">
@@ -93,7 +115,7 @@ export function JointTable({
                   {isOpen && ComponentsSection && (
                     <tr className="border-b border-gray-300">
                       <td
-                        colSpan={user.permissions === "all" ? 13 : 12}
+                        colSpan={user.permissions === "all" ? 17 : 16}
                         className="p-4 bg-gray-50"
                       >
                         <ComponentsSection joint={joint} />

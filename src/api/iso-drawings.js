@@ -7,7 +7,7 @@ export async function createISODrawing(formData) {
 export async function getISODrawings({ pipelineId }) {
   const queryParams = new URLSearchParams();
   if (pipelineId) {
-    queryParams.append("projectId", pipelineId);
+    queryParams.append("pipelineId", pipelineId);
   }
 
   const response = await api.get(

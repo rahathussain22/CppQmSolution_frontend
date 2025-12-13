@@ -5,6 +5,8 @@ import { getProjects } from "../../api/project";
 import { getPipelines } from "../../api/pipelines";
 import { Button } from "@/components/ui/button";
 import { getWPS } from "../../api/wps";
+import { getISODrawings } from "../../api/iso-drawings";
+import { getSpools } from "../../api/spools";
 export function WeldJointForm({
   joint,
   isEditing,
@@ -79,12 +81,29 @@ export function WeldJointForm({
     refetchOnWindowFocus: false,
   });
 
-  // useEffect(()=>{
-  //     if(availablePipelines){
-  //         console.log("Available pipelines")
-  //         console.log(availablePipelines)
-  //     }
-  // },[availablePipelines])
+  const {
+    data: availableISODrawings = [],
+    isLoading: isLoadingISODrawings,
+    error: errorISODrawings,
+  } = useQuery({
+    queryKey: ["isoDrawings", formData.pipelineId],
+    queryFn: () => getISODrawings({ pipelineId: formData.pipelineId }),
+    select: (data) => data?.isoDrawings || [],
+    enabled: !!formData.pipelineId,
+    refetchOnWindowFocus: false,
+  });
+
+  const {
+    data: availableSpools = [],
+    isLoading: isLoadingSpools,
+    error: errorSpools,
+  } = useQuery({
+    queryKey: ["spools", formData.pipelineId],
+    queryFn: () => getSpools({ pipelineId: formData.pipelineId }),
+    select: (data) => data?.spools || [],
+    enabled: !!formData.pipelineId,
+    refetchOnWindowFocus: false,
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -199,7 +218,7 @@ export function WeldJointForm({
               value={formData.wpsId}
               onChange={(e) => updateField("wpsId", Number(e.target.value))}
               disabled={
-                !isEditing || !formData.wpsId || isLoadingWPS || errorWPS
+                !isEditing || !formData.projectId || isLoadingWPS || errorWPS
               }
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             >
@@ -227,13 +246,182 @@ export function WeldJointForm({
             />
           </div>
         </div>
-        <div className="flex gap-2 mt-4">
+        <div className="grid grid-cols-12 gap-3">
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              ISO Drawing *
+            </label>
+            <select
+              value={formData.isoDrawingId}
+              onChange={(e) =>
+                updateField("isoDrawingId", Number(e.target.value))
+              }
+              disabled={
+                !isEditing ||
+                !formData.pipelineId ||
+                isLoadingISODrawings ||
+                errorISODrawings
+              }
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            >
+              <option value={0}>Select ISO Drawing</option>
+              {availableISODrawings.map((iso) => {
+                return (
+                  <option key={iso.id} value={iso.id}>
+                    {iso.drawingNumber}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">Spool *</label>
+            <select
+              value={formData.spoolId}
+              onChange={(e) => updateField("spoolId", Number(e.target.value))}
+              disabled={
+                !isEditing ||
+                !formData.pipelineId ||
+                isLoadingSpools ||
+                errorSpools
+              }
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            >
+              <option value={0}>Select Spool</option>
+              {availableSpools.map((spool) => {
+                return (
+                  <option key={spool.id} value={spool.id}>
+                    {spool.spoolNumber}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              Initial Production
+            </label>
+            <input
+              type="text"
+              value={formData.initialProduction}
+              onChange={(e) => updateField("initialProduction", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              Joint Configuration
+            </label>
+            <input
+              type="text"
+              value={formData.jointConfiguration}
+              onChange={(e) =>
+                updateField("jointConfiguration", e.target.value)
+              }
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-12 gap-3">
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              Welding Process
+            </label>
+            <input
+              type="text"
+              value={formData.weldingProcess}
+              onChange={(e) => updateField("weldingProcess", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              PWHT Required
+            </label>
+            <input
+              type="checkbox"
+              checked={formData.pwhtRequired}
+              onChange={(e) => updateField("pwhtRequired", e.target.checked)}
+              disabled={!isEditing || isSaving}
+              className="w-4 h-4"
+            />
+          </div>
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              NDT Percentage
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              value={formData.ndtPercentage}
+              onChange={(e) =>
+                updateField("ndtPercentage", Number(e.target.value))
+              }
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              Is Tracer
+            </label>
+            <input
+              type="checkbox"
+              checked={formData.isTracer}
+              onChange={(e) => updateField("isTracer", e.target.checked)}
+              disabled={!isEditing || isSaving}
+              className="w-4 h-4"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-12 gap-3">
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              Tracer Type
+            </label>
+            <input
+              type="text"
+              value={formData.tracerType}
+              onChange={(e) => updateField("tracerType", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              Tracer Weld Location
+            </label>
+            <input
+              type="text"
+              value={formData.tracerWeldLocation}
+              onChange={(e) =>
+                updateField("tracerWeldLocation", e.target.value)
+              }
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-6">
+            <label className="block text-xs text-gray-700 mb-1">Remarks</label>
+            <textarea
+              value={formData.remarks}
+              onChange={(e) => updateField("remarks", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 resize-none"
+              rows={1}
+            />
+          </div>
+        </div>
+        <div className="space-x-2">
           <Button
             type="submit"
             className="px-4 py-1 text-sm bg-red-600 text-white border border-red-700 rounded hover:bg-red-700"
             disabled={!isEditing || isSaving}
           >
-            Save
+            {isSaving ? "Saving..." : "Save"}
           </Button>
           <Button
             type="button"
