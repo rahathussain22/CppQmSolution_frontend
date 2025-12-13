@@ -17,7 +17,7 @@ import Projects from "./pages/dcl/Projects";
 import ISODrawings from "./pages/engineering-design/ISODrawings";
 import WPS from "./pages/quality-procedures/WPS";
 import Welder from "./pages/quality-procedures/Welder";
-
+import Joints from "./pages/engineering-design/Joints";
 function RouteLogger() {
   const location = useLocation();
 
@@ -45,6 +45,7 @@ function App() {
 
               <Route path="/engineering-design">
                 <Route path="iso-drawings" element={<ISODrawings />} />
+                <Route path="joints" element={<Joints />} />
               </Route>
 
               <Route path="/quality-procedures">
