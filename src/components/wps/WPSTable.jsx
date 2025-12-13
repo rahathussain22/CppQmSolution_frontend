@@ -57,7 +57,7 @@ export function WPSTable({
                 {user.permissions === "all" && (
                   <td className="px-3 py-2">
                     <div className="flex gap-2">
-                      <Button
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
                           onEdit && onEdit(wps);
@@ -65,8 +65,8 @@ export function WPSTable({
                         className="text-gray-700 hover:text-gray-900"
                       >
                         <Pencil size={16} />
-                      </Button>
-                      <Button
+                      </button>
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
                           onDelete && onDelete(wps);
@@ -74,7 +74,7 @@ export function WPSTable({
                         className="text-red-600 hover:text-red-800"
                       >
                         <Trash2 size={16} />
-                      </Button>
+                      </button>
                     </div>
                   </td>
                 )}

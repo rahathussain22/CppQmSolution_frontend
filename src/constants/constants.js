@@ -43,6 +43,10 @@ export const navItems = [
         pathname: "/quality-procedures/wps-management",
       },
       {
+        label: "Welder Management",
+        pathname: "/quality-procedures/welder-management",
+      },
+      {
         label: "Approved Documents",
         pathname: "/quality-procedures/approved-documents",
       },

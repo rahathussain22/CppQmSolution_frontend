@@ -16,6 +16,7 @@ import AppLayout from "./layouts/AppLayout";
 import Projects from "./pages/dcl/Projects";
 import ISODrawings from "./pages/engineering-design/ISODrawings";
 import WPS from "./pages/quality-procedures/WPS";
+import Welder from "./pages/quality-procedures/Welder";
 
 function RouteLogger() {
   const location = useLocation();
@@ -48,6 +49,7 @@ function App() {
 
               <Route path="/quality-procedures">
                 <Route path="wps-management" element={<WPS />} />
+                <Route path="welder-management" element={<Welder />} />
               </Route>
             </Route>
             {/* Default */}
