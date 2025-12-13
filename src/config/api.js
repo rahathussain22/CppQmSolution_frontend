@@ -40,11 +40,15 @@ class API {
     this.axios.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (error.response && error.response.status === 401) {
+        const status = error.response?.status;
+        const url = error.config?.url;
+
+        if (status === 401 && !url.includes("/login")) {
           localStorage.removeItem("user");
           localStorage.removeItem("accessToken");
-          window.location.reload();
+          window.location.href = "/login"; // better than reload
         }
+
         return Promise.reject(error);
       }
     );

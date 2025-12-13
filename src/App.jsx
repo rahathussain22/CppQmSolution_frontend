@@ -7,6 +7,7 @@ import {
   Outlet,
   useLocation,
 } from "react-router-dom";
+import { Toaster } from "sonner";
 import LoginPage from "./pages/Login";
 import Home from "./pages/Home";
 import ReactQueryProvider from "./providers/ReactQueryProvider";
@@ -34,6 +35,7 @@ function App() {
   return (
     <ReactQueryProvider>
       <Router>
+        <Toaster position="bottom-right" richColors />
         <MainLayout>
           <Routes>
             {/* Auth Routes */}
