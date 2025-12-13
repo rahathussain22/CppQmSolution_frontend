@@ -13,8 +13,9 @@ import ReactQueryProvider from "./providers/ReactQueryProvider";
 import MainLayout from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import AppLayout from "./layouts/AppLayout";
-import Projects from "./pages/Projects";
-import ISODrawings from "./pages/ISODrawings";
+import Projects from "./pages/dcl/Projects";
+import ISODrawings from "./pages/engineering-design/ISODrawings";
+import WPS from "./pages/quality-procedures/WPS";
 
 function RouteLogger() {
   const location = useLocation();
@@ -43,6 +44,10 @@ function App() {
 
               <Route path="/engineering-design">
                 <Route path="iso-drawings" element={<ISODrawings />} />
+              </Route>
+
+              <Route path="/quality-procedures">
+                <Route path="wps-management" element={<WPS />} />
               </Route>
             </Route>
             {/* Default */}

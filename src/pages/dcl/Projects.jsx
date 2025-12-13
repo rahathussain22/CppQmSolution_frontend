@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { ProjectForm } from "@/components/projects/ProjectForm";
 import ProjectsList from "@/components/projects/ProjectsTable";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getProjects, createProject, deleteProject } from "../api/project";
-import { useAuthStore } from "../store/authStore";
+import { getProjects, createProject, deleteProject } from "../../api/project";
+import { useAuthStore } from "../../store/authStore";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,7 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { usePipelines } from "../hooks/usePipelines";
+import { usePipelines } from "../../hooks/usePipelines";
 
 export default function Projects() {
   const queryClient = useQueryClient();

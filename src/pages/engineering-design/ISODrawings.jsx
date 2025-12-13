@@ -2,10 +2,10 @@ import { useState } from "react";
 import { ISODrawingForm } from "@/components/iso-drawings/ISODrawingForm";
 import { ISODrawingsTable } from "@/components/iso-drawings/ISODrawingsTable";
 import SpoolsSection from "@/components/iso-drawings/SpoolsSection";
-import { createISODrawing, getISODrawings } from "../api/iso-drawings";
+import { createISODrawing, getISODrawings } from "@/api/iso-drawings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
 
 export default function ISODrawings() {
