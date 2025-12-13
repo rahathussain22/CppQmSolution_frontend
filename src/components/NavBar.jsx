@@ -45,16 +45,7 @@ function NavItem({
       }
     }
   };
-
-  const handleMouseLeave = () => {
-    // Add delay before closing (300ms)
-    if (level === 0) {
-      closeTimeoutRef.current = setTimeout(() => {
-        close();
-      }, 300);
-    }
-  };
-
+  
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
@@ -78,7 +69,6 @@ function NavItem({
       ref={containerRef}
       className="relative"
       onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       <Link
         to={fullPath}
