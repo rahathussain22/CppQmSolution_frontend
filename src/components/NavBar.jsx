@@ -1,8 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
-import { navItems } from "../constants/constants";
-import Alert from "@mui/material/Alert";
+import { navItems } from "@/constants/constants.js";
 
 function NavItem({
   item,
@@ -16,6 +15,7 @@ function NavItem({
   const [submenuPosition, setSubmenuPosition] = useState("right");
   const [topPosition, setTopPosition] = useState("left-0");
   const containerRef = useRef(null);
+  const closeTimeoutRef = useRef(null);
 
   const hasChildren = item.children && item.children.length > 0;
   const currentPath = [...ancestors, item.pathname];
@@ -26,6 +26,12 @@ function NavItem({
     : [...ancestors, item.pathname].join("/").replace(/\/\/+/g, "/");
 
   const handleMouseEnter = () => {
+    // Clear any pending close timeout
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+
     if (hasChildren) setOpenPath(currentPath);
 
     if (containerRef.current) {
@@ -39,6 +45,24 @@ function NavItem({
       }
     }
   };
+
+  const handleMouseLeave = () => {
+    // Add delay before closing (300ms)
+    if (level === 0) {
+      closeTimeoutRef.current = setTimeout(() => {
+        close();
+      }, 300);
+    }
+  };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const dropdownClasses =
     level === 0
@@ -54,6 +78,7 @@ function NavItem({
       ref={containerRef}
       className="relative"
       onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <Link
         to={fullPath}
@@ -104,8 +129,8 @@ function NavBar() {
   const location = useLocation();
   const isActive = (pathname) => location.pathname.startsWith(pathname);
 
-  const [openPath, setOpenPath] = useState([]); // track open path
-  const navRef = useRef(null); // ADD THIS
+  const [openPath, setOpenPath] = useState([]);
+  const navRef = useRef(null);
 
   const handleOpen = (levelPath) => {
     setOpenPath(levelPath);
@@ -115,11 +140,10 @@ function NavBar() {
     setOpenPath([]);
   };
 
-  // ➤ Close dropdown when clicking outside the navbar
   useEffect(() => {
     function handleClickOutside(e) {
       if (navRef.current && !navRef.current.contains(e.target)) {
-        handleClose(); // close all dropdowns
+        handleClose();
       }
     }
 
@@ -129,7 +153,7 @@ function NavBar() {
 
   return (
     <nav
-      ref={navRef} // ATTACH REF HERE
+      ref={navRef}
       className="bg-linear-to-b from-red-500 to-red-600 border-b-2 border-red-700 shadow-md px-2 py-1"
     >
       <div className="flex gap-1 flex-wrap">
