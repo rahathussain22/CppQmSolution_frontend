@@ -58,7 +58,7 @@ export function ISODrawingsTable({
                             e.stopPropagation();
                             onEdit && onEdit(drawing);
                           }}
-                          className="text-red-600 hover:text-red-800"
+                          className="text-gray-700 hover:text-gray-900"
                         >
                           <Pencil size={16} />
                         </Button>

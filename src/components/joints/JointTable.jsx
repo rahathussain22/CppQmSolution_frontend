@@ -84,8 +84,12 @@ export function JointTable({
                       </td>
                     )}
                     <td className="px-3 py-2 text-gray-600">{index + 1}</td>
-                    <td className="px-3 py-2">{joint.projectId || "-"}</td>
-                    <td className="px-3 py-2">{joint.pipelineId || "-"}</td>
+                    <td className="px-3 py-2">
+                      {joint.project?.projectCode || "-"}
+                    </td>
+                    <td className="px-3 py-2">
+                      {joint.pipeline?.lotCode || "-"}
+                    </td>
                     <td className="px-3 py-2">{joint.weldNumber}</td>
                     <td className="px-3 py-2">{joint.sequenceNumber || "-"}</td>
                     <td className="px-3 py-2">{joint.wpsId || "-"}</td>

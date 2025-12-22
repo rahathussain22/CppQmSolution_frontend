@@ -20,6 +20,7 @@ import WPS from "./pages/quality-procedures/WPS";
 import Welder from "./pages/quality-procedures/Welder";
 import Joints from "./pages/engineering-design/Joints";
 import Components from "./pages/materials-documents/Components";
+import RFILogs from "./pages/quality-control-logs/RFILogs";
 
 function RouteLogger() {
   const location = useLocation();
@@ -59,6 +60,10 @@ function App() {
 
               <Route path="/materials-documents">
                 <Route path="components" element={<Components />} />
+              </Route>
+
+              <Route path="/quality-control-logs">
+                <Route path="rfi-log" element={<RFILogs />} />
               </Route>
             </Route>
             {/* Default */}

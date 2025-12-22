@@ -31,7 +31,7 @@ const LoginPage = () => {
             });
           } else {
             toast.error("Login failed", {
-              duration: 5000
+              duration: 5000,
             });
           }
         },
@@ -53,15 +53,15 @@ const LoginPage = () => {
   return (
     <div className="w-full max-w-md px-4">
       <div className="bg-white shadow-xl rounded-lg p-8">
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-2">
           <img
             src="/assets/cppqm-logo.jpeg"
             alt="CPPQM Logo"
             className="h-16 w-auto object-contain"
           />
         </div>
-        <h2 className="text-2xl font-bold mb-6 text-center text-red-600">
-          Login
+        <h2 className="text-3xl font-bold mb-6 text-center text-red-700">
+          Welcome Back
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -72,7 +72,7 @@ const LoginPage = () => {
               type="text"
               value={employeeId}
               onChange={(e) => setEmployeeId(e.target.value)}
-              placeholder="Enter your email"
+              placeholder="Enter your employee ID"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
               required
             />
