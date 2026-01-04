@@ -20,7 +20,7 @@ export function JointTable({
   return (
     <div className="bg-white border-2 border-gray-300 rounded shadow-md overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="min-w-max text-sm">
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
               {user.permissions === "all" && (
