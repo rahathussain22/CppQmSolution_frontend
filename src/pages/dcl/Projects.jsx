@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ProjectForm } from "@/components/projects/ProjectForm";
 import ProjectsList from "@/components/projects/ProjectsTable";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProjects, createProject, deleteProject } from "../../api/project";
 import { useAuthStore } from "../../store/authStore";
-import { Plus } from "lucide-react";
+import { Plus, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -17,8 +17,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { usePipelines } from "../../hooks/usePipelines";
+import { DownloadTableExcel } from 'react-export-table-to-excel';
 
 export default function Projects() {
+  const tableRef = useRef(null);
   const queryClient = useQueryClient();
   const [mode, setMode] = useState("idle"); // 'idle' | 'adding' | 'editing'
   const [editingProject, setEditingProject] = useState(null);
@@ -122,20 +124,32 @@ export default function Projects() {
     <>
       <div className="min-h-screen bg-gray-100">
         <div className="p-4 space-y-4">
-          <div className="flex justify-between items-center">
+          <div className="flex items-center">
             <h4 className="text-3xl font-bold">Projects</h4>
-            {/* Always show add button if not in form view */}
-            {user.permissions === "all" && mode === "idle" && (
-              <Button
-                onClick={handleAdd}
-                className="bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                <Plus className="size-4" />
-                Add Project
-              </Button>
-            )}
-          </div>
 
+            <div className="ml-auto flex gap-2">
+              <DownloadTableExcel
+                filename="projects"
+                sheet="sheet1"
+                currentTableRef={tableRef.current}
+              >
+                <Button className="bg-blue-600 hover:bg-blue-500 text-white cursor-pointer">
+                  <Download className="size-4" />
+                  Download
+                </Button>
+              </DownloadTableExcel>
+
+              {user.permissions === "all" && mode === "idle" && (
+                <Button
+                  onClick={handleAdd}
+                  className="bg-green-600 hover:bg-green-700 text-white cursor-pointer"
+                >
+                  <Plus className="size-4" />
+                  Add Project
+                </Button>
+              )}
+            </div>
+          </div>
           {/* Show form only if adding or editing */}
           {(mode === "adding" || mode === "editing") && (
             <ProjectForm
@@ -160,6 +174,7 @@ export default function Projects() {
               onDeleteRow={handleDeleteRow}
               isDeleting={deleteProjectMutation.isPending}
               pipelines={pipelines}
+              tableRef={tableRef}
             />
           )}
         </div>

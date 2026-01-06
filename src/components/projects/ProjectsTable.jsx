@@ -10,6 +10,7 @@ function ProjectsList({
   onDeleteRow,
   isDeleting,
   pipelines,
+  tableRef
 }) {
   const user = useAuthStore((state) => state.user);
   const [openProjectId, setOpenProjectId] = useState(null);
@@ -25,7 +26,7 @@ function ProjectsList({
   return (
     <div className="bg-white border-2 border-gray-300 rounded shadow-md overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm" ref={tableRef}>
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
               {user.permissions === "all" && (

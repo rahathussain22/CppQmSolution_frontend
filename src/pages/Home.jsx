@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useRef } from 'react'
+import Projects from './dcl/Projects'
 
 const Home = () => {
+ 
   return (
-    <div>
-      <text>Home</text>
-    </div>
+    <>
+      <Projects />
+    </>
   )
 }
 

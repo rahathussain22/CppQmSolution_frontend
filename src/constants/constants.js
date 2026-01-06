@@ -148,13 +148,17 @@ export const navItems = [
     hasDropdown: true,
     children: [
       {
-        label: "Calibration Logs",
-        pathname: "/calibration-welding/calibration-logs",
+        label: "Calibration log for Hydrotest, QC Tools and equipment ",
+        pathname: "/calibration-welding/calibration-log-hydrotest-qc-tools",
       },
       {
-        label: "Welding Machine Validation",
-        pathname: "/calibration-welding/welding-validation",
+        label: "Calibration log for Project permanent Instruments ",
+        pathname: "/calibration-welding/calibration-log-permanent-instruments",
       },
+      {
+        label: "Welding Machine Validation Log",
+        pathname: "/calibration-welding/welding-machine-validation-log",
+      }
     ],
   },
   {
