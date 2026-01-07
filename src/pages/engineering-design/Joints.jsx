@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { WeldJointForm } from "@/components/joints/jointForm";
-import { JointTable } from "@/components/joints/jointTable";
+import { WeldJointForm } from "@/components/joints/JointForm";
+import { JointTable } from "@/components/joints/JointTable";
 // import SpoolsSection from "@/components/iso-drawings/SpoolsSection";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
