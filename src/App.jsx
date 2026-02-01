@@ -23,6 +23,7 @@ import Components from "./pages/materials-documents/Components";
 import RFILogs from "./pages/quality-control-logs/RFILogs";
 import NCRLogs from "./pages/quality-control-logs/NCRLogs";
 import TQLogs from "./pages/quality-control-logs/TQLogs";
+import FitUpRequestPage from "./pages/inspection/welding/FitUpRequestPage";
 
 function RouteLogger() {
   const location = useLocation();
@@ -68,6 +69,12 @@ function App() {
                 <Route path="rfi-log" element={<RFILogs />} />
                 <Route path="ncr-log" element={<NCRLogs />} />
                 <Route path="tq-log" element={<TQLogs />} />
+              </Route>
+
+              <Route path="/inspection">
+                <Route path="welding">
+                  <Route path="fit-up-request" element={<FitUpRequestPage />} />
+                </Route>
               </Route>
             </Route>
             {/* Default */}
