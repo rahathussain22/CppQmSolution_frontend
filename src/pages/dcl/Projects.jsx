@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ProjectForm } from "@/components/projects/ProjectForm";
 import ProjectsList from "@/components/projects/ProjectsTable";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -41,6 +41,7 @@ export default function Projects() {
       console.log("Fetched pipelines:", pipelines);
     }
   }, [pipelines, pipelinesLoading, pipelinesError]);
+
   const {
     data: projects = [],
     isLoading,
@@ -52,7 +53,6 @@ export default function Projects() {
     refetchOnWindowFocus: false,
   });
 
-  // Mutate (Create) Project
   const createProjectMutation = useMutation({
     mutationFn: createProject,
     onSuccess: () => {
@@ -150,7 +150,7 @@ export default function Projects() {
               )}
             </div>
           </div>
-          {/* Show form only if adding or editing */}
+
           {(mode === "adding" || mode === "editing") && (
             <ProjectForm
               project={editingProject}
@@ -179,11 +179,10 @@ export default function Projects() {
           )}
         </div>
       </div>
-      {/* Delete Confirmation Dialog */}
+
       <AlertDialog
         open={deleteDialog.open}
         onOpenChange={(open) => {
-          // Only allow closing if not deleting
           if (!deleteProjectMutation.isPending) {
             setDeleteDialog((old) => ({ ...old, open }));
           }

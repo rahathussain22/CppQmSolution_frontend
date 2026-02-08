@@ -9,16 +9,10 @@ export function PipelineForm({
   isSaving = false,
 }) {
   const [formData, setFormData] = useState({
-    lotCode: "",
-    name: "",
-    description: "",
-    startDate: "",
-    cuttOffDate: "",
     lineNumber: "",
     lineSize: "",
     lineClass: "",
     location: "",
-    status: "",
   });
 
   useEffect(() => {
@@ -26,16 +20,10 @@ export function PipelineForm({
       setFormData(pipeline);
     } else if (!isEditing) {
       setFormData({
-        lotCode: "",
-        name: "",
-        description: "",
-        startDate: "",
-        cuttOffDate: "",
         lineNumber: "",
         lineSize: "",
         lineClass: "",
         location: "",
-        status: "",
       });
     }
   }, [pipeline, isEditing]);
@@ -58,92 +46,8 @@ export function PipelineForm({
 
       {/* Form Fields */}
       <form onSubmit={handleSubmit} className="p-4">
-        {/* Row 1: Lot Code and Name */}
+        {/* Row 1: Line Number and Line Size */}
         <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Lot Code *:
-            </label>
-            <input
-              type="text"
-              value={formData.lotCode}
-              onChange={(e) => updateField("lotCode", e.target.value)}
-              disabled={!isEditing}
-              placeholder="e.g., LOT-001"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
-            />
-          </div>
-          <div className="col-span-4">
-            <label className="block text-xs text-gray-700 mb-1">Name *:</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => updateField("name", e.target.value)}
-              disabled={!isEditing}
-              placeholder="e.g., Pipeline Section A"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
-            />
-          </div>
-          <div className="col-span-5">
-            <label className="block text-xs text-gray-700 mb-1">Status:</label>
-            <select
-              value={formData.status}
-              onChange={(e) => updateField("status", e.target.value)}
-              disabled={!isEditing}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
-            >
-              <option value="">-- Select Status --</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-              <option value="Planned">Planned</option>
-              <option value="Completed">Completed</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Row 2: Description */}
-        <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-12">
-            <label className="block text-xs text-gray-700 mb-1">
-              Description:
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => updateField("description", e.target.value)}
-              disabled={!isEditing}
-              placeholder="Enter pipeline description"
-              rows="2"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
-            />
-          </div>
-        </div>
-
-        {/* Row 3: Start Date and Cutoff Date */}
-        <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Start Date:
-            </label>
-            <input
-              type="date"
-              value={formData.startDate}
-              onChange={(e) => updateField("startDate", e.target.value)}
-              disabled={!isEditing}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Cutoff Date:
-            </label>
-            <input
-              type="date"
-              value={formData.cuttOffDate}
-              onChange={(e) => updateField("cuttOffDate", e.target.value)}
-              disabled={!isEditing}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
-            />
-          </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Line Number *:
@@ -170,11 +74,7 @@ export function PipelineForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
             />
           </div>
-        </div>
-
-        {/* Row 4: Line Class and Location */}
-        <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-2">
+          <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Line Class *:
             </label>
@@ -187,7 +87,7 @@ export function PipelineForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
             />
           </div>
-          <div className="col-span-10">
+          <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Location *:
             </label>

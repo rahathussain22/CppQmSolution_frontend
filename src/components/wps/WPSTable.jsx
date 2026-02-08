@@ -18,7 +18,7 @@ export function WPSTable({
   return (
     <div className="bg-white border-2 border-gray-300 rounded shadow-md overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-max text-sm">
+        <table className="w-full text-sm">
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
               {user.permissions === "all" && (
@@ -27,21 +27,7 @@ export function WPSTable({
               <th className="px-3 py-2 text-left text-xs">#</th>
               <th className="px-3 py-2 text-left text-xs">Project</th>
               <th className="px-3 py-2 text-left text-xs">WPS Number</th>
-              <th className="px-3 py-2 text-left text-xs">Title</th>
-              <th className="px-3 py-2 text-left text-xs">Base Material</th>
-              <th className="px-3 py-2 text-left text-xs">Welding Process</th>
-              <th className="px-3 py-2 text-left text-xs">Filler Material</th>
-              <th className="px-3 py-2 text-left text-xs">Joint Type</th>
-              <th className="px-3 py-2 text-left text-xs">Welding Position</th>
-              <th className="px-3 py-2 text-left text-xs">Pre-Heat Temp Min</th>
-              <th className="px-3 py-2 text-left text-xs">Pre-Heat Temp Max</th>
-              <th className="px-3 py-2 text-left text-xs">
-                Interpass Temp Max
-              </th>
-              <th className="px-3 py-2 text-left text-xs">PWHT Required</th>
-              <th className="px-3 py-2 text-left text-xs">Is Active</th>
-              <th className="px-3 py-2 text-left text-xs">Approved Date</th>
-              <th className="px-3 py-2 text-left text-xs">Expiry Date</th>
+              <th className="px-3 py-2 text-left text-xs">Weld Process</th>
               <th className="px-3 py-2 text-left text-xs">File</th>
             </tr>
           </thead>
@@ -86,27 +72,7 @@ export function WPSTable({
                     "-"}
                 </td>
                 <td className="px-3 py-2">{wps.wpsNumber}</td>
-                <td className="px-3 py-2">{wps.wpsTitle}</td>
-                <td className="px-3 py-2">{wps.baseMaterial || "-"}</td>
                 <td className="px-3 py-2">{wps.weldingProcess || "-"}</td>
-                <td className="px-3 py-2">{wps.fillerMaterial || "-"}</td>
-                <td className="px-3 py-2">{wps.jointType || "-"}</td>
-                <td className="px-3 py-2">{wps.weldingPosition || "-"}</td>
-                <td className="px-3 py-2">{wps.preHeatTempMin || "-"}</td>
-                <td className="px-3 py-2">{wps.preHeatTempMax || "-"}</td>
-                <td className="px-3 py-2">{wps.interpassTempMax || "-"}</td>
-                <td className="px-3 py-2">{wps.pwhtRequired ? "Yes" : "No"}</td>
-                <td className="px-3 py-2">{wps.isActive ? "Yes" : "No"}</td>
-                <td className="px-3 py-2">
-                  {wps.approvedDate
-                    ? new Date(wps.approvedDate).toLocaleDateString()
-                    : "-"}
-                </td>
-                <td className="px-3 py-2">
-                  {wps.expiryDate
-                    ? new Date(wps.expiryDate).toLocaleDateString()
-                    : "-"}
-                </td>
                 <td className="px-3 py-2 text-xs">
                   {wps.fileUrl ? (
                     <a

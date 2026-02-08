@@ -16,6 +16,38 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
+// Static initial spools data
+const INITIAL_SPOOLS = [
+  {
+    id: 1,
+    isoDrawingId: 1,
+    pipelineId: 1,
+    spoolNumber: "SP-001",
+    description: "Main spool section A",
+  },
+  {
+    id: 2,
+    isoDrawingId: 1,
+    pipelineId: 1,
+    spoolNumber: "SP-002",
+    description: "Secondary spool section A",
+  },
+  {
+    id: 3,
+    isoDrawingId: 2,
+    pipelineId: 1,
+    spoolNumber: "SP-003",
+    description: "Support spool section B",
+  },
+  {
+    id: 4,
+    isoDrawingId: 3,
+    pipelineId: 2,
+    spoolNumber: "SP-004",
+    description: "Distribution spool section C",
+  },
+];
+
 function SpoolsSection({ drawing }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingSpool, setEditingSpool] = useState(null);
@@ -23,38 +55,42 @@ function SpoolsSection({ drawing }) {
     open: false,
     spool: null,
   });
+  const [spools, setSpools] = useState(INITIAL_SPOOLS);
+  const [isDeleting, setIsDeleting] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: pipelines = [] } = usePipelines();
 
-  const { data: spools = [], isLoading } = useQuery({
-    queryKey: ["spools", drawing?.id],
-    queryFn: () => getSpools({ isoDrawingId: drawing?.id }),
-    enabled: !!drawing?.id,
-    select: (res) => res.spools || [],
-    refetchOnWindowFocus: false,
-  });
+  // COMMENTED OUT: API Query
+  // const { data: spools = [], isLoading } = useQuery({
+  //   queryKey: ["spools", drawing?.id],
+  //   queryFn: () => getSpools({ isoDrawingId: drawing?.id }),
+  //   enabled: !!drawing?.id,
+  //   select: (res) => res.spools || [],
+  //   refetchOnWindowFocus: false,
+  // });
 
-  const createMutation = useMutation({
-    mutationFn: createSpool,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["spools"] });
-      toast.success("Spool created.");
-      setShowAddForm(false);
-      setEditingSpool(null);
-    },
-    onError: (err) => toast.error(err?.message || "Failed to create spool."),
-  });
+  // COMMENTED OUT: API Mutations
+  // const createMutation = useMutation({
+  //   mutationFn: createSpool,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["spools"] });
+  //     toast.success("Spool created.");
+  //     setShowAddForm(false);
+  //     setEditingSpool(null);
+  //   },
+  //   onError: (err) => toast.error(err?.message || "Failed to create spool."),
+  // });
 
-  const deleteMutation = useMutation({
-    mutationFn: deleteSpool,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["spools"] });
-      toast.success("Spool deleted.");
-      setDeleteDialog({ open: false, spool: null });
-    },
-    onError: () => toast.error("Failed to delete spool."),
-  });
+  // const deleteMutation = useMutation({
+  //   mutationFn: deleteSpool,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["spools"] });
+  //     toast.success("Spool deleted.");
+  //     setDeleteDialog({ open: false, spool: null });
+  //   },
+  //   onError: () => toast.error("Failed to delete spool."),
+  // });
 
   const handleAddClick = () => {
     setEditingSpool(null);
@@ -67,20 +103,60 @@ function SpoolsSection({ drawing }) {
   };
 
   const handleSave = (payload) => {
-    // ensure isoDrawingId and pipelineId are included from drawing
+    // COMMENTED OUT: API Call
+    // const data = {
+    //   ...payload,
+    //   isoDrawingId: drawing.id,
+    //   pipelineId: drawing.pipelineId,
+    // };
+    // createMutation.mutate(data);
+
+    // LOCAL STATE UPDATE
     const data = {
       ...payload,
       isoDrawingId: drawing.id,
       pipelineId: drawing.pipelineId,
     };
-    createMutation.mutate(data);
+    
+    if (editingSpool) {
+      // Update existing spool
+      setSpools((prevSpools) =>
+        prevSpools.map((s) =>
+          s.id === editingSpool.id ? { ...s, ...data } : s
+        )
+      );
+      toast.success("Spool updated.");
+    } else {
+      // Add new spool
+      const newSpool = {
+        ...data,
+        id: Math.max(...spools.map((s) => s.id), 0) + 1,
+      };
+      setSpools((prevSpools) => [...prevSpools, newSpool]);
+      toast.success("Spool created.");
+    }
+    setShowAddForm(false);
+    setEditingSpool(null);
   };
 
   const openDeleteDialog = (spool) => setDeleteDialog({ open: true, spool });
 
   const handleDeleteConfirm = () => {
     if (!deleteDialog.spool) return;
-    deleteMutation.mutate({ spoolId: deleteDialog.spool.id });
+    
+    // COMMENTED OUT: API Call
+    // deleteMutation.mutate({ spoolId: deleteDialog.spool.id });
+
+    // LOCAL STATE UPDATE
+    setIsDeleting(true);
+    setTimeout(() => {
+      setSpools((prevSpools) =>
+        prevSpools.filter((s) => s.id !== deleteDialog.spool.id)
+      );
+      setDeleteDialog({ open: false, spool: null });
+      setIsDeleting(false);
+      toast.success("Spool deleted.");
+    }, 500);
   };
 
   const handleCancel = () => {
@@ -106,15 +182,13 @@ function SpoolsSection({ drawing }) {
           isEditing={true}
           onSave={handleSave}
           onCancel={handleCancel}
-          isSaving={createMutation.isLoading}
+          isSaving={false}
           pipelines={pipelines || []}
           isoDrawingId={drawing?.id}
         />
       )}
 
-      {isLoading ? (
-        <div className="text-sm text-gray-600">Loading spools...</div>
-      ) : spools?.length > 0 ? (
+      {spools?.length > 0 ? (
         <ul className="pl-4 space-y-2 text-sm text-gray-600">
           {spools.map((s) => (
             <li
@@ -135,6 +209,7 @@ function SpoolsSection({ drawing }) {
                 <Button
                   className="text-red-600 hover:text-red-800"
                   onClick={() => openDeleteDialog(s)}
+                  disabled={isDeleting}
                 >
                   <Trash2 size={16} />
                 </Button>
@@ -149,7 +224,7 @@ function SpoolsSection({ drawing }) {
       <AlertDialog
         open={deleteDialog.open}
         onOpenChange={(open) => {
-          if (!deleteMutation.isLoading)
+          if (!isDeleting)
             setDeleteDialog((old) => ({ ...old, open }));
         }}
       >
@@ -168,18 +243,18 @@ function SpoolsSection({ drawing }) {
           <AlertDialogFooter>
             <AlertDialogCancel
               onClick={() => setDeleteDialog({ open: false, spool: null })}
-              disabled={deleteMutation.isLoading}
+              disabled={isDeleting}
             >
               Cancel
             </AlertDialogCancel>
             <Button
               type="button"
               onClick={handleDeleteConfirm}
-              disabled={deleteMutation.isLoading}
+              disabled={isDeleting}
               className="bg-red-600 text-white rounded px-4 py-2 hover:bg-red-700 disabled:opacity-50 disabled:cursor-progress"
               autoFocus
             >
-              {deleteMutation.isLoading ? "Deleting..." : "Delete"}
+              {isDeleting ? "Deleting..." : "Delete"}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -10,6 +10,7 @@ function ProjectsList({
   onDeleteRow,
   isDeleting,
   pipelines,
+  setPipelines,
   tableRef
 }) {
   const user = useAuthStore((state) => state.user);
@@ -103,6 +104,7 @@ function ProjectsList({
                         <PipelineSection
                           project={project}
                           pipelines={pipelines}
+                          setPipelines={setPipelines}
                         />
                       </td>
                     </tr>

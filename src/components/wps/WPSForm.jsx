@@ -5,6 +5,12 @@ import { useQuery } from "@tanstack/react-query";
 import { getProjects } from "../../api/project";
 import { Button } from "@/components/ui/button";
 
+// Static projects data
+const STATIC_PROJECTS = [
+  { id: 1, projectCode: "PA-001", name: "Project Alpha" },
+  { id: 2, projectCode: "PB-002", name: "Project Beta" },
+];
+
 export function WPSForm({
   wps,
   isEditing,
@@ -16,52 +22,32 @@ export function WPSForm({
   const [formData, setFormData] = useState({
     projectId: wps?.projectId || 0,
     wpsNumber: wps?.wpsNumber || "",
-    wpsTitle: wps?.wpsTitle || "",
-    revision: wps?.revision || "",
-    baseMaterial: wps?.baseMaterial || "",
     weldingProcess: wps?.weldingProcess || "",
-    fillerMaterial: wps?.fillerMaterial || "",
-    jointType: wps?.jointType || "",
-    weldingPosition: wps?.weldingPosition || "",
-    preHeatTempMin: wps?.preHeatTempMin || "",
-    preHeatTempMax: wps?.preHeatTempMax || "",
-    interpassTempMax: wps?.interpassTempMax || "",
-    pwhtRequired: wps?.pwhtRequired || false,
-    approvedDate: wps?.approvedDate || new Date().toISOString().slice(0, 10),
-    expiryDate: wps?.expiryDate || "",
-    isActive: wps?.isActive ?? 1,
   });
   const [selectedFile, setSelectedFile] = useState(null);
 
-  const {
-    data: availableProjects = [],
-    isLoading: isLoadingProjects,
-    error: errorProjects,
-  } = useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getProjects({ createdBy: user.id }),
-    select: (data) => (data && data.projects) || [],
-    refetchOnWindowFocus: false,
-  });
+  // COMMENTED OUT: API Query
+  // const {
+  //   data: availableProjects = [],
+  //   isLoading: isLoadingProjects,
+  //   error: errorProjects,
+  // } = useQuery({
+  //   queryKey: ["projects"],
+  //   queryFn: () => getProjects({ createdBy: user.id }),
+  //   select: (data) => (data && data.projects) || [],
+  //   refetchOnWindowFocus: false,
+  // });
+
+  // LOCAL: Use static projects
+  const availableProjects = STATIC_PROJECTS;
+  const isLoadingProjects = false;
+  const errorProjects = null;
 
   useEffect(() => {
     setFormData({
       projectId: wps?.projectId || 0,
       wpsNumber: wps?.wpsNumber || "",
-      wpsTitle: wps?.wpsTitle || "",
-      revision: wps?.revision || "",
-      baseMaterial: wps?.baseMaterial || "",
       weldingProcess: wps?.weldingProcess || "",
-      fillerMaterial: wps?.fillerMaterial || "",
-      jointType: wps?.jointType || "",
-      weldingPosition: wps?.weldingPosition || "",
-      preHeatTempMin: wps?.preHeatTempMin || "",
-      preHeatTempMax: wps?.preHeatTempMax || "",
-      interpassTempMax: wps?.interpassTempMax || "",
-      pwhtRequired: wps?.pwhtRequired || false,
-      approvedDate: wps?.approvedDate || new Date().toISOString().slice(0, 10),
-      expiryDate: wps?.expiryDate || "",
-      isActive: wps?.isActive ?? 1,
     });
     setSelectedFile(null);
   }, [wps, isEditing]);
@@ -96,8 +82,7 @@ export function WPSForm({
   const isValid =
     formData.projectId &&
     formData.wpsNumber &&
-    formData.wpsTitle &&
-    formData.approvedDate &&
+    formData.weldingProcess &&
     (selectedFile || isEditing);
 
   return (
@@ -142,184 +127,18 @@ export function WPSForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
-          <div className="col-span-6">
-            <label className="block text-xs text-gray-700 mb-1">
-              WPS Title *:
-            </label>
-            <input
-              type="text"
-              value={formData.wpsTitle}
-              onChange={(e) => updateField("wpsTitle", e.target.value)}
-              disabled={!isEditing || isSaving}
-              placeholder="WPS title"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">Revision</label>
-            <input
-              type="text"
-              value={formData.revision}
-              onChange={(e) => updateField("revision", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Base Material
-            </label>
-            <input
-              type="text"
-              value={formData.baseMaterial}
-              onChange={(e) => updateField("baseMaterial", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Welding Process
+              Weld Process *:
             </label>
             <input
               type="text"
               value={formData.weldingProcess}
               onChange={(e) => updateField("weldingProcess", e.target.value)}
               disabled={!isEditing || isSaving}
+              placeholder="e.g., GMAW, TIG, SMAW"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Filler Material
-            </label>
-            <input
-              type="text"
-              value={formData.fillerMaterial}
-              onChange={(e) => updateField("fillerMaterial", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Joint Type
-            </label>
-            <input
-              type="text"
-              value={formData.jointType}
-              onChange={(e) => updateField("jointType", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Welding Position
-            </label>
-            <input
-              type="text"
-              value={formData.weldingPosition}
-              onChange={(e) => updateField("weldingPosition", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-2">
-            <label className="block text-xs text-gray-700 mb-1">
-              Pre-Heat Min
-            </label>
-            <input
-              type="number"
-              value={formData.preHeatTempMin}
-              onChange={(e) => updateField("preHeatTempMin", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-2">
-            <label className="block text-xs text-gray-700 mb-1">
-              Pre-Heat Max
-            </label>
-            <input
-              type="number"
-              value={formData.preHeatTempMax}
-              onChange={(e) => updateField("preHeatTempMax", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-2">
-            <label className="block text-xs text-gray-700 mb-1">
-              Interpass Max
-            </label>
-            <input
-              type="number"
-              value={formData.interpassTempMax}
-              onChange={(e) => updateField("interpassTempMax", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              PWHT Required
-            </label>
-            <div className="flex items-center gap-2 py-1">
-              <input
-                type="checkbox"
-                checked={!!formData.pwhtRequired}
-                onChange={(e) => updateField("pwhtRequired", e.target.checked)}
-                disabled={!isEditing}
-                className="size-4 rounded-lg"
-              />
-              <span className="text-sm text-gray-600">Yes</span>
-            </div>
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Approved Date *
-            </label>
-            <input
-              type="date"
-              value={formData.approvedDate}
-              onChange={(e) => updateField("approvedDate", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Expiry Date
-            </label>
-            <input
-              type="date"
-              value={formData.expiryDate}
-              onChange={(e) => updateField("expiryDate", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">Active</label>
-            <div className="flex items-center gap-2 py-1">
-              <input
-                type="checkbox"
-                checked={formData.isActive === 1}
-                onChange={(e) =>
-                  updateField("isActive", e.target.checked ? 1 : 0)
-                }
-                disabled={!isEditing}
-                className="size-4 rounded-lg"
-              />
-              <span className="text-sm text-gray-600">Is Active</span>
-            </div>
           </div>
         </div>
         <div className="grid grid-cols-12 gap-3 mb-3">

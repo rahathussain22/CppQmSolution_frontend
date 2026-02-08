@@ -22,6 +22,37 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
+// Static initial data
+const INITIAL_WPS = [
+  {
+    id: 1,
+    projectId: 1,
+    projectCode: "PA-001",
+    projectName: "Project Alpha",
+    wpsNumber: "WPS-001",
+    weldingProcess: "GMAW",
+    fileName: "WPS-001.pdf",
+  },
+  {
+    id: 2,
+    projectId: 1,
+    projectCode: "PA-001",
+    projectName: "Project Alpha",
+    wpsNumber: "WPS-002",
+    weldingProcess: "TIG",
+    fileName: "WPS-002.pdf",
+  },
+  {
+    id: 3,
+    projectId: 2,
+    projectCode: "PB-002",
+    projectName: "Project Beta",
+    wpsNumber: "WPS-003",
+    weldingProcess: "SMAW",
+    fileName: "WPS-003.pdf",
+  },
+];
+
 export default function WPS() {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
@@ -30,14 +61,17 @@ export default function WPS() {
   const [mode, setMode] = useState("idle");
   const [editingWPS, setEditingWPS] = useState(null);
   const [selectedWPS, setSelectedWPS] = useState(null);
-
-  const { data: wpsList = [], isLoading, error } = useGetWPSQuery({});
-
-  const createWPSMutation = useCreateWPSMutation();
-  const deleteWPSMutation = useDeleteWPSMutation();
-
+  const [wpsList, setWpsList] = useState(INITIAL_WPS);
+  const [isLoading] = useState(false);
+  const [error] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [wpsToDelete, setWpsToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // COMMENTED OUT: API Hooks
+  // const { data: wpsList = [], isLoading, error } = useGetWPSQuery({});
+  // const createWPSMutation = useCreateWPSMutation();
+  // const deleteWPSMutation = useDeleteWPSMutation();
 
   const handleAdd = () => {
     setEditingWPS(null);
@@ -50,17 +84,46 @@ export default function WPS() {
   };
 
   const handleSave = (formData) => {
-    createWPSMutation.mutate(formData, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["wps"] });
-        setMode("idle");
-        setEditingWPS(null);
-        toast.success("WPS has been saved.");
-      },
-      onError: (error) => {
-        toast.error(error.message || "Failed to save WPS.");
-      },
-    });
+    // COMMENTED OUT: API Call
+    // createWPSMutation.mutate(formData, {
+    //   onSuccess: () => {
+    //     queryClient.invalidateQueries({ queryKey: ["wps"] });
+    //     setMode("idle");
+    //     setEditingWPS(null);
+    //     toast.success("WPS has been saved.");
+    //   },
+    //   onError: (error) => {
+    //     toast.error(error.message || "Failed to save WPS.");
+    //   },
+    // });
+
+    // LOCAL STATE UPDATE
+    if (editingWPS) {
+      // Update existing WPS
+      setWpsList((prevList) =>
+        prevList.map((w) =>
+          w.id === editingWPS.id
+            ? {
+                ...w,
+                ...(formData instanceof FormData
+                  ? Object.fromEntries(formData)
+                  : formData),
+              }
+            : w
+        )
+      );
+      toast.success("WPS has been updated.");
+    } else {
+      // Add new WPS
+      const newWPS = {
+        ...Object.fromEntries(formData instanceof FormData ? formData : []),
+        id: Math.max(...wpsList.map((w) => w.id), 0) + 1,
+      };
+      setWpsList((prevList) => [...prevList, newWPS]);
+      toast.success("WPS has been saved.");
+    }
+    setMode("idle");
+    setEditingWPS(null);
   };
 
   const handleCancel = () => {
@@ -75,22 +138,35 @@ export default function WPS() {
 
   const confirmDelete = () => {
     if (wpsToDelete) {
-      deleteWPSMutation.mutate(
-        { wpsId: wpsToDelete.id },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["wps"] });
-            setDeleteDialogOpen(false);
-            setWpsToDelete(null);
-            toast.success("WPS has been deleted.");
-          },
-          onError: (error) => {
-            toast.error(error.message || "Failed to delete WPS.");
-            setDeleteDialogOpen(false);
-            setWpsToDelete(null);
-          },
-        }
-      );
+      // COMMENTED OUT: API Call
+      // deleteWPSMutation.mutate(
+      //   { wpsId: wpsToDelete.id },
+      //   {
+      //     onSuccess: () => {
+      //       queryClient.invalidateQueries({ queryKey: ["wps"] });
+      //       setDeleteDialogOpen(false);
+      //       setWpsToDelete(null);
+      //       toast.success("WPS has been deleted.");
+      //     },
+      //     onError: (error) => {
+      //       toast.error(error.message || "Failed to delete WPS.");
+      //       setDeleteDialogOpen(false);
+      //       setWpsToDelete(null);
+      //     },
+      //   }
+      // );
+
+      // LOCAL STATE UPDATE
+      setIsDeleting(true);
+      setTimeout(() => {
+        setWpsList((prevList) =>
+          prevList.filter((w) => w.id !== wpsToDelete.id)
+        );
+        setDeleteDialogOpen(false);
+        setWpsToDelete(null);
+        setIsDeleting(false);
+        toast.success("WPS has been deleted.");
+      }, 500);
     }
   };
 
@@ -119,24 +195,16 @@ export default function WPS() {
             isEditing={mode === "editing" || mode === "adding"}
             onSave={handleSave}
             onCancel={handleCancel}
-            isSaving={createWPSMutation.isPending}
+            isSaving={false}
           />
         )}
-        {isLoading ? (
-          <div className="p-4 text-gray-600">Loading WPS records...</div>
-        ) : error ? (
-          <div className="p-4 text-red-700">
-            Error loading WPS records: {error.message}
-          </div>
-        ) : (
-          <WPSTable
-            wpsList={wpsList}
-            selectedWPS={selectedWPS}
-            onEdit={handleEdit}
-            onSelectWPS={handleSelectWPS}
-            onDelete={handleDelete}
-          />
-        )}
+        <WPSTable
+          wpsList={wpsList}
+          selectedWPS={selectedWPS}
+          onEdit={handleEdit}
+          onSelectWPS={handleSelectWPS}
+          onDelete={handleDelete}
+        />
       </div>
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent className="bg-white">
@@ -152,9 +220,9 @@ export default function WPS() {
             <Button
               onClick={confirmDelete}
               className="bg-red-600 hover:bg-red-700 text-white"
-              disabled={deleteWPSMutation.isPending}
+              disabled={isDeleting}
             >
-              {deleteWPSMutation.isPending ? "Deleting..." : "Delete"}
+              {isDeleting ? "Deleting..." : "Delete"}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

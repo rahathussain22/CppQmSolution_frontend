@@ -14,8 +14,9 @@ export function ComponentForm({
   const user = useAuthStore((state) => state.user);
   const [formData, setFormData] = useState({
     projectId: component?.projectId || 0,
-    componentType: component?.componentType || "",
     componentCode: component?.componentCode || "",
+    name: component?.name || "",
+    componentType: component?.componentType || "",
     material: component?.material || "",
     diameter: component?.diameter || "",
     length: component?.length || "",
@@ -38,8 +39,9 @@ export function ComponentForm({
   useEffect(() => {
     setFormData({
       projectId: component?.projectId || 0,
-      componentType: component?.componentType || "",
       componentCode: component?.componentCode || "",
+      name: component?.name || "",
+      componentType: component?.componentType || "",
       material: component?.material || "",
       diameter: component?.diameter || "",
       length: component?.length || "",
@@ -60,8 +62,9 @@ export function ComponentForm({
 
   const isValid =
     formData.projectId &&
-    formData.componentType &&
     formData.componentCode &&
+    formData.name &&
+    formData.componentType &&
     formData.material &&
     formData.diameter &&
     formData.length &&
@@ -100,19 +103,6 @@ export function ComponentForm({
           </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Component Type *
-            </label>
-            <input
-              type="text"
-              value={formData.componentType}
-              onChange={(e) => updateField("componentType", e.target.value)}
-              disabled={!isEditing || isSaving}
-              placeholder="e.g., Pipe, Fitting"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
               Component Code *
             </label>
             <input
@@ -126,19 +116,58 @@ export function ComponentForm({
           </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Material *
+              Name *
             </label>
             <input
               type="text"
-              value={formData.material}
-              onChange={(e) => updateField("material", e.target.value)}
+              value={formData.name}
+              onChange={(e) => updateField("name", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="e.g., Steel"
+              placeholder="e.g., Main Pipe"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              Component Type *
+            </label>
+            <select
+              value={formData.componentType}
+              onChange={(e) => updateField("componentType", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            >
+              <option value="">-- Select Component --</option>
+              <option value="Pipe">Pipe</option>
+              <option value="Flg">Flg</option>
+              <option value="Elb.">Elb.</option>
+              <option value="Tee">Tee</option>
+              <option value="Wolet">Wolet</option>
+              <option value="Solet">Solet</option>
+              <option value="Red.">Red.</option>
+              <option value="Nip.">Nip.</option>
+              <option value="Vlv.">Vlv.</option>
+            </select>
+          </div>
         </div>
         <div className="grid grid-cols-12 gap-3 mb-3">
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              Material *
+            </label>
+            <select
+              value={formData.material}
+              onChange={(e) => updateField("material", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            >
+              <option value="">-- Select Material --</option>
+              <option value="X60">X60</option>
+              <option value="X65">X65</option>
+              <option value="X70">X70</option>
+              <option value="GrB">GrB</option>
+            </select>
+          </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Diameter *
@@ -176,7 +205,9 @@ export function ComponentForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
-          <div className="col-span-3">
+        </div>
+        <div className="grid grid-cols-12 gap-3 mb-3">
+          <div className="col-span-6">
             <label className="block text-xs text-gray-700 mb-1">
               Pipe Number *
             </label>
@@ -189,8 +220,6 @@ export function ComponentForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
-        </div>
-        <div className="grid grid-cols-12 gap-3 mb-3">
           <div className="col-span-6">
             <label className="block text-xs text-gray-700 mb-1">
               Heat Number *

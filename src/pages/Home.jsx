@@ -1,4 +1,3 @@
-import React, { useRef } from 'react'
 import Projects from './dcl/Projects'
 
 const Home = () => {
