@@ -3,6 +3,7 @@ import api from "../config/api";
 export async function createComponent({
   componentType,
   componentCode,
+  name,
   material,
   diameter,
   length,
@@ -11,9 +12,10 @@ export async function createComponent({
   heatNumber,
   projectId,
 }) {
-  return await api.post("/component/addComponent", {
+  return await api.post("/component/add", {
     componentType,
     componentCode,
+    name,
     material,
     diameter,
     length,
@@ -28,7 +30,7 @@ export async function getComponents({ projectId }) {
   const queryParams = new URLSearchParams();
   if (projectId) queryParams.append("projectId", projectId);
   const response = await api.get(
-    `/component/getAllComponent?${queryParams.toString()}`
+    `/component/get?${queryParams.toString()}`
   );
   return response;
 }
@@ -37,6 +39,7 @@ export async function updateComponent({
   componentId,
   componentType,
   componentCode,
+  name,
   material,
   diameter,
   length,
@@ -45,10 +48,11 @@ export async function updateComponent({
   heatNumber,
   projectId,
 }) {
-  return await api.put("/component/updateComponent", {
+  return await api.patch("/component/update", {
     componentId,
     componentType,
     componentCode,
+    name,
     material,
     diameter,
     length,
@@ -60,8 +64,7 @@ export async function updateComponent({
 }
 
 export async function deleteComponent({ componentId, componentCode }) {
-  return await api.delete("/component/deleteComponent", {
-    componentId,
+  return await api.delete(`/component/delete/${componentId}`, {
     componentCode,
   });
 }

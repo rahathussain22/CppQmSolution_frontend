@@ -97,10 +97,7 @@ export default function Components() {
   const confirmDelete = () => {
     if (componentToDelete) {
       deleteComponentMutation.mutate(
-        {
-          componentId: componentToDelete.id,
-          componentCode: componentToDelete.componentCode,
-        },
+        { componentId: componentToDelete.id },
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["components"] });
@@ -164,7 +161,7 @@ export default function Components() {
             <AlertDialogTitle>Delete Component</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete the component "
-              {componentToDelete?.componentCode}"? This action cannot be undone.
+              {componentToDelete?.componentType || componentToDelete?.pipeNumber}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

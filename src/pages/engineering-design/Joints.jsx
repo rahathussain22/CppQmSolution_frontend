@@ -1,4 +1,11 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  createWeldJoint,
+  getWeldJoints,
+  updateWeldJoint,
+  deleteWeldJoint,
+} from "@/api/joints";
 import { WeldJointForm } from "@/components/joints/JointForm";
 import { JointTable } from "@/components/joints/JointTable";
 import { toast } from "sonner";
@@ -49,12 +56,64 @@ export default function Joints() {
   const user = useAuthStore((state) => state.user);
 
   // mode: 'idle', 'adding', 'editing'
+  const queryClient = useQueryClient();
   const [mode, setMode] = useState("idle");
   const [editingJoint, setEditingJoint] = useState(null);
-  const [joints, setJoints] = useState(STATIC_JOINTS);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [jointToDelete, setJointToDelete] = useState(null);
+
+  const {
+    data: joints = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["weldJoints"],
+    queryFn: () => getWeldJoints({}),
+    select: (data) => (data && data.weldJoints) || [],
+    refetchOnWindowFocus: false,
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (formData) => createWeldJoint(formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["weldJoints"] });
+      setMode("idle");
+      setEditingJoint(null);
+      toast.success("Weld Joint has been saved.");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to save weld joint.");
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ weldJointId, formData }) => updateWeldJoint({ weldJointId, formData }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["weldJoints"] });
+      setMode("idle");
+      setEditingJoint(null);
+      toast.success("Weld Joint has been updated.");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to update weld joint.");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: ({ weldJointId }) => deleteWeldJoint({ weldJointId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["weldJoints"] });
+      setDeleteDialogOpen(false);
+      setJointToDelete(null);
+      toast.success("Weld Joint has been deleted.");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to delete weld joint.");
+      setDeleteDialogOpen(false);
+      setJointToDelete(null);
+    },
+  });
 
   const handleAdd = () => {
     setEditingJoint(null);
@@ -67,22 +126,19 @@ export default function Joints() {
   };
 
   const handleSave = (formData) => {
+    // formData contains: weldNumber, pipelineLineNumber, jointType, initialProduction, component1Id, component2Id
+    const payload = {
+      weldNumber: formData.weldNumber,
+      pipelineLineNumber: formData.pipelineLineNumber,
+      jointType: formData.jointType,
+      initialProduction: formData.initialProduction,
+      components: [formData.component1Id, formData.component2Id],
+    };
+
     if (mode === "editing" && editingJoint) {
-      setJoints(
-        joints.map((j) => (j.id === editingJoint.id ? { ...j, ...formData } : j))
-      );
-      setMode("idle");
-      setEditingJoint(null);
-      toast.success("Weld Joint has been updated.");
+      updateMutation.mutate({ weldJointId: editingJoint.id, formData: payload });
     } else {
-      const newJoint = {
-        id: Math.max(...joints.map((j) => j.id), 0) + 1,
-        ...formData,
-      };
-      setJoints([...joints, newJoint]);
-      setMode("idle");
-      setEditingJoint(null);
-      toast.success("Weld Joint has been saved.");
+      createMutation.mutate(payload);
     }
   };
 
@@ -98,10 +154,7 @@ export default function Joints() {
 
   const confirmDelete = () => {
     if (jointToDelete) {
-      setJoints(joints.filter((j) => j.id !== jointToDelete.id));
-      setDeleteDialogOpen(false);
-      setJointToDelete(null);
-      toast.success("Weld Joint has been deleted.");
+      deleteMutation.mutate({ weldJointId: jointToDelete.id });
     }
   };
 
@@ -126,11 +179,15 @@ export default function Joints() {
             isEditing={mode === "editing" || mode === "adding"}
             onSave={handleSave}
             onCancel={handleCancel}
-            isSaving={false}
+            isSaving={createMutation.isPending || updateMutation.isPending}
           />
         )}
 
-        {joints.length > 0 ? (
+        {isLoading ? (
+          <div className="p-4 text-gray-600">Loading weld joints...</div>
+        ) : error ? (
+          <div className="p-4 text-red-700">Error loading weld joints.</div>
+        ) : joints.length > 0 ? (
           <JointTable
             joints={joints}
             onEdit={handleEdit}

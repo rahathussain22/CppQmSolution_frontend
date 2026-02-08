@@ -1,12 +1,33 @@
 import { useState } from "react";
 import { ISODrawingForm } from "@/components/iso-drawings/ISODrawingForm";
 import { ISODrawingsTable } from "@/components/iso-drawings/ISODrawingsTable";
-import SpoolsSection from "@/components/iso-drawings/SpoolsSection";
 import { createISODrawing, getISODrawings } from "@/api/iso-drawings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
+
+// Static initial data
+const INITIAL_DRAWINGS = [
+  {
+    id: 1,
+    projectCode: "PROJ-001",
+    drawingNumber: "ISO-001",
+    spoolNumber: "SP-001",
+  },
+  {
+    id: 2,
+    projectCode: "PROJ-001",
+    drawingNumber: "ISO-002",
+    spoolNumber: "SP-002",
+  },
+  {
+    id: 3,
+    projectCode: "PROJ-002",
+    drawingNumber: "ISO-003",
+    spoolNumber: "SP-003",
+  },
+];
 
 export default function ISODrawings() {
   const queryClient = useQueryClient();
@@ -90,12 +111,11 @@ export default function ISODrawings() {
             isSaving={createDrawingMutation.isPending}
           />
         )}
-        {/* revision flow removed */}
         {isLoading ? (
-          <div className="p-4 text-gray-600">Loading ISO Drawings...</div>
+          <div className="p-4 text-gray-600">Loading drawings...</div>
         ) : error ? (
           <div className="p-4 text-red-700">
-            Error loading ISO Drawings: {error.message}
+            Error loading drawings: {error.message}
           </div>
         ) : (
           <ISODrawingsTable
@@ -103,7 +123,6 @@ export default function ISODrawings() {
             selectedDrawing={selectedDrawing}
             onEdit={handleEdit}
             onSelectDrawing={handleSelectDrawing}
-            SpoolsSection={SpoolsSection}
           />
         )}
       </div>

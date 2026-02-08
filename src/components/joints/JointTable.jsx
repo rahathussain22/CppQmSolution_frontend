@@ -24,6 +24,7 @@ export function JointTable({
               )}
               <th className="px-4 py-2 text-left text-xs">#</th>
               <th className="px-4 py-2 text-left text-xs">Weld Number</th>
+              <th className="px-4 py-2 text-left text-xs">Pipeline</th>
               <th className="px-4 py-2 text-left text-xs">Joint Type</th>
               <th className="px-4 py-2 text-left text-xs">Initial Production</th>
               <th className="px-4 py-2 text-left text-xs">Component 1</th>
@@ -53,6 +54,7 @@ export function JointTable({
                 )}
                 <td className="px-4 py-2 text-gray-600">{index + 1}</td>
                 <td className="px-4 py-2">{joint.weldNumber}</td>
+                <td className="px-4 py-2">{joint.pipelineLineNumber || "-"}</td>
                 <td className="px-4 py-2">{joint.jointType || "-"}</td>
                 <td className="px-4 py-2">{joint.initialProduction || "-"}</td>
                 <td className="px-4 py-2">

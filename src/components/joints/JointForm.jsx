@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { getComponents } from "../../api/components";
@@ -12,28 +12,30 @@ export function WeldJointForm({
 }) {
   const [formData, setFormData] = useState({
     weldNumber: joint?.weldNumber || "",
+    pipelineLineNumber: joint?.pipelineLineNumber || "",
     jointType: joint?.jointType || "",
     initialProduction: joint?.initialProduction || "",
     component1Id: joint?.component1Id || 0,
     component2Id: joint?.component2Id || 0,
-    pdfFile: joint?.pdfFile || null,
   });
 
   const updateField = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.type === "application/pdf") {
-        updateField("pdfFile", file);
-      } else {
-        alert("Please upload a PDF file only");
-        e.target.value = "";
-      }
-    }
-  };
+  useEffect(() => {
+    setFormData({
+      weldNumber: joint?.weldNumber || "",
+      pipelineLineNumber: joint?.pipelineLineNumber || "",
+      jointType: joint?.jointType || "",
+      initialProduction: joint?.initialProduction || "",
+      component1Id: joint?.component1Id || 0,
+      component2Id: joint?.component2Id || 0,
+      pdfFile: joint?.pdfFile || null,
+    });
+  }, [joint, isEditing]);
+
+  // PDF upload removed — backend will accept JSON without file
 
   const {
     data: availableComponents = [],
@@ -107,6 +109,20 @@ export function WeldJointForm({
             </select>
           </div>
         </div>
+        <div className="grid grid-cols-12 gap-3">
+          <div className="col-span-12">
+            <label className="block text-xs text-gray-700 mb-1">Pipeline Line Number *</label>
+            <input
+              type="text"
+              placeholder="e.g., L-100"
+              value={formData.pipelineLineNumber}
+              onChange={(e) => updateField("pipelineLineNumber", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              required
+            />
+          </div>
+        </div>
 
         <div className="grid grid-cols-12 gap-3">
           <div className="col-span-6">
@@ -147,27 +163,7 @@ export function WeldJointForm({
           </div>
         </div>
 
-        <div className="grid grid-cols-12 gap-3">
-          <div className="col-span-12">
-            <label className="block text-xs text-gray-700 mb-1">
-              PDF File Upload
-            </label>
-            <div className="flex items-center gap-2">
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={handleFileChange}
-                disabled={!isEditing || isSaving}
-                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-              />
-              {formData.pdfFile && (
-                <span className="text-xs text-green-600 font-medium">
-                  ✓ {formData.pdfFile.name}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
+        {/* PDF upload removed — sending JSON payload only */}
 
         <div className="space-x-2">
           <Button

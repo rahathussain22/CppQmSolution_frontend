@@ -55,10 +55,12 @@ function PipelineSection({ project, pipelines }) {
   };
 
   const handlePipelineSave = (pipelineData) => {
-    // attach projectId and adminId and call create mutation
     const payload = {
-      ...pipelineData,
       projectId: project.id,
+      lineNumber: pipelineData.lineNumber,
+      lineSize: pipelineData.lineSize,
+      lineClass: pipelineData.lineClass,
+      location: pipelineData.location,
     };
     createPipelineMutation.mutate(payload);
   };
@@ -121,16 +123,12 @@ function PipelineSection({ project, pipelines }) {
             >
               <div>
                 <div className="font-medium">
-                  {pipe.lineNumber} - {pipe.name}
+                  {pipe.lineNumber}
                 </div>
                 <div className="text-xs text-gray-500">
-                  Lot: {pipe.lotCode}, Class: {pipe.lineClass}, Size:{" "}
-                  {pipe.lineSize}, Location: {pipe.location}, Start:{" "}
-                  {pipe.startDate
-                    ? new Date(pipe.startDate).toLocaleDateString()
-                    : "-"}
+                  Location: {pipe.location}, Size: {pipe.lineSize}, Class:{" "}
+                  {pipe.lineClass}
                 </div>
-                <div className="text-xs text-gray-500">{pipe.description}</div>
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -142,6 +140,7 @@ function PipelineSection({ project, pipelines }) {
                 <Button
                   className="text-red-600 hover:text-red-800 cursor-pointer"
                   onClick={() => openDeleteDialog(pipe)}
+                  disabled={deletePipelineMutation.isPending}
                 >
                   <Trash2 size={16} />
                 </Button>
@@ -153,12 +152,12 @@ function PipelineSection({ project, pipelines }) {
         <p className="text-sm text-gray-500">No pipelines found.</p>
       )}
 
-      {/* Delete confirmation dialog */}
       <AlertDialog
         open={deleteDialog.open}
         onOpenChange={(open) => {
-          if (!deletePipelineMutation.isLoading)
+          if (!deletePipelineMutation.isPending) {
             setDeleteDialog((old) => ({ ...old, open }));
+          }
         }}
       >
         <AlertDialogContent className="bg-white">
@@ -176,18 +175,18 @@ function PipelineSection({ project, pipelines }) {
           <AlertDialogFooter>
             <AlertDialogCancel
               onClick={handleDeleteCancel}
-              disabled={deletePipelineMutation.isLoading}
+              disabled={deletePipelineMutation.isPending}
             >
               Cancel
             </AlertDialogCancel>
             <Button
               type="button"
               onClick={handleDeleteConfirm}
-              disabled={deletePipelineMutation.isLoading}
+              disabled={deletePipelineMutation.isPending}
               className="bg-red-600 text-white rounded px-4 py-2 hover:bg-red-700 disabled:opacity-50 disabled:cursor-progress"
               autoFocus
             >
-              {deletePipelineMutation.isLoading ? "Deleting..." : "Delete"}
+              {deletePipelineMutation.isPending ? "Deleting..." : "Delete"}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
