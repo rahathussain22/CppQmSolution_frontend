@@ -5,11 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getProjects } from "../../api/project";
 import { Button } from "@/components/ui/button";
 
-// Static projects data
-const STATIC_PROJECTS = [
-  { id: 1, projectCode: "PA-001", name: "Project Alpha" },
-  { id: 2, projectCode: "PB-002", name: "Project Beta" },
-];
+// Static projects data removed — fetching from API
+
 
 export function WPSForm({
   wps,
@@ -20,32 +17,26 @@ export function WPSForm({
 }) {
   const user = useAuthStore((state) => state.user);
   const [formData, setFormData] = useState({
-    projectId: wps?.projectId || 0,
+    projectCode: wps?.projectCode || "",
     wpsNumber: wps?.wpsNumber || "",
     weldingProcess: wps?.weldingProcess || "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
 
-  // COMMENTED OUT: API Query
-  // const {
-  //   data: availableProjects = [],
-  //   isLoading: isLoadingProjects,
-  //   error: errorProjects,
-  // } = useQuery({
-  //   queryKey: ["projects"],
-  //   queryFn: () => getProjects({ createdBy: user.id }),
-  //   select: (data) => (data && data.projects) || [],
-  //   refetchOnWindowFocus: false,
-  // });
-
-  // LOCAL: Use static projects
-  const availableProjects = STATIC_PROJECTS;
-  const isLoadingProjects = false;
-  const errorProjects = null;
+  const {
+    data: availableProjects = [],
+    isLoading: isLoadingProjects,
+    error: errorProjects,
+  } = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => getProjects(),
+    select: (data) => (data && data.projects) || [],
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
     setFormData({
-      projectId: wps?.projectId || 0,
+      projectCode: wps?.projectCode || "",
       wpsNumber: wps?.wpsNumber || "",
       weldingProcess: wps?.weldingProcess || "",
     });
@@ -69,18 +60,17 @@ export function WPSForm({
     }
   };
 
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const fd = new FormData();
-    Object.entries(formData).forEach(([k, v]) => {
-      if (v !== undefined && v !== null) fd.append(k, v);
-    });
-    if (selectedFile) fd.append("file", selectedFile);
-    onSave(fd);
+    onSave({ ...formData, file: selectedFile });
   };
 
   const isValid =
-    formData.projectId &&
+    formData.projectCode &&
     formData.wpsNumber &&
     formData.weldingProcess &&
     (selectedFile || isEditing);
@@ -97,18 +87,18 @@ export function WPSForm({
               Project *
             </label>
             <select
-              value={formData.projectId}
-              onChange={(e) => updateField("projectId", Number(e.target.value))}
+              value={formData.projectCode}
+              onChange={(e) => updateField("projectCode", e.target.value)}
               disabled={!isEditing || isLoadingProjects || errorProjects}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             >
               {errorProjects ? (
                 <option>Error loading projects</option>
               ) : (
-                <option value={0}>Select Project</option>
+                <option value="">Select Project</option>
               )}
               {availableProjects.map((project) => (
-                <option key={project.id} value={project.id}>
+                <option key={project.id} value={project.projectCode}>
                   {project.projectCode} - {project.name}
                 </option>
               ))}
@@ -144,7 +134,7 @@ export function WPSForm({
         <div className="grid grid-cols-12 gap-3 mb-3">
           <div className="col-span-12">
             <label className="block text-xs text-gray-700 mb-1">
-              WPS File (PDF only):
+              PDF File *:
             </label>
             {isEditing ? (
               <div className="flex items-center gap-2">
@@ -167,11 +157,6 @@ export function WPSForm({
                       ({(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)
                     </span>
                   </div>
-                )}
-                {!selectedFile && !isEditing && (
-                  <span className="text-sm text-gray-500 px-2 py-1">
-                    No file selected
-                  </span>
                 )}
               </div>
             ) : (
