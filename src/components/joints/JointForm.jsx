@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { getComponents } from "../../api/components";
+import { getPipelines } from "../../api/pipelines";
 
 export function WeldJointForm({
   joint,
@@ -44,6 +45,16 @@ export function WeldJointForm({
     queryKey: ["components"],
     queryFn: () => getComponents({}),
     select: (data) => (data && data.data) || [],
+    refetchOnWindowFocus: false,
+  });
+
+  const {
+    data: availablePipelines = [],
+    isLoading: isLoadingPipelines,
+  } = useQuery({
+    queryKey: ["pipelines"],
+    queryFn: () => getPipelines({}),
+    select: (data) => (data && data.pipelines) || [],
     refetchOnWindowFocus: false,
   });
 
@@ -111,16 +122,21 @@ export function WeldJointForm({
         </div>
         <div className="grid grid-cols-12 gap-3">
           <div className="col-span-12">
-            <label className="block text-xs text-gray-700 mb-1">Pipeline Line Number *</label>
-            <input
-              type="text"
-              placeholder="e.g., L-100"
+            <label className="block text-xs text-gray-700 mb-1">Pipeline *</label>
+            <select
               value={formData.pipelineLineNumber}
               onChange={(e) => updateField("pipelineLineNumber", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={!isEditing || isSaving || isLoadingPipelines}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
               required
-            />
+            >
+              <option value="">Select Pipeline</option>
+              {availablePipelines.map((pipeline) => (
+                <option key={pipeline.id} value={pipeline.lineNumber}>
+                  {pipeline.lineNumber} - {pipeline.location}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
