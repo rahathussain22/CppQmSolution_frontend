@@ -21,7 +21,7 @@ export function ComponentTable({ componentList = [], onEdit, onDelete }) {
               <th className="px-3 py-2 text-left text-xs">Project</th>
               <th className="px-3 py-2 text-left text-xs">Component Code</th>
               <th className="px-3 py-2 text-left text-xs">Name</th>
-              <th className="px-3 py-2 text-left text-xs">Component</th>
+              {/* <th className="px-3 py-2 text-left text-xs">Component</th> */}
               <th className="px-3 py-2 text-left text-xs">Material</th>
               <th className="px-3 py-2 text-left text-xs">Diameter</th>
               <th className="px-3 py-2 text-left text-xs">Length</th>
@@ -63,7 +63,7 @@ export function ComponentTable({ componentList = [], onEdit, onDelete }) {
                 </td>
                 <td className="px-3 py-2">{component.componentCode || "-"}</td>
                 <td className="px-3 py-2">{component.name || "-"}</td>
-                <td className="px-3 py-2">{component.componentType}</td>
+                {/* <td className="px-3 py-2">{component.componentType}</td> */}
                 <td className="px-3 py-2">{component.material}</td>
                 <td className="px-3 py-2">{component.diameter}</td>
                 <td className="px-3 py-2">{component.length}</td>
