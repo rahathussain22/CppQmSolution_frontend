@@ -8,7 +8,7 @@ export const navItems = [
     label: "DCL",
     pathname: "/dcl",
     hasDropdown: true,
-    children: [{ label: "Projects", pathname: "/dcl/projects" }],
+    children: [{ label: "Master Database", pathname: "/dcl/master-database" }],
   },
   {
     label: "Engineering / Design",
