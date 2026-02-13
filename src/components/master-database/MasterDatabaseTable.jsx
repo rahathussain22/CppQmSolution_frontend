@@ -1,7 +1,7 @@
 export function MasterDatabaseTable({ data }) {
   return (
     <div className="overflow-x-auto border border-gray-300 rounded">
-      <table className="w-full border-collapse text-xs">
+      <table className="w-max table-auto border-collapse text-xs">
         <thead>
           <tr className="">
             {/* Pipeline Details */}
@@ -78,47 +78,61 @@ export function MasterDatabaseTable({ data }) {
           </tr>
         </thead>
         <tbody>
-          {data.map((row, idx) => (
-            <tr key={row.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-              {/* Pipeline Details */}
-              <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.lineNo}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.location}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.lineSize}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.lineClass}</td>
-              {/* Drawing Details */}
-              <td className="border border-gray-300 px-2 py-2 bg-orange-50">{row.drawingNo}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-orange-50">{row.spoolNo}</td>
-              {/* Weld Joint Details */}
-              <td className="border border-gray-300 px-2 py-2 bg-amber-50">{row.weldNo}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-amber-50">{row.jointType}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-amber-50">{row.initialProduction}</td>
-              {/* Fit-up Info */}
-              <td className="border border-gray-300 px-2 py-2 bg-yellow-50">{row.fitupDate}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-yellow-50">{row.fitupRFI}</td>
-              {/* Weld Info */}
-              <td className="border border-gray-300 px-2 py-2 bg-green-50">{row.weldingDate}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-green-50">{row.weldingRFI}</td>
-              {/* Component 1 Info */}
-              <td className="border border-gray-300 px-2 py-2 bg-blue-50">{row.comp1Type}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-blue-50">{row.comp1Material}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-blue-50">{row.comp1Diameter}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-blue-50">{row.comp1Thickness}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-blue-50">{row.comp1Length}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-blue-50">{row.comp1PipeNo}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-blue-50">{row.comp1HeatNo}</td>
-              {/* Component 2 Info */}
-              <td className="border border-gray-300 px-2 py-2 bg-purple-50">{row.comp2Type}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-purple-50">{row.comp2Material}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-purple-50">{row.comp2Diameter}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-purple-50">{row.comp2Thickness}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-purple-50">{row.comp2Length}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-purple-50">{row.comp2PipeNo}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-purple-50">{row.comp2HeatNo}</td>
-              {/* Welding Procedure */}
-              <td className="border border-gray-300 px-2 py-2 bg-pink-50">{row.wpsNo}</td>
-              <td className="border border-gray-300 px-2 py-2 bg-pink-50">{row.weldProcess}</td>
-            </tr>
-          ))}
+          {data.map((row, idx) => {
+            console.log("Row data:", row); // Debugging log to check the structure of each row
+            const weldJoints = row.weldJoints || {};
+            const comp1 = weldJoints.components?.[0] || {};
+            const comp2 = weldJoints.components?.[1] || {};
+
+            return (
+              <tr key={row.projects.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                {/* Pipeline Details */}
+                <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.pipelines.lineNumber}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.pipelines.location}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.pipelines.lineSize}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.pipelines.lineClass}</td>
+
+                {/* Drawing Details */}
+                <td className="border border-gray-300 px-2 py-2 bg-orange-50">{row.isoDrawings.drawingNumber}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-orange-50">{row.isoDrawings.spoolNumber || "N/A"}</td>
+
+                {/* Weld Joint Details */}
+                <td className="border border-gray-300 px-2 py-2 bg-amber-50">{weldJoints.weldNumber}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-amber-50">{weldJoints.jointType}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-amber-50">{weldJoints.initialProduction}</td>
+
+                {/* Fit-up Info */}
+                <td className="border border-gray-300 px-2 py-2 bg-yellow-50">{row.fitupDate}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-yellow-50">{row.fitupRFI}</td>
+
+                {/* Weld Info */}
+                <td className="border border-gray-300 px-2 py-2 bg-green-50">{row.weldingDate}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-green-50">{row.weldingRFI}</td>
+
+                {/* Component 1 Info */}
+                <td className="border border-gray-300 px-2 py-2 bg-blue-50">{comp1.name}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-blue-50">{comp1.material}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-blue-50">{comp1.diameter}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-blue-50">{comp1.thickness}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-blue-50">{comp1.length}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-blue-50">{comp1.pipeNumber}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-blue-50">{comp1.heatNumber}</td>
+
+                {/* Component 2 Info */}
+                <td className="border border-gray-300 px-2 py-2 bg-purple-50">{comp2.name}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-purple-50">{comp2.material}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-purple-50">{comp2.diameter}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-purple-50">{comp2.thickness}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-purple-50">{comp2.length}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-purple-50">{comp2.pipeNumber}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-purple-50">{comp2.heatNumber}</td>
+
+                {/* Welding Procedure */}
+                <td className="border border-gray-300 px-2 py-2 bg-pink-50">{row.wps.wpsNumber}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-pink-50">{row.wps.weldProcess}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

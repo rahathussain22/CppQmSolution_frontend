@@ -1,88 +1,34 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Download, Sheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MasterDatabaseTable } from "@/components/master-database/MasterDatabaseTable";
 import { LoadingOverlay } from "@/components/master-database/LoadingOverlay";
 import { parseBulkUploadFile, isValidFileType } from "@/components/master-database/parseBulkUploadFile";
 import { toast } from "sonner";
-
+import axios from "axios";
+import { getDatabase } from "../../api/master-database";
 const MasterDatabase = () => {
   const fileInputRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [masterData, setMasterData] = useState([
-    {
-      id: 1,
-      // Pipeline Details
-      lineNo: "L-001",
-      location: "Main Header",
-      lineSize: "12 inch",
-      lineClass: "150#",
-      // Drawing Details
-      drawingNo: "ISO-001",
-      spoolNo: "SP-001",
-      // Weld Joint Details
-      weldNo: "W-001",
-      jointType: "Butt Weld",
-      initialProduction: "Yes",
-      // Fit-up Info
-      fitupDate: "2026-02-01",
-      fitupRFI: "RFI-001",
-      // Weld Info
-      weldingDate: "2026-02-05",
-      weldingRFI: "RFI-002",
-      // Component 1
-      comp1Type: "Pipe",
-      comp1Material: "A106 Gr B",
-      comp1Diameter: "12 inch",
-      comp1Thickness: "0.375 inch",
-      comp1Length: "48 inch",
-      comp1PipeNo: "PIPE-001",
-      comp1HeatNo: "HEAT-001",
-      // Component 2
-      comp2Type: "Elbow",
-      comp2Material: "A234 Gr B",
-      comp2Diameter: "12 inch",
-      comp2Thickness: "0.375 inch",
-      comp2Length: "N/A",
-      comp2PipeNo: "ELB-001",
-      comp2HeatNo: "HEAT-002",
-      // Welding Procedure
-      wpsNo: "WPS-001",
-      weldProcess: "GMAW",
-    },
-    {
-      id: 2,
-      lineNo: "L-002",
-      location: "Branch A",
-      lineSize: "8 inch",
-      lineClass: "300#",
-      drawingNo: "ISO-002",
-      spoolNo: "SP-002",
-      weldNo: "W-002",
-      jointType: "Fillet Weld",
-      initialProduction: "No",
-      fitupDate: "2026-02-02",
-      fitupRFI: "RFI-003",
-      weldingDate: "2026-02-06",
-      weldingRFI: "RFI-004",
-      comp1Type: "Pipe",
-      comp1Material: "A106 Gr B",
-      comp1Diameter: "8 inch",
-      comp1Thickness: "0.322 inch",
-      comp1Length: "36 inch",
-      comp1PipeNo: "PIPE-002",
-      comp1HeatNo: "HEAT-003",
-      comp2Type: "Tee",
-      comp2Material: "A234 Gr B",
-      comp2Diameter: "8 inch",
-      comp2Thickness: "0.322 inch",
-      comp2Length: "N/A",
-      comp2PipeNo: "TEE-001",
-      comp2HeatNo: "HEAT-004",
-      wpsNo: "WPS-002",
-      weldProcess: "TIG",
-    },
-  ]);
+  const [masterData, setMasterData] = useState([]);
+
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getDatabase();
+        console.log("API Response:", response); 
+        setMasterData(response.data || []);
+      } catch (error) {
+        console.error("Error fetching master database:", error);
+        toast.error("Failed to load master database.");
+      } finally {
+        setIsLoading(false);
+      }
+      
+  }
+  fetchData();
+},[])
 
   const handleBulkUploadClick = () => {
     fileInputRef.current?.click();
