@@ -1,102 +1,65 @@
 import api from "../config/api";
 
 export async function createRFILog({
-  cppRFINo,
-  rfiNo,
-  projectCode,
-  descipline,
+  rfiNumber,
+  discipline,
   itpNumber,
   reportNumber,
   description,
   location,
-  inspectionOfficerName,
   inspectionLevel,
-  companyInspectionLevel,
   drawingNumber,
-  inspectionDate,
-  inspectionTime,
-  cppQc,
-  companyQc,
+  dateOfInspection,
+  timeOfInspection,
+  qc,
   pmt,
-  rfiStatus,
   remarks,
+  status,
+  companyInspectionLevel,
+  companyQC,
 }) {
-  return await api.post("/rfi/createRFI", {
-    cppRFINo,
-    rfiNo,
-    projectCode,
-    descipline,
+  return await api.post("/rfi/create", {
+    rfiNumber,
+    discipline,
     itpNumber,
     reportNumber,
     description,
     location,
-    inspectionOfficerName,
     inspectionLevel,
-    companyInspectionLevel,
     drawingNumber,
-    inspectionDate,
-    inspectionTime,
-    cppQc,
-    companyQc,
+    dateOfInspection,
+    timeOfInspection,
+    qc,
     pmt,
-    rfiStatus,
     remarks,
+    status,
+    companyInspectionLevel,
+    companyQC,
   });
 }
 
-export async function getRFILogs({ projectCode, descipline, rfiStatus }) {
+export async function getRFILogs({ projectCode, discipline, status } = {}) {
   const queryParams = new URLSearchParams();
   if (projectCode) queryParams.append("projectCode", projectCode);
-  if (descipline) queryParams.append("descipline", descipline);
-  if (rfiStatus) queryParams.append("rfiStatus", rfiStatus);
-  const response = await api.get(`/rfi/getRFILogs?${queryParams.toString()}`);
+  if (discipline) queryParams.append("discipline", discipline);
+  if (status) queryParams.append("status", status);
+  const response = await api.get(`/rfi/get?${queryParams.toString()}`);
   return response;
 }
 
-export async function updateRFILog({
-  cppRFINo,
-  rfiNo,
-  projectCode,
-  descipline,
-  itpNumber,
-  reportNumber,
-  description,
-  location,
-  inspectionOfficerName,
-  inspectionLevel,
-  companyInspectionLevel,
-  drawingNumber,
-  inspectionDate,
-  inspectionTime,
-  cppQc,
-  companyQc,
-  pmt,
-  rfiStatus,
-  remarks,
-}) {
-  return await api.put(`/rfi/updateRFI/${cppRFINo}`, {
-    cppRFINo,
-    rfiNo,
-    projectCode,
-    descipline,
-    itpNumber,
-    reportNumber,
-    description,
-    location,
-    inspectionOfficerName,
-    inspectionLevel,
-    companyInspectionLevel,
-    drawingNumber,
-    inspectionDate,
-    inspectionTime,
-    cppQc,
-    companyQc,
-    pmt,
-    rfiStatus,
-    remarks,
+export async function updateRFILog(formData, id) {
+  // Accept FormData or regular object
+  return await api.patch(`/rfi/update/${id}`, formData);
+}
+
+export async function bulkCreateRFILog(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  return await api.post("/rfi/bulkCreate", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
   });
 }
 
-export async function deleteRFILog({ cppRFINo }) {
-  return await api.delete(`/rfi/deleteRFI/${cppRFINo}`);
+export async function deleteRFILog({ id }) {
+  return await api.delete(`/rfi/delete/${id}`);
 }

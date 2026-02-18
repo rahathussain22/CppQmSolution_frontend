@@ -1,8 +1,20 @@
-import { Pencil, Trash2 } from "lucide-react";
-import { useAuthStore } from "../../store/authStore";
+import { MoreVertical } from "lucide-react";
+// import { useAuthStore } from "../../store/authStore";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-export function RFILogTable({ rfiLogList = [], onEdit, onDelete }) {
-  const user = useAuthStore((state) => state.user);
+export function RFILogTable({
+  rfiLogList = [],
+  onGenerateForm,
+  onSubmitFinalInspection,
+  onEdit,
+  onDelete,
+}) {
+  // const user = useAuthStore((state) => state.user);
 
   if (!rfiLogList.length) {
     return <div className="p-4 text-gray-500">No RFI logs found.</div>;
@@ -14,83 +26,106 @@ export function RFILogTable({ rfiLogList = [], onEdit, onDelete }) {
         <table className="min-w-max text-sm">
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
-              {user.permissions === "all" && (
-                <th className="px-3 py-2 text-left text-xs w-20">Actions</th>
-              )}
               <th className="px-3 py-2 text-left text-xs">#</th>
-              <th className="px-3 py-2 text-left text-xs">CPP RFI No</th>
-              <th className="px-3 py-2 text-left text-xs">RFI No</th>
-              <th className="px-3 py-2 text-left text-xs">Project Code</th>
+              <th className="px-3 py-2 text-left text-xs">RFI Number</th>
               <th className="px-3 py-2 text-left text-xs">Discipline</th>
               <th className="px-3 py-2 text-left text-xs">ITP Number</th>
               <th className="px-3 py-2 text-left text-xs">Report Number</th>
               <th className="px-3 py-2 text-left text-xs">Description</th>
               <th className="px-3 py-2 text-left text-xs">Location</th>
-              <th className="px-3 py-2 text-left text-xs">
-                Inspection Officer
-              </th>
               <th className="px-3 py-2 text-left text-xs">Inspection Level</th>
-              <th className="px-3 py-2 text-left text-xs">
-                Company Insp Level
-              </th>
+              <th className="px-3 py-2 text-left text-xs">Company Inspection Level</th>
               <th className="px-3 py-2 text-left text-xs">Drawing Number</th>
-              <th className="px-3 py-2 text-left text-xs">Inspection Date</th>
-              <th className="px-3 py-2 text-left text-xs">Inspection Time</th>
-              <th className="px-3 py-2 text-left text-xs">CPP QC</th>
+              <th className="px-3 py-2 text-left text-xs">Date of Inspection</th>
+              <th className="px-3 py-2 text-left text-xs">QC</th>
               <th className="px-3 py-2 text-left text-xs">Company QC</th>
               <th className="px-3 py-2 text-left text-xs">PMT</th>
-              <th className="px-3 py-2 text-left text-xs">RFI Status</th>
-              <th className="px-3 py-2 text-left text-xs">Remarks</th>
+              <th className="px-3 py-2 text-left text-xs">Status</th>
+              <th className="px-3 py-2 text-left text-xs">Inspection Document</th>
+              <th className="px-3 py-2 text-center text-xs w-12"></th>
             </tr>
           </thead>
           <tbody>
             {rfiLogList.map((rfiLog, index) => (
               <tr
                 key={rfiLog.id}
-                className="border-b border-gray-300 hover:bg-gray-50"
+                className="border-b border-gray-300 hover:bg-gray-50 relative"
               >
-                {user.permissions === "all" && (
-                  <td className="px-3 py-2">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => onEdit && onEdit(rfiLog)}
-                        className="text-gray-700 hover:text-gray-900"
-                      >
-                        <Pencil size={16} />
-                      </button>
-                      <button
-                        onClick={() => onDelete && onDelete(rfiLog)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                )}
                 <td className="px-3 py-2 text-gray-600">{index + 1}</td>
-                <td className="px-3 py-2">{rfiLog.cppRFINo}</td>
-                <td className="px-3 py-2">{rfiLog.rfiNo}</td>
-                <td className="px-3 py-2">{rfiLog.projectCode}</td>
-                <td className="px-3 py-2">{rfiLog.descipline}</td>
+                <td className="px-3 py-2 font-medium">{rfiLog.rfiNumber}</td>
+                <td className="px-3 py-2">{rfiLog.discipline}</td>
                 <td className="px-3 py-2">{rfiLog.itpNumber}</td>
                 <td className="px-3 py-2">{rfiLog.reportNumber}</td>
-                <td className="px-3 py-2">{rfiLog.description}</td>
-                <td className="px-3 py-2">{rfiLog.location}</td>
-                <td className="px-3 py-2">{rfiLog.inspectionOfficerName}</td>
+                <td className="px-3 py-2 max-w-xs truncate">
+                  {rfiLog.description || "-"}
+                </td>
+                <td className="px-3 py-2">{rfiLog.location || "-"}</td>
                 <td className="px-3 py-2">{rfiLog.inspectionLevel}</td>
                 <td className="px-3 py-2">{rfiLog.companyInspectionLevel}</td>
-                <td className="px-3 py-2">{rfiLog.drawingNumber}</td>
+                <td className="px-3 py-2">{rfiLog.drawingNumber || "-"}</td>
                 <td className="px-3 py-2">
-                  {rfiLog.inspectionDate
-                    ? new Date(rfiLog.inspectionDate).toLocaleDateString()
+                  {rfiLog.dateOfInspection
+                    ? new Date(rfiLog.dateOfInspection).toLocaleDateString()
                     : "-"}
                 </td>
-                <td className="px-3 py-2">{rfiLog.inspectionTime}</td>
-                <td className="px-3 py-2">{rfiLog.cppQc}</td>
-                <td className="px-3 py-2">{rfiLog.companyQc}</td>
+                <td className="px-3 py-2">{rfiLog.qc}</td>
+                <td className="px-3 py-2">{rfiLog.companyQC || "-"}</td>
                 <td className="px-3 py-2">{rfiLog.pmt}</td>
-                <td className="px-3 py-2">{rfiLog.rfiStatus}</td>
-                <td className="px-3 py-2">{rfiLog.remarks || "-"}</td>
+                <td className="px-3 py-2">
+                  <span
+                    className={`px-2 py-1 text-xs rounded font-medium ${
+                      rfiLog.status === "Open"
+                        ? "bg-blue-100 text-blue-800"
+                        : rfiLog.status === "Accepted & Closed"
+                          ? "bg-green-100 text-green-800"
+                          : rfiLog.status === "Rejected"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {rfiLog.status}
+                  </span>
+                </td>
+                <td className="px-3 py-2">
+                  {rfiLog.files && rfiLog.files.length > 0 ? (
+                    <a
+                      href={rfiLog.files[rfiLog.files.length - 1]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 hover:underline text-xs"
+                    >
+                      📄 View Document
+                    </a>
+                  ) : (
+                    <span className="text-gray-400 text-xs">-</span>
+                  )}
+                </td>
+                <td className="px-3 py-2 text-center relative">
+                  <DropdownMenu modal>
+                    <DropdownMenuTrigger asChild>
+                      <button className="p-1 hover:bg-gray-200 rounded transition-colors">
+                        <MoreVertical size={16} className="text-gray-600" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="bg-white" align="end">
+                      <DropdownMenuItem onClick={() => onGenerateForm?.(rfiLog)}>
+                        Generate Form
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onSubmitFinalInspection?.(rfiLog)}>
+                        Submit Final Inspection
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onEdit?.(rfiLog)}>
+                        Update Record
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onClick={() => onDelete?.(rfiLog)}
+                      >
+                        Delete Record
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </td>
               </tr>
             ))}
           </tbody>

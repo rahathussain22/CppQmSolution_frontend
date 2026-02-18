@@ -1,6 +1,19 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
+const DISCIPLINES = [
+  "Civil",
+  "Mechanical",
+  "Welding",
+  "Coating",
+  "Cathodic Protection",
+  "Electrical",
+  "Instrumentation",
+  "Telecom",
+];
+
+const STATUSES = ["Open", "Accepted & Closed", "Rejected", "Cancelled"];
+
 export function RFILogForm({
   rfiLog,
   isEditing,
@@ -9,48 +22,42 @@ export function RFILogForm({
   onCancel,
 }) {
   const [formData, setFormData] = useState({
-    cppRFINo: rfiLog?.cppRFINo || "",
-    rfiNo: rfiLog?.rfiNo || "",
-    projectCode: rfiLog?.projectCode || "",
-    descipline: rfiLog?.descipline || "",
+    rfiNumber: rfiLog?.rfiNumber || "",
+    discipline: rfiLog?.discipline || "",
     itpNumber: rfiLog?.itpNumber || "",
     reportNumber: rfiLog?.reportNumber || "",
     description: rfiLog?.description || "",
     location: rfiLog?.location || "",
-    inspectionOfficerName: rfiLog?.inspectionOfficerName || "",
     inspectionLevel: rfiLog?.inspectionLevel || "",
-    companyInspectionLevel: rfiLog?.companyInspectionLevel || "",
     drawingNumber: rfiLog?.drawingNumber || "",
-    inspectionDate: rfiLog?.inspectionDate || "",
-    inspectionTime: rfiLog?.inspectionTime || "",
-    cppQc: rfiLog?.cppQc || "",
-    companyQc: rfiLog?.companyQc || "",
+    dateOfInspection: rfiLog?.dateOfInspection || "",
+    timeOfInspection: rfiLog?.timeOfInspection || "",
+    qc: rfiLog?.qc || "",
     pmt: rfiLog?.pmt || "",
-    rfiStatus: rfiLog?.rfiStatus || "Pending",
     remarks: rfiLog?.remarks || "",
+    status: rfiLog?.status || "Open",
+    companyInspectionLevel: rfiLog?.companyInspectionLevel || "",
+    companyQC: rfiLog?.companyQC || "",
   });
 
   useEffect(() => {
     setFormData({
-      cppRFINo: rfiLog?.cppRFINo || "",
-      rfiNo: rfiLog?.rfiNo || "",
-      projectCode: rfiLog?.projectCode || "",
-      descipline: rfiLog?.descipline || "",
+      rfiNumber: rfiLog?.rfiNumber || "",
+      discipline: rfiLog?.discipline || "",
       itpNumber: rfiLog?.itpNumber || "",
       reportNumber: rfiLog?.reportNumber || "",
       description: rfiLog?.description || "",
       location: rfiLog?.location || "",
-      inspectionOfficerName: rfiLog?.inspectionOfficerName || "",
       inspectionLevel: rfiLog?.inspectionLevel || "",
-      companyInspectionLevel: rfiLog?.companyInspectionLevel || "",
       drawingNumber: rfiLog?.drawingNumber || "",
-      inspectionDate: rfiLog?.inspectionDate || "",
-      inspectionTime: rfiLog?.inspectionTime || "",
-      cppQc: rfiLog?.cppQc || "",
-      companyQc: rfiLog?.companyQc || "",
+      dateOfInspection: rfiLog?.dateOfInspection || "",
+      timeOfInspection: rfiLog?.timeOfInspection || "",
+      qc: rfiLog?.qc || "",
       pmt: rfiLog?.pmt || "",
-      rfiStatus: rfiLog?.rfiStatus || "Pending",
       remarks: rfiLog?.remarks || "",
+      status: rfiLog?.status || "Open",
+      companyInspectionLevel: rfiLog?.companyInspectionLevel || "",
+      companyQC: rfiLog?.companyQC || "",
     });
   }, [rfiLog, isEditing]);
 
@@ -60,114 +67,124 @@ export function RFILogForm({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
+    if (isValid) {
+      // Create FormData object
+      const formDataObj = new FormData();
+      
+      Object.keys(formData).forEach((key) => {
+        const value = formData[key];
+        // Only append non-empty values (skip empty strings, send null as is)
+        if (value !== "") {
+          formDataObj.append(key, value === "" ? null : value);
+        }
+      });
+      
+      onSave(formDataObj);
+    }
   };
 
   const isValid =
-    formData.cppRFINo && formData.descipline && formData.projectCode;
+    formData.rfiNumber &&
+    formData.discipline &&
+    formData.itpNumber &&
+    formData.reportNumber &&
+    formData.inspectionLevel &&
+    formData.companyInspectionLevel &&
+    formData.qc &&
+    formData.pmt;
 
   return (
     <div className="bg-linear-to-b from-red-50 to-red-100 border-2 border-red-300 rounded shadow-md mb-4">
       <div className="bg-linear-to-b from-red-600 to-red-700 text-white px-3 py-2 flex items-center justify-between">
-        <h2 className="flex items-center gap-2">RFI Logs</h2>
+        <h2 className="text-sm font-bold">
+          {isEditing ? "Edit RFI Log" : "Create RFI Log"}
+        </h2>
       </div>
       <form onSubmit={handleSubmit} className="p-4">
         <div className="grid grid-cols-12 gap-3 mb-3">
+          {/* RFI Number */}
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              CPP RFI No *
+              RFI Number *
             </label>
             <input
               type="text"
-              value={formData.cppRFINo}
-              onChange={(e) => updateField("cppRFINo", e.target.value)}
-              disabled={!isEditing || isSaving || rfiLog}
-              placeholder="e.g., CPP-RFI-001"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">RFI No</label>
-            <input
-              type="text"
-              value={formData.rfiNo}
-              onChange={(e) => updateField("rfiNo", e.target.value)}
+              value={formData.rfiNumber}
+              onChange={(e) => updateField("rfiNumber", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="e.g., RFI-123"
+              placeholder="e.g., RFI-001"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Project Code *
-            </label>
-            <input
-              type="text"
-              value={formData.projectCode}
-              onChange={(e) => updateField("projectCode", e.target.value)}
-              disabled={!isEditing || isSaving}
-              placeholder="e.g., PROJ-001"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
+          {/* Discipline */}
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Discipline *
             </label>
-            <input
-              type="text"
-              value={formData.descipline}
-              onChange={(e) => updateField("descipline", e.target.value)}
+            <select
+              value={formData.discipline}
+              onChange={(e) => updateField("discipline", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="e.g., Mechanical"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
+            >
+              <option value="">Select Discipline</option>
+              {DISCIPLINES.map((d) => (
+                <option key={d} value={d}>
+                  {d}
+                </option>
+              ))}
+            </select>
           </div>
-        </div>
-        <div className="grid grid-cols-12 gap-3 mb-3">
+          {/* ITP Number */}
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              ITP Number
+              ITP Number *
             </label>
             <input
               type="text"
               value={formData.itpNumber}
               onChange={(e) => updateField("itpNumber", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="e.g., ITP-456"
+              placeholder="e.g., ITP-001"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
+          {/* Report Number */}
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Report Number
+              Report Number *
             </label>
             <input
               type="text"
               value={formData.reportNumber}
               onChange={(e) => updateField("reportNumber", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="e.g., REP-789"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-6">
-            <label className="block text-xs text-gray-700 mb-1">
-              Description
-            </label>
-            <input
-              type="text"
-              value={formData.description}
-              onChange={(e) => updateField("description", e.target.value)}
-              disabled={!isEditing || isSaving}
-              placeholder="Description of the RFI"
+              placeholder="e.g., REP-001"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
         </div>
+
         <div className="grid grid-cols-12 gap-3 mb-3">
+          {/* Description */}
+          <div className="col-span-6">
+            <label className="block text-xs text-gray-700 mb-1">
+              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => updateField("description", e.target.value)}
+              disabled={!isEditing || isSaving}
+              placeholder="Description..."
+              rows="2"
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          {/* Location */}
           <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">Location</label>
+            <label className="block text-xs text-gray-700 mb-1">
+              Location
+            </label>
             <input
               type="text"
               value={formData.location}
@@ -177,24 +194,27 @@ export function RFILogForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
+          {/* Drawing Number */}
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Inspection Officer Name
+              Drawing Number
             </label>
             <input
               type="text"
-              value={formData.inspectionOfficerName}
-              onChange={(e) =>
-                updateField("inspectionOfficerName", e.target.value)
-              }
+              value={formData.drawingNumber}
+              onChange={(e) => updateField("drawingNumber", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="Officer name"
+              placeholder="e.g., DRW-001"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
+        </div>
+
+        <div className="grid grid-cols-12 gap-3 mb-3">
+          {/* Inspection Level */}
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Inspection Level
+              Inspection Level *
             </label>
             <input
               type="text"
@@ -205,125 +225,120 @@ export function RFILogForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
+          {/* Company Inspection Level */}
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Company Inspection Level
+              Company Inspection Level *
             </label>
             <input
               type="text"
               value={formData.companyInspectionLevel}
-              onChange={(e) =>
-                updateField("companyInspectionLevel", e.target.value)
-              }
+              onChange={(e) => updateField("companyInspectionLevel", e.target.value)}
               disabled={!isEditing || isSaving}
               placeholder="e.g., Level 2"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
-        </div>
-        <div className="grid grid-cols-12 gap-3 mb-3">
+          {/* Date of Inspection */}
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Drawing Number
-            </label>
-            <input
-              type="text"
-              value={formData.drawingNumber}
-              onChange={(e) => updateField("drawingNumber", e.target.value)}
-              disabled={!isEditing || isSaving}
-              placeholder="e.g., DWG-123"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Inspection Date
+              Date of Inspection
             </label>
             <input
               type="date"
-              value={formData.inspectionDate}
-              onChange={(e) => updateField("inspectionDate", e.target.value)}
+              value={formData.dateOfInspection}
+              onChange={(e) => updateField("dateOfInspection", e.target.value)}
               disabled={!isEditing || isSaving}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
+          {/* Time of Inspection */}
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Inspection Time
+              Time of Inspection
             </label>
             <input
               type="time"
-              value={formData.inspectionTime}
-              onChange={(e) => updateField("inspectionTime", e.target.value)}
+              value={formData.timeOfInspection}
+              onChange={(e) => updateField("timeOfInspection", e.target.value)}
               disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">CPP QC</label>
-            <input
-              type="text"
-              value={formData.cppQc}
-              onChange={(e) => updateField("cppQc", e.target.value)}
-              disabled={!isEditing || isSaving}
-              placeholder="CPP QC name"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
         </div>
+
         <div className="grid grid-cols-12 gap-3 mb-3">
+          {/* QC */}
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">QC *</label>
+            <input
+              type="text"
+              value={formData.qc}
+              onChange={(e) => updateField("qc", e.target.value)}
+              disabled={!isEditing || isSaving}
+              placeholder="e.g., QC Name"
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          {/* Company QC */}
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Company QC
             </label>
             <input
               type="text"
-              value={formData.companyQc}
-              onChange={(e) => updateField("companyQc", e.target.value)}
+              value={formData.companyQC}
+              onChange={(e) => updateField("companyQC", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="Company QC name"
+              placeholder="e.g., Company QC"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
+          {/* PMT */}
           <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">PMT</label>
+            <label className="block text-xs text-gray-700 mb-1">PMT *</label>
             <input
               type="text"
               value={formData.pmt}
               onChange={(e) => updateField("pmt", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="PMT value"
+              placeholder="e.g., PMT Name"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
+          {/* Status */}
           <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              RFI Status
-            </label>
+            <label className="block text-xs text-gray-700 mb-1">Status</label>
             <select
-              value={formData.rfiStatus}
-              onChange={(e) => updateField("rfiStatus", e.target.value)}
+              value={formData.status}
+              onChange={(e) => updateField("status", e.target.value)}
               disabled={!isEditing || isSaving}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             >
-              <option value="Pending">Pending</option>
-              <option value="Approved">Approved</option>
-              <option value="Rejected">Rejected</option>
-              <option value="Closed">Closed</option>
+              {STATUSES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
             </select>
           </div>
-          <div className="col-span-3">
+        </div>
+
+        <div className="grid grid-cols-12 gap-3 mb-3">
+          {/* Remarks */}
+          <div className="col-span-12">
             <label className="block text-xs text-gray-700 mb-1">Remarks</label>
-            <input
-              type="text"
+            <textarea
               value={formData.remarks}
               onChange={(e) => updateField("remarks", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="Additional remarks"
+              placeholder="Remarks..."
+              rows="2"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
         </div>
+
         <div className="flex gap-2 mt-4">
           <Button
             type="submit"

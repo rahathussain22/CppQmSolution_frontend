@@ -4,13 +4,15 @@ import {
   getRFILogs,
   updateRFILog,
   deleteRFILog,
+  bulkCreateRFILog,
 } from "../api/rfiLogs";
 
 export function useGetRFILogsQuery(params = {}) {
   return useQuery({
     queryKey: ["rfiLogs", params],
     queryFn: () => getRFILogs(params),
-    select: (data) => (data && data.data) || [],
+    select: (response) =>
+      response.rfis || response.data || response.results || [],
     refetchOnWindowFocus: false,
   });
 }
@@ -23,12 +25,18 @@ export function useCreateRFILogMutation() {
 
 export function useUpdateRFILogMutation() {
   return useMutation({
-    mutationFn: updateRFILog,
+    mutationFn: async ({ formData, id }) => updateRFILog(formData, id),
   });
 }
 
 export function useDeleteRFILogMutation() {
   return useMutation({
     mutationFn: deleteRFILog,
+  });
+}
+
+export function useBulkCreateRFILogMutation() {
+  return useMutation({
+    mutationFn: bulkCreateRFILog,
   });
 }

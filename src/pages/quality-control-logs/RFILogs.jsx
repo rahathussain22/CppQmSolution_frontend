@@ -1,11 +1,15 @@
 import { useState } from "react";
+import {Sheet} from "lucide-react";
 import { RFILogForm } from "@/components/rfi-logs/RFILogForm";
 import { RFILogTable } from "@/components/rfi-logs/RFILogTable";
+import { SubmitFinalInspectionDialog } from "@/components/rfi-logs/SubmitFinalInspectionDialog";
+import { BulkUploadRFI } from "@/components/rfi-logs/BulkUploadRFI";
 import {
   useGetRFILogsQuery,
   useCreateRFILogMutation,
   useUpdateRFILogMutation,
   useDeleteRFILogMutation,
+  useBulkCreateRFILogMutation,
 } from "../../hooks/useRFILogs";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -26,22 +30,61 @@ export default function RFILogs() {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
 
-  // mode: 'idle', 'adding', 'editing'
+  // Form modes: 'idle', 'adding', 'editing'
   const [mode, setMode] = useState("idle");
   const [editingRFILog, setEditingRFILog] = useState(null);
 
+  // Bulk upload
+  const [showBulkUpload, setShowBulkUpload] = useState(false);
+
+  // Submit Final Inspection dialog
+  const [submitInspectionDialogOpen, setSubmitInspectionDialogOpen] =
+    useState(false);
+  const [rfiLogForInspection, setRfiLogForInspection] = useState(null);
+
+  // Delete confirmation
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [rfiLogToDelete, setRfiLogToDelete] = useState(null);
+
+  // Queries and mutations
   const { data: rfiLogList = [], isLoading, error } = useGetRFILogsQuery({});
 
   const createRFILogMutation = useCreateRFILogMutation();
   const updateRFILogMutation = useUpdateRFILogMutation();
   const deleteRFILogMutation = useDeleteRFILogMutation();
+  const bulkCreateRFILogMutation = useBulkCreateRFILogMutation();
 
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [rfiLogToDelete, setRfiLogToDelete] = useState(null);
+  // ========== Table Actions ==========
+  const handleGenerateForm = (rfiLog) => {
+    // Stub: Log to console
+    console.log("Generate Form for RFI:", rfiLog.rfiNumber);
+    toast.info("Generate Form feature coming soon.");
+  };
 
-  const handleAdd = () => {
-    setEditingRFILog(null);
-    setMode("adding");
+  const handleSubmitFinalInspection = (rfiLog) => {
+    setRfiLogForInspection(rfiLog);
+    setSubmitInspectionDialogOpen(true);
+  };
+
+  const handleSubmitFinalInspectionConfirm = (formData) => {
+    if (rfiLogForInspection) {
+      updateRFILogMutation.mutate(
+        { formData, id: rfiLogForInspection.id },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["rfiLogs"] });
+            setSubmitInspectionDialogOpen(false);
+            setRfiLogForInspection(null);
+            toast.success("Final inspection submitted successfully.");
+          },
+          onError: (error) => {
+            toast.error(
+              error.message || "Failed to submit final inspection."
+            );
+          },
+        }
+      );
+    }
   };
 
   const handleEdit = (rfiLog) => {
@@ -49,10 +92,21 @@ export default function RFILogs() {
     setMode("editing");
   };
 
+  const handleDelete = (rfiLog) => {
+    setRfiLogToDelete(rfiLog);
+    setDeleteDialogOpen(true);
+  };
+
+  // ========== Form Actions ==========
+  const handleAdd = () => {
+    setEditingRFILog(null);
+    setMode("adding");
+  };
+
   const handleSave = (formData) => {
     if (mode === "editing" && editingRFILog) {
       updateRFILogMutation.mutate(
-        { ...formData },
+        { formData, id: editingRFILog.id },
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["rfiLogs"] });
@@ -85,15 +139,10 @@ export default function RFILogs() {
     setMode("idle");
   };
 
-  const handleDelete = (rfiLog) => {
-    setRfiLogToDelete(rfiLog);
-    setDeleteDialogOpen(true);
-  };
-
   const confirmDelete = () => {
     if (rfiLogToDelete) {
       deleteRFILogMutation.mutate(
-        { cppRFINo: rfiLogToDelete.cppRFINo },
+        { id: rfiLogToDelete.id },
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["rfiLogs"] });
@@ -111,24 +160,65 @@ export default function RFILogs() {
     }
   };
 
+  // ========== Bulk Upload ==========
+  const handleBulkUpload = (file) => {
+    bulkCreateRFILogMutation.mutate(file, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["rfiLogs"] });
+        setShowBulkUpload(false);
+        toast.success("RFI logs imported successfully.");
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to import RFI logs.");
+      },
+    });
+  };
+
+  const handleBulkUploadCancel = () => {
+    setShowBulkUpload(false);
+  };
+
   return (
     <>
       <div className="p-4 space-y-4">
         <div className="flex justify-between items-center">
           <h4 className="text-3xl font-bold">RFI Logs</h4>
-          {user.permissions === "all" && mode === "idle" && (
-            <Button
-              onClick={handleAdd}
-              className="bg-red-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-red-700"
-            >
-              + Add RFI Log
-            </Button>
-          )}
+          <div className="flex gap-2">
+            {user.permissions === "all" && (
+              <>
+                <Button
+                  onClick={() => setShowBulkUpload(true)}
+                  className="bg-green-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-green-700"
+                >
+                  <Sheet />
+                  Bulk Upload
+                </Button>
+                <Button
+                  onClick={handleAdd}
+                  disabled={mode !== "idle"}
+                  className="bg-red-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:bg-gray-400"
+                >
+                  + Create RFI
+                </Button>
+              </>
+            )}
+          </div>
         </div>
+
+        {/* Bulk Upload Form */}
+        {showBulkUpload && (
+          <BulkUploadRFI
+            isLoading={bulkCreateRFILogMutation.isPending}
+            onUpload={handleBulkUpload}
+            onCancel={handleBulkUploadCancel}
+          />
+        )}
+
+        {/* Add/Edit Form */}
         {(mode === "adding" || mode === "editing") && (
           <RFILogForm
             rfiLog={editingRFILog}
-            isEditing={mode === "editing" || mode === "adding"}
+            isEditing={true}
             onSave={handleSave}
             onCancel={handleCancel}
             isSaving={
@@ -136,6 +226,8 @@ export default function RFILogs() {
             }
           />
         )}
+
+        {/* RFI Logs Table */}
         {isLoading ? (
           <div className="p-4 text-gray-600">Loading RFI logs...</div>
         ) : error ? (
@@ -145,18 +237,22 @@ export default function RFILogs() {
         ) : (
           <RFILogTable
             rfiLogList={rfiLogList}
+            onGenerateForm={handleGenerateForm}
+            onSubmitFinalInspection={handleSubmitFinalInspection}
             onEdit={handleEdit}
             onDelete={handleDelete}
           />
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent className="bg-white">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete RFI Log</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete the RFI Log "
-              {rfiLogToDelete?.rfiNo}"? This action cannot be undone.
+              Are you sure you want to delete RFI "
+              {rfiLogToDelete?.rfiNumber}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -171,6 +267,18 @@ export default function RFILogs() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Submit Final Inspection Dialog */}
+      <SubmitFinalInspectionDialog
+        open={submitInspectionDialogOpen}
+        rfiLog={rfiLogForInspection}
+        isSaving={updateRFILogMutation.isPending}
+        onSubmit={handleSubmitFinalInspectionConfirm}
+        onCancel={() => {
+          setSubmitInspectionDialogOpen(false);
+          setRfiLogForInspection(null);
+        }}
+      />
     </>
   );
 }
