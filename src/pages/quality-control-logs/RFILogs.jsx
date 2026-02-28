@@ -1,15 +1,17 @@
 import { useState } from "react";
-import {Sheet} from "lucide-react";
+import { Sheet } from "lucide-react";
 import { RFILogForm } from "@/components/rfi-logs/RFILogForm";
 import { RFILogTable } from "@/components/rfi-logs/RFILogTable";
 import { SubmitFinalInspectionDialog } from "@/components/rfi-logs/SubmitFinalInspectionDialog";
 import { BulkUploadRFI } from "@/components/rfi-logs/BulkUploadRFI";
+import { LoadingOverlay } from "@/components/master-database/LoadingOverlay";
 import {
   useGetRFILogsQuery,
   useCreateRFILogMutation,
   useUpdateRFILogMutation,
   useDeleteRFILogMutation,
   useBulkCreateRFILogMutation,
+  useGenerateRFILogFormMutation,
 } from "../../hooks/useRFILogs";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -53,12 +55,35 @@ export default function RFILogs() {
   const updateRFILogMutation = useUpdateRFILogMutation();
   const deleteRFILogMutation = useDeleteRFILogMutation();
   const bulkCreateRFILogMutation = useBulkCreateRFILogMutation();
+  const generateRFILogFormMutation = useGenerateRFILogFormMutation();
 
   // ========== Table Actions ==========
   const handleGenerateForm = (rfiLog) => {
-    // Stub: Log to console
-    console.log("Generate Form for RFI:", rfiLog.rfiNumber);
-    toast.info("Generate Form feature coming soon.");
+    if (!rfiLog?.id) {
+      toast.error("Unable to generate form: missing RFI ID.");
+      return;
+    }
+
+    generateRFILogFormMutation.mutate(
+      { id: rfiLog.id },
+      {
+        onSuccess: (data) => {
+          const pdfPath = data?.pdfPath || data?.data?.pdfPath;
+
+          if (pdfPath) {
+            window.open(pdfPath, "_blank", "noopener,noreferrer");
+            toast.success("Form generated successfully.");
+          } else {
+            toast.error("Form generated but PDF path was not provided.");
+          }
+        },
+        onError: (error) => {
+          toast.error(
+            error?.message || "Failed to generate form. Please try again."
+          );
+        },
+      }
+    );
   };
 
   const handleSubmitFinalInspection = (rfiLog) => {
@@ -180,6 +205,10 @@ export default function RFILogs() {
 
   return (
     <>
+      <LoadingOverlay
+        isVisible={generateRFILogFormMutation.isPending}
+        message="Generating RFI Form..."
+      />
       <div className="p-4 space-y-4">
         <div className="flex justify-between items-center">
           <h4 className="text-3xl font-bold">RFI Logs</h4>
@@ -243,6 +272,7 @@ export default function RFILogs() {
             onDelete={handleDelete}
           />
         )}
+        
       </div>
 
       {/* Delete Confirmation Dialog */}

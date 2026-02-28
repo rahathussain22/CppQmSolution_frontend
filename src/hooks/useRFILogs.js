@@ -5,6 +5,7 @@ import {
   updateRFILog,
   deleteRFILog,
   bulkCreateRFILog,
+  generateRFILogForm,
 } from "../api/rfiLogs";
 
 export function useGetRFILogsQuery(params = {}) {
@@ -38,5 +39,11 @@ export function useDeleteRFILogMutation() {
 export function useBulkCreateRFILogMutation() {
   return useMutation({
     mutationFn: bulkCreateRFILog,
+  });
+}
+
+export function useGenerateRFILogFormMutation() {
+  return useMutation({
+    mutationFn: generateRFILogForm,
   });
 }

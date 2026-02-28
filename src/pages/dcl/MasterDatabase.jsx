@@ -5,12 +5,13 @@ import { MasterDatabaseTable } from "@/components/master-database/MasterDatabase
 import { LoadingOverlay } from "@/components/master-database/LoadingOverlay";
 import { parseBulkUploadFile, isValidFileType } from "@/components/master-database/parseBulkUploadFile";
 import { toast } from "sonner";
-import axios from "axios";
 import { getDatabase } from "../../api/master-database";
+
 const MasterDatabase = () => {
   const fileInputRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [masterData, setMasterData] = useState([]);
+  const [isBulkUploading, setIsBulkUploading] = useState(false);
 
   useEffect(()=>{
     const fetchData = async () => {
@@ -48,6 +49,7 @@ const MasterDatabase = () => {
     }
 
     setIsLoading(true);
+    setIsBulkUploading(true);
 
     try {
       // Parse the file
@@ -78,6 +80,7 @@ const MasterDatabase = () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
     } finally {
       setIsLoading(false);
+      setIsBulkUploading(false);
     }
   };
 
@@ -124,8 +127,11 @@ const MasterDatabase = () => {
         className="hidden"
       />
 
-      {/* Loading Overlay */}
-      <LoadingOverlay isVisible={isLoading} message="Preparing data for upload..." />
+      {/* Loading Overlay - only for bulk upload */}
+      <LoadingOverlay
+        isVisible={isBulkUploading}
+        message="Preparing data for upload..."
+      />
 
       {/* Master Table */}
       {masterData.length > 0 ? (

@@ -63,3 +63,7 @@ export async function bulkCreateRFILog(file) {
 export async function deleteRFILog({ id }) {
   return await api.delete(`/rfi/delete/${id}`);
 }
+
+export async function generateRFILogForm({ id }) {
+  return await api.post("/rfi/generateForm", { id });
+}

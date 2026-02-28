@@ -12,6 +12,9 @@ const DISCIPLINES = [
   "Telecom",
 ];
 
+const INSPECTION_LEVELS = ["Hold", "Witness"];
+const COMPANY_INSPECTION_LEVELS = ["Witness", "Surveillance"];
+
 const STATUSES = ["Open", "Accepted & Closed", "Rejected", "Cancelled"];
 
 export function RFILogForm({
@@ -216,28 +219,38 @@ export function RFILogForm({
             <label className="block text-xs text-gray-700 mb-1">
               Inspection Level *
             </label>
-            <input
-              type="text"
+            <select
               value={formData.inspectionLevel}
               onChange={(e) => updateField("inspectionLevel", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="e.g., Level 1"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
+            >
+              <option value="">Select Inspection Level</option>
+              {INSPECTION_LEVELS.map((level) => (
+                <option key={level} value={level}>
+                  {level}
+                </option>
+              ))}
+            </select>
           </div>
           {/* Company Inspection Level */}
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Company Inspection Level *
             </label>
-            <input
-              type="text"
+            <select
               value={formData.companyInspectionLevel}
               onChange={(e) => updateField("companyInspectionLevel", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="e.g., Level 2"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
+            >
+              <option value="">Select Company Inspection Level</option>
+              {COMPANY_INSPECTION_LEVELS.map((level) => (
+                <option key={level} value={level}>
+                  {level}
+                </option>
+              ))}
+            </select>
           </div>
           {/* Date of Inspection */}
           <div className="col-span-3">
