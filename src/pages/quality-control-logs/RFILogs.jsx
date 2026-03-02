@@ -247,7 +247,7 @@ export default function RFILogs() {
         {(mode === "adding" || mode === "editing") && (
           <RFILogForm
             rfiLog={editingRFILog}
-            isEditing={true}
+            isEditing={mode === "editing"}
             onSave={handleSave}
             onCancel={handleCancel}
             isSaving={

@@ -71,18 +71,23 @@ export function RFILogForm({
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isValid) {
-      // Create FormData object
-      const formDataObj = new FormData();
-      
-      Object.keys(formData).forEach((key) => {
-        const value = formData[key];
-        // Only append non-empty values (skip empty strings, send null as is)
-        if (value !== "") {
-          formDataObj.append(key, value === "" ? null : value);
-        }
-      });
-      
-      onSave(formDataObj);
+      if (isEditing) {
+        // For updates, send FormData (to support future file uploads, etc.)
+        const formDataObj = new FormData();
+
+        Object.keys(formData).forEach((key) => {
+          const value = formData[key];
+          // Only append non-empty values (skip empty strings, send null as is)
+          if (value !== "") {
+            formDataObj.append(key, value === "" ? null : value);
+          }
+        });
+
+        onSave(formDataObj);
+      } else {
+        // For creations, send plain JSON object
+        onSave(formData);
+      }
     }
   };
 
@@ -114,7 +119,7 @@ export function RFILogForm({
               type="text"
               value={formData.rfiNumber}
               onChange={(e) => updateField("rfiNumber", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               placeholder="e.g., RFI-001"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
@@ -127,7 +132,7 @@ export function RFILogForm({
             <select
               value={formData.discipline}
               onChange={(e) => updateField("discipline", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             >
               <option value="">Select Discipline</option>
@@ -147,7 +152,7 @@ export function RFILogForm({
               type="text"
               value={formData.itpNumber}
               onChange={(e) => updateField("itpNumber", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               placeholder="e.g., ITP-001"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
@@ -161,7 +166,7 @@ export function RFILogForm({
               type="text"
               value={formData.reportNumber}
               onChange={(e) => updateField("reportNumber", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               placeholder="e.g., REP-001"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
@@ -177,7 +182,7 @@ export function RFILogForm({
             <textarea
               value={formData.description}
               onChange={(e) => updateField("description", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               placeholder="Description..."
               rows="2"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
@@ -192,7 +197,7 @@ export function RFILogForm({
               type="text"
               value={formData.location}
               onChange={(e) => updateField("location", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               placeholder="e.g., Site A"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
@@ -206,7 +211,7 @@ export function RFILogForm({
               type="text"
               value={formData.drawingNumber}
               onChange={(e) => updateField("drawingNumber", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               placeholder="e.g., DRW-001"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
@@ -222,7 +227,7 @@ export function RFILogForm({
             <select
               value={formData.inspectionLevel}
               onChange={(e) => updateField("inspectionLevel", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             >
               <option value="">Select Inspection Level</option>
@@ -241,7 +246,7 @@ export function RFILogForm({
             <select
               value={formData.companyInspectionLevel}
               onChange={(e) => updateField("companyInspectionLevel", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             >
               <option value="">Select Company Inspection Level</option>
@@ -261,7 +266,7 @@ export function RFILogForm({
               type="date"
               value={formData.dateOfInspection}
               onChange={(e) => updateField("dateOfInspection", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
@@ -274,7 +279,7 @@ export function RFILogForm({
               type="time"
               value={formData.timeOfInspection}
               onChange={(e) => updateField("timeOfInspection", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
@@ -288,7 +293,7 @@ export function RFILogForm({
               type="text"
               value={formData.qc}
               onChange={(e) => updateField("qc", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               placeholder="e.g., QC Name"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
@@ -302,7 +307,7 @@ export function RFILogForm({
               type="text"
               value={formData.companyQC}
               onChange={(e) => updateField("companyQC", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               placeholder="e.g., Company QC"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
@@ -314,7 +319,7 @@ export function RFILogForm({
               type="text"
               value={formData.pmt}
               onChange={(e) => updateField("pmt", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               placeholder="e.g., PMT Name"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
@@ -325,7 +330,7 @@ export function RFILogForm({
             <select
               value={formData.status}
               onChange={(e) => updateField("status", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             >
               {STATUSES.map((s) => (
@@ -344,7 +349,7 @@ export function RFILogForm({
             <textarea
               value={formData.remarks}
               onChange={(e) => updateField("remarks", e.target.value)}
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
               placeholder="Remarks..."
               rows="2"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"

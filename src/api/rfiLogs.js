@@ -1,41 +1,8 @@
 import api from "../config/api";
 
-export async function createRFILog({
-  rfiNumber,
-  discipline,
-  itpNumber,
-  reportNumber,
-  description,
-  location,
-  inspectionLevel,
-  drawingNumber,
-  dateOfInspection,
-  timeOfInspection,
-  qc,
-  pmt,
-  remarks,
-  status,
-  companyInspectionLevel,
-  companyQC,
-}) {
-  return await api.post("/rfi/create", {
-    rfiNumber,
-    discipline,
-    itpNumber,
-    reportNumber,
-    description,
-    location,
-    inspectionLevel,
-    drawingNumber,
-    dateOfInspection,
-    timeOfInspection,
-    qc,
-    pmt,
-    remarks,
-    status,
-    companyInspectionLevel,
-    companyQC,
-  });
+export async function createRFILog(formData) {
+  // Accept FormData or a plain object. If it's FormData, Axios will set the correct headers.
+  return await api.post("/rfi/create", formData);
 }
 
 export async function getRFILogs({ projectCode, discipline, status } = {}) {
