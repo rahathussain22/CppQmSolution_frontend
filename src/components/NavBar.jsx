@@ -119,6 +119,7 @@ function NavBar() {
   const isActive = (pathname) => location.pathname.startsWith(pathname);
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
 
   const [openPath, setOpenPath] = useState([]);
   const navRef = useRef(null);
@@ -147,13 +148,23 @@ function NavBar() {
     navigate("/login");
   };
 
+  const filteredNavItems = navItems.filter((item) => {
+    if (item.requiresSuperAdmin) {
+      return (
+        user &&
+        (user.permissions === "all" || user.role === "super-admin")
+      );
+    }
+    return true;
+  });
+
   return (
     <nav
       ref={navRef}
       className="bg-linear-to-b from-red-500 to-red-600 border-b-2 border-red-700 shadow-md px-2 py-1"
     >
       <div className="flex gap-1 flex-wrap">
-        {navItems.map((item) => (
+        {filteredNavItems.map((item) => (
           <NavItem
             key={item.pathname}
             item={item}

@@ -25,6 +25,7 @@ import NCRLogs from "./pages/quality-control-logs/NCRLogs";
 import TQLogs from "./pages/quality-control-logs/TQLogs";
 import FitUpRequestPage from "./pages/inspection/welding/FitUpRequestPage";
 import MasterDatabase from "./pages/dcl/MasterDatabase";
+import ManageUsers from "./pages/ManageUsers";
 
 function RouteLogger() {
   const location = useLocation();
@@ -50,6 +51,9 @@ function App() {
             {/* App (Protected) Routes */}
             <Route element={<AppLayout />}>
               <Route path="/home" element={<Home />} />
+
+              <Route path="/manage-users" element={<ManageUsers />} />
+
               <Route path="/dcl">
                 <Route path="master-database" element={<MasterDatabase />} />
               </Route>

@@ -5,6 +5,12 @@ export const navItems = [
     hasDropdown: false,
   },
   {
+    label: "Manage Users",
+    pathname: "/manage-users",
+    hasDropdown: false,
+    requiresSuperAdmin: true,
+  },
+  {
     label: "DCL",
     pathname: "/dcl",
     hasDropdown: true,
