@@ -1,10 +1,17 @@
 import { useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Navigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { UsersForm } from "@/components/users/UsersForm";
 import { UsersTable } from "@/components/users/UsersTable";
 import { useAuthStore } from "../store/authStore";
+import {
+  useGetUsersQuery,
+  useCreateUserMutation,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+} from "@/hooks/useUsers";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -15,19 +22,20 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-const genId = () => {
-  try {
-    return crypto.randomUUID();
-  } catch {
-    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  }
-};
-
 const ManageUsers = () => {
+  const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
-  const canManageUsers = user?.role === "super-admin";
+  const canManageUsers = user?.role === "super admin" || user?.permissions === "all";
 
-  const [users, setUsers] = useState([]);
+  // Server data
+  const {
+    data: users = [],
+    isLoading,
+    error,
+  } = useGetUsersQuery({});
+  const createUserMutation = useCreateUserMutation();
+  const updateUserMutation = useUpdateUserMutation();
+  const deleteUserMutation = useDeleteUserMutation();
 
   // Form modes: 'idle', 'adding', 'editing'
   const [mode, setMode] = useState("idle");
@@ -116,35 +124,46 @@ const ManageUsers = () => {
     const normalizedUsername = payload.username.toLowerCase().trim();
 
     if (isEditing && editingUser) {
-      setUsers((prev) =>
-        prev.map((u) => {
-          if (u.id !== editingUser.id) return u;
+      // Enforce username uniqueness (if username changed)
+      const prevNormalized = (editingUser.username || "")
+        .toLowerCase()
+        .trim();
+      if (
+        normalizedUsername !== prevNormalized &&
+        usernamesSet.has(normalizedUsername)
+      ) {
+        toast.error("Username already exists.");
+        return;
+      }
 
-          // Enforce username uniqueness (if username changed)
-          const prevNormalized = (editingUser.username || "")
-            .toLowerCase()
-            .trim();
-          if (
-            normalizedUsername !== prevNormalized &&
-            usernamesSet.has(normalizedUsername)
-          ) {
-            toast.error("Username already exists.");
-            return u;
-          }
+      const updatePayload = {
+        id: editingUser.id,
+        username: payload.username.trim(),
+        fullName: payload.fullName.trim(),
+        email: payload.email?.trim() || "",
+        phoneNumber: payload.phoneNumber?.trim() || "",
+        employeeId: payload.employeeId.trim(),
+        department: payload.department.trim(),
+        role: payload.role.trim(),
+        permissions: payload.permissions,
+      };
 
-          // Password: only change if provided (UsersForm omits it when blank)
-          const next = { ...u, ...payload };
-          if (!payload.password) {
-            delete next.password;
-            return { ...u, ...payload };
-          }
-          return next;
-        })
-      );
+      if (payload.password?.trim()) {
+        updatePayload.password = payload.password.trim();
+      }
 
-      setMode("idle");
-      setEditingUser(null);
-      toast.success("User updated.");
+      updateUserMutation.mutate(updatePayload, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["users"] });
+          setMode("idle");
+          setEditingUser(null);
+          toast.success("User updated.");
+        },
+        onError: (err) => {
+          toast.error(err?.message || "Failed to update user.");
+        },
+      });
+
       return;
     }
 
@@ -158,10 +177,9 @@ const ManageUsers = () => {
       return;
     }
 
-    const newUser = {
-      id: genId(),
+    const createPayload = {
       username: payload.username.trim(),
-      password: payload.password,
+      password: payload.password.trim(),
       fullName: payload.fullName.trim(),
       email: payload.email?.trim() || "",
       phoneNumber: payload.phoneNumber?.trim() || "",
@@ -171,10 +189,17 @@ const ManageUsers = () => {
       permissions: payload.permissions,
     };
 
-    setUsers((prev) => [newUser, ...prev]);
-    setMode("idle");
-    setEditingUser(null);
-    toast.success("User created.");
+    createUserMutation.mutate(createPayload, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+        setMode("idle");
+        setEditingUser(null);
+        toast.success("User created.");
+      },
+      onError: (err) => {
+        toast.error(err?.message || "Failed to create user.");
+      },
+    });
   };
 
   const confirmDelete = () => {
@@ -184,10 +209,20 @@ const ManageUsers = () => {
     }
     if (!userToDelete) return;
 
-    setUsers((prev) => prev.filter((u) => u.id !== userToDelete.id));
-    setDeleteDialogOpen(false);
-    setUserToDelete(null);
-    toast.success("User deleted.");
+    deleteUserMutation.mutate(
+      { id: userToDelete.id },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["users"] });
+          setDeleteDialogOpen(false);
+          setUserToDelete(null);
+          toast.success("User deleted.");
+        },
+        onError: (err) => {
+          toast.error(err?.message || "Failed to delete user.");
+        },
+      }
+    );
   };
 
   return (
@@ -218,12 +253,20 @@ const ManageUsers = () => {
           />
         )}
 
-        <UsersTable
-          users={users}
-          canManage={canManageUsers}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        {isLoading ? (
+          <div className="p-4 text-gray-600">Loading users...</div>
+        ) : error ? (
+          <div className="p-4 text-red-700">
+            Error loading users: {error.message}
+          </div>
+        ) : (
+          <UsersTable
+            users={users}
+            canManage={canManageUsers}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        )}
       </div>
 
       {/* Delete Confirmation Dialog */}

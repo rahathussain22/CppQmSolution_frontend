@@ -5,7 +5,6 @@ const PERMISSIONS = [
   { value: "view", label: "View" },
   { value: "view+add", label: "View and Add" },
   { value: "view+add+update", label: "View, Add, and Update" },
-  { value: "all", label: "All" }
 ];
 
 export function UsersForm({
@@ -194,7 +193,7 @@ export function UsersForm({
               value={formData.role}
               onChange={(e) => updateField("role", e.target.value)}
               disabled={isSaving}
-              placeholder="e.g., super-admin"
+              placeholder="e.g., admin"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>

@@ -40,14 +40,15 @@ const LoginPage = () => {
   };
 
   const roles = [
-    "Admin",
-    "Piping",
-    "Electrical",
-    "Mechanical",
-    "Structural",
-    "Pressure Vessel",
-    "Manufacturers Data Report",
-    "Tank",
+    { value: "super admin", label: "Super Admin" },
+    { value: "admin", label: "Admin" },
+    { value: "piping", label: "Piping" },
+    { value: "electrical", label: "Electrical" },
+    { value: "mechanical", label: "Mechanical" },
+    { value: "structural", label: "Structural" },
+    { value: "pressure-vessel", label: "Pressure Vessel" },
+    { value: "manufacturers-data-report", label: "Manufacturers Data Report" },
+    { value: "tank", label: "Tank" },
   ];
 
   return (
@@ -102,13 +103,13 @@ const LoginPage = () => {
                   <input
                     type="radio"
                     name="role"
-                    value={r}
-                    checked={role === r}
+                    value={r.value}
+                    checked={role === r.value}
                     onChange={(e) => setRole(e.target.value)}
                     className="accent-red-600 w-4 h-4"
                     required
                   />
-                  <span className="text-gray-700">{r}</span>
+                  <span className="text-gray-700">{r.label}</span>
                 </label>
               ))}
             </div>
