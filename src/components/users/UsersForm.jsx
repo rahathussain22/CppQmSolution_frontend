@@ -5,6 +5,7 @@ const PERMISSIONS = [
   { value: "view", label: "View" },
   { value: "view+add", label: "View and Add" },
   { value: "view+add+update", label: "View, Add, and Update" },
+  { value: "all", label: "All" }
 ];
 
 export function UsersForm({

@@ -25,8 +25,7 @@ const genId = () => {
 
 const ManageUsers = () => {
   const user = useAuthStore((state) => state.user);
-  const canManageUsers =
-    user?.permissions === "all" || user?.role === "super-admin";
+  const canManageUsers = user?.role === "super-admin";
 
   const [users, setUsers] = useState([]);
 
