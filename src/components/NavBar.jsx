@@ -151,8 +151,7 @@ function NavBar() {
   const filteredNavItems = navItems.filter((item) => {
     if (item.requiresSuperAdmin) {
       return (
-        user &&
-        (user.permissions === "all" || user.role === "super-admin")
+        user && user.role === "super-admin"
       );
     }
     return true;
