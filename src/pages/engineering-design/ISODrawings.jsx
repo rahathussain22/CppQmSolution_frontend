@@ -7,28 +7,6 @@ import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
 
-// Static initial data
-const INITIAL_DRAWINGS = [
-  {
-    id: 1,
-    projectCode: "PROJ-001",
-    drawingNumber: "ISO-001",
-    spoolNumber: "SP-001",
-  },
-  {
-    id: 2,
-    projectCode: "PROJ-001",
-    drawingNumber: "ISO-002",
-    spoolNumber: "SP-002",
-  },
-  {
-    id: 3,
-    projectCode: "PROJ-002",
-    drawingNumber: "ISO-003",
-    spoolNumber: "SP-003",
-  },
-];
-
 export default function ISODrawings() {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
@@ -37,6 +15,10 @@ export default function ISODrawings() {
   const [mode, setMode] = useState("idle");
   const [editingDrawing, setEditingDrawing] = useState(null);
   const [selectedDrawing, setSelectedDrawing] = useState(null);
+
+  const canAdd = user?.permissions === "view+add" || user?.permissions === "view+add+update" || user?.permissions === "all";
+  const canEdit = user?.permissions === "view+add+update" || user?.permissions === "all";
+  const canDelete = user?.permissions === "all";
 
   const {
     data: drawings = [],
@@ -93,7 +75,7 @@ export default function ISODrawings() {
       <div className="p-4 space-y-4">
         <div className="flex justify-between items-center">
           <h4 className="text-3xl font-bold">ISO Drawings</h4>
-          {user.permissions === "all" && mode === "idle" && (
+          {canAdd && mode === "idle" && (
             <Button
               onClick={handleAdd}
               className="bg-red-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-red-700"
@@ -123,10 +105,12 @@ export default function ISODrawings() {
             selectedDrawing={selectedDrawing}
             onEdit={handleEdit}
             onSelectDrawing={handleSelectDrawing}
+            canEdit={canEdit}
+            canDelete={canDelete}
           />
         )}
       </div>
-      {/* approve/reject/revision flows removed — drawings are created as accepted */}
+      
     </>
   );
 }

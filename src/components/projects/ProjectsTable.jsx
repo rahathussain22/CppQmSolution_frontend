@@ -11,7 +11,10 @@ function ProjectsList({
   isDeleting,
   pipelines,
   setPipelines,
-  tableRef
+  tableRef,
+  canAdd,
+  canEdit,
+  canDelete,
 }) {
   const user = useAuthStore((state) => state.user);
   const [openProjectId, setOpenProjectId] = useState(null);
@@ -30,7 +33,7 @@ function ProjectsList({
         <table className="w-full text-sm" ref={tableRef}>
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
-              {user.permissions === "all" && (
+              {(canEdit || canDelete) && (
                 <th className="px-3 py-2 text-left text-xs w-20">Actions</th>
               )}
               <th className="px-3 py-2 text-left text-xs">#</th>
@@ -54,10 +57,10 @@ function ProjectsList({
                       isOpen ? "bg-red-100" : "hover:bg-gray-50"
                     }`}
                   >
-                    {user.permissions === "all" && (
+                    {(canEdit || canDelete) && (
                       <td className="px-3 py-2">
                         <div className="flex gap-4">
-                          <button
+                          {canEdit && <button
                             onClick={(e) => {
                               e.stopPropagation();
                               onEditRow(project);
@@ -65,8 +68,8 @@ function ProjectsList({
                             className="text-gray-700 hover:text-gray-900"
                           >
                             <Pencil size={16} />
-                          </button>
-                          <button
+                          </button>}
+                          {canDelete && <button
                             onClick={(e) => {
                               e.stopPropagation();
                               onDeleteRow(project);
@@ -75,7 +78,7 @@ function ProjectsList({
                             className="text-red-600 hover:text-red-800"
                           >
                             <Trash2 size={16} />
-                          </button>
+                          </button>}
                         </div>
                       </td>
                     )}
@@ -105,6 +108,9 @@ function ProjectsList({
                           project={project}
                           pipelines={pipelines}
                           setPipelines={setPipelines}
+                          canAdd={canAdd}
+                          canEdit={canEdit}
+                          canDelete={canDelete}
                         />
                       </td>
                     </tr>

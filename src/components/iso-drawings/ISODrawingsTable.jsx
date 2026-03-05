@@ -1,13 +1,13 @@
 import { Pencil } from "lucide-react";
-import { useAuthStore } from "../../store/authStore";
 import { Button } from "@/components/ui/button";
 
 export function ISODrawingsTable({
   drawings = [],
   onEdit,
   onSelectDrawing,
+  canEdit,
+  canDelete,
 }) {
-  const user = useAuthStore((state) => state.user);
 
   if (!drawings.length) {
     return <div className="p-4 text-gray-500">No ISO drawings found.</div>;
@@ -19,7 +19,7 @@ export function ISODrawingsTable({
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
-              {user.permissions === "all" && (
+              {(canEdit || canDelete) && (
                 <th className="px-3 py-2 text-left text-xs w-10">&nbsp;</th>
               )}
               <th className="px-3 py-2 text-left text-xs">#</th>
@@ -42,9 +42,9 @@ export function ISODrawingsTable({
                   }}
                   className="border-b border-gray-300 cursor-pointer transition-colors hover:bg-gray-50"
                 >
-                  {user.permissions === "all" && (
+                  {(canEdit || canDelete) && (
                     <td className="px-3 py-2">
-                      <Button
+                      {canEdit && <Button
                         onClick={(e) => {
                           e.stopPropagation();
                           onEdit && onEdit(drawing);
@@ -52,7 +52,7 @@ export function ISODrawingsTable({
                         className="text-gray-700 hover:text-gray-900"
                       >
                         <Pencil size={16} />
-                      </Button>
+                      </Button>}
                     </td>
                   )}
                   <td className="px-3 py-2 text-gray-600">{index + 1}</td>

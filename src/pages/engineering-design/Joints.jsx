@@ -21,37 +21,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-// Static joints data
-const STATIC_JOINTS = [
-  {
-    id: 1,
-    weldNumber: "SW-001",
-    jointType: "Butt",
-    initialProduction: "IP1",
-    component1Id: 1,
-    component2Id: 2,
-    pdfFile: null,
-  },
-  {
-    id: 2,
-    weldNumber: "FW-002",
-    jointType: "Skl",
-    initialProduction: "IP2",
-    component1Id: 2,
-    component2Id: 3,
-    pdfFile: null,
-  },
-  {
-    id: 3,
-    weldNumber: "SW-003",
-    jointType: "Seal",
-    initialProduction: "IP1",
-    component1Id: 1,
-    component2Id: 4,
-    pdfFile: null,
-  },
-];
-
 export default function Joints() {
   const user = useAuthStore((state) => state.user);
 
@@ -62,6 +31,10 @@ export default function Joints() {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [jointToDelete, setJointToDelete] = useState(null);
+
+  const canAdd = user?.permissions === "view+add" || user?.permissions === "view+add+update" || user?.permissions === "all";
+  const canEdit = user?.permissions === "view+add+update" || user?.permissions === "all";
+  const canDelete = user?.permissions === "all";
 
   const {
     data: joints = [],
@@ -163,7 +136,7 @@ export default function Joints() {
       <div className="p-4 space-y-4">
         <div className="flex justify-between items-center">
           <h4 className="text-3xl font-bold">Weld Joints</h4>
-          {user.permissions === "all" && mode === "idle" && (
+          {canAdd && mode === "idle" && (
             <Button
               onClick={handleAdd}
               className="bg-red-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-red-700"
@@ -192,6 +165,8 @@ export default function Joints() {
             joints={joints}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            canEdit={canEdit}
+            canDelete={canDelete}
           />
         ) : (
           <div className="p-4 text-gray-600">No weld joints found.</div>

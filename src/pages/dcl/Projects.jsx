@@ -29,6 +29,9 @@ export default function Projects() {
     project: null,
   });
   const user = useAuthStore((state) => state.user);
+  const canAdd = user?.permissions === "view+add" || user?.permissions === "view+add+update" || user?.permissions === "all";
+  const canEdit = user?.permissions === "view+add+update" || user?.permissions === "all";
+  const canDelete = user?.permissions === "all";
 
   const {
     data: pipelines,
@@ -139,7 +142,7 @@ export default function Projects() {
                 </Button>
               </DownloadTableExcel>
 
-              {user.permissions === "all" && mode === "idle" && (
+              {canAdd && mode === "idle" && (
                 <Button
                   onClick={handleAdd}
                   className="bg-green-600 hover:bg-green-700 text-white cursor-pointer"
@@ -175,6 +178,9 @@ export default function Projects() {
               isDeleting={deleteProjectMutation.isPending}
               pipelines={pipelines}
               tableRef={tableRef}
+              canAdd={canAdd}
+              canEdit={canEdit}
+              canDelete={canDelete}
             />
           )}
         </div>

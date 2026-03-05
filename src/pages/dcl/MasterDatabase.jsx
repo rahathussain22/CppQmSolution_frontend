@@ -6,12 +6,16 @@ import { LoadingOverlay } from "@/components/master-database/LoadingOverlay";
 import { parseBulkUploadFile, isValidFileType } from "@/components/master-database/parseBulkUploadFile";
 import { toast } from "sonner";
 import { getDatabase } from "../../api/master-database";
+import { useAuthStore } from "../../store/authStore";
 
 const MasterDatabase = () => {
   const fileInputRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [masterData, setMasterData] = useState([]);
   const [isBulkUploading, setIsBulkUploading] = useState(false);
+
+  const user = useAuthStore((state) => state.user);
+  const canBulkUpload = user?.permissions === "view+add" || user?.permissions === "view+add+update" || user?.permissions === "all";
 
   useEffect(()=>{
     const fetchData = async () => {
@@ -101,14 +105,14 @@ const MasterDatabase = () => {
 
       {/* Action Buttons */}
       <div className="flex justify-end gap-3 mb-6">
-        <Button
+        {canBulkUpload && <Button
           onClick={handleBulkUploadClick}
           disabled={isLoading}
           className="px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Sheet size={18} />
           Bulk Upload
-        </Button>
+        </Button>}
         <Button
           onClick={handleDownload}
           className="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"

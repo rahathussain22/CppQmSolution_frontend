@@ -87,14 +87,14 @@ export function MasterDatabaseTable({ data }) {
             return (
               <tr key={row.projects.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                 {/* Pipeline Details */}
-                <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.pipelines.lineNumber}</td>
-                <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.pipelines.location}</td>
-                <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.pipelines.lineSize}</td>
-                <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.pipelines.lineClass}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.pipelines?.lineNumber}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.pipelines?.location}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.pipelines?.lineSize}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-red-50">{row.pipelines?.lineClass}</td>
 
                 {/* Drawing Details */}
-                <td className="border border-gray-300 px-2 py-2 bg-orange-50">{row.isoDrawings.drawingNumber}</td>
-                <td className="border border-gray-300 px-2 py-2 bg-orange-50">{row.isoDrawings.spoolNumber || "N/A"}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-orange-50">{row.isoDrawings?.drawingNumber}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-orange-50">{row.isoDrawings?.spoolNumber || "N/A"}</td>
 
                 {/* Weld Joint Details */}
                 <td className="border border-gray-300 px-2 py-2 bg-amber-50">{weldJoints.weldNumber}</td>
@@ -128,8 +128,8 @@ export function MasterDatabaseTable({ data }) {
                 <td className="border border-gray-300 px-2 py-2 bg-purple-50">{comp2.heatNumber}</td>
 
                 {/* Welding Procedure */}
-                <td className="border border-gray-300 px-2 py-2 bg-pink-50">{row.wps.wpsNumber}</td>
-                <td className="border border-gray-300 px-2 py-2 bg-pink-50">{row.wps.weldProcess}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-pink-50">{row.wps?.wpsNumber}</td>
+                <td className="border border-gray-300 px-2 py-2 bg-pink-50">{row.wps?.weldProcess}</td>
               </tr>
             );
           })}

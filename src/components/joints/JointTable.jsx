@@ -1,13 +1,12 @@
 import { Pencil, Trash2 } from "lucide-react";
-import { useAuthStore } from "@/store/authStore";
-import { Button } from "@/components/ui/button";
 
 export function JointTable({
   joints = [],
   onEdit,
   onDelete,
+  canEdit,
+  canDelete,
 }) {
-  const user = useAuthStore((state) => state.user);
 
   if (!joints.length) {
     return <div className="p-4 text-gray-500">No weld joints found.</div>;
@@ -19,7 +18,7 @@ export function JointTable({
         <table className="min-w-full divide-y divide-gray-200 text-sm">
           <thead className="bg-gray-100">
             <tr>
-              {user.permissions === "all" && (
+              {(canEdit || canDelete) && (
                 <th className="px-4 py-2 text-left text-xs">&nbsp;</th>
               )}
               <th className="px-4 py-2 text-left text-xs">#</th>
@@ -34,21 +33,21 @@ export function JointTable({
           <tbody className="divide-y divide-gray-200">
             {joints.map((joint, index) => (
               <tr key={joint.id} className="hover:bg-gray-50">
-                {user.permissions === "all" && (
+                {(canEdit || canDelete) && (
                   <td className="px-4 py-2">
                     <div className="flex gap-2">
-                      <button
+                      {canEdit && <button
                         onClick={() => onEdit && onEdit(joint)}
                         className="text-gray-700 hover:text-gray-900"
                       >
                         <Pencil size={16} />
-                      </button>
-                      <button
+                      </button>}
+                      {canDelete && <button
                         onClick={() => onDelete && onDelete(joint)}
                         className="text-red-600 hover:text-red-800"
                       >
                         <Trash2 size={16} />
-                      </button>
+                      </button>}
                     </div>
                   </td>
                 )}

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-function PipelineSection({ project, pipelines }) {
+function PipelineSection({ project, pipelines, canAdd, canEdit, canDelete }) {
   const [showAddPipelineForm, setShowAddPipelineForm] = useState(false);
   const [editingPipeline, setEditingPipeline] = useState(null);
   const [deleteDialog, setDeleteDialog] = useState({
@@ -95,13 +95,13 @@ function PipelineSection({ project, pipelines }) {
       <div className="flex items-center justify-between mb-2">
         <p className="font-semibold text-gray-700">Pipelines</p>
 
-        <Button
+        {canAdd && <Button
           className="px-3 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 cursor-pointer flex items-center gap-1"
           onClick={handleAddPipelineClick}
         >
           <Plus size={16} />
           <span>Add Pipeline</span>
-        </Button>
+        </Button>}
       </div>
 
       {showAddPipelineForm && (
@@ -130,21 +130,21 @@ function PipelineSection({ project, pipelines }) {
                   {pipe.lineClass}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Button
+              {(canEdit || canDelete) && <div className="flex items-center gap-2">
+                {canEdit && <Button
                   className="text-gray-700 hover:text-gray-900 cursor-pointer"
                   onClick={() => handleEditPipeline(pipe)}
                 >
                   <Pencil size={16} />
-                </Button>
-                <Button
+                </Button>}
+                {canDelete && <Button
                   className="text-red-600 hover:text-red-800 cursor-pointer"
                   onClick={() => openDeleteDialog(pipe)}
                   disabled={deletePipelineMutation.isPending}
                 >
                   <Trash2 size={16} />
-                </Button>
-              </div>
+                </Button>}
+              </div>}
             </li>
           ))}
         </ul>
