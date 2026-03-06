@@ -25,7 +25,7 @@ import {
 const ManageUsers = () => {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
-  const canManageUsers = user?.role === "super admin" || user?.permissions === "all";
+  const canManageUsers = user?.role === "super admin";
 
   // Server data
   const {
