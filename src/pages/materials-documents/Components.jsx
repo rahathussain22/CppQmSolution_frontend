@@ -26,6 +26,10 @@ export default function Components() {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
 
+  const canAdd = user?.permissions === "view+add" || user?.permissions === "view+add+update" || user?.permissions === "all";
+  const canEdit = user?.permissions === "view+add+update" || user?.permissions === "all";
+  const canDelete = user?.permissions === "all";
+
   // mode: 'idle', 'adding', 'editing'
   const [mode, setMode] = useState("idle");
   const [editingComponent, setEditingComponent] = useState(null);
@@ -120,7 +124,7 @@ export default function Components() {
       <div className="p-4 space-y-4">
         <div className="flex justify-between items-center">
           <h4 className="text-3xl font-bold">Components</h4>
-          {user.permissions === "all" && mode === "idle" && (
+          {canAdd && mode === "idle" && (
             <Button
               onClick={handleAdd}
               className="bg-red-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-red-700"
@@ -152,6 +156,8 @@ export default function Components() {
             componentList={componentList}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            canEdit={canEdit}
+            canDelete={canDelete}
           />
         )}
       </div>

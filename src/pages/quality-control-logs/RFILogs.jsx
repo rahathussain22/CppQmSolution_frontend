@@ -32,6 +32,10 @@ export default function RFILogs() {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
 
+  const canAdd = user?.permissions === "view+add" || user?.permissions === "view+add+update" || user?.permissions === "all";
+  const canEdit = user?.permissions === "view+add+update" || user?.permissions === "all";
+  const canDelete = user?.permissions === "all";
+
   // Form modes: 'idle', 'adding', 'editing'
   const [mode, setMode] = useState("idle");
   const [editingRFILog, setEditingRFILog] = useState(null);
@@ -213,7 +217,7 @@ export default function RFILogs() {
         <div className="flex justify-between items-center">
           <h4 className="text-3xl font-bold">RFI Logs</h4>
           <div className="flex gap-2">
-            {user.permissions === "all" && (
+            {canAdd && (
               <>
                 <Button
                   onClick={() => setShowBulkUpload(true)}
@@ -270,6 +274,8 @@ export default function RFILogs() {
             onSubmitFinalInspection={handleSubmitFinalInspection}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            canEdit={canEdit}
+            canDelete={canDelete}
           />
         )}
         

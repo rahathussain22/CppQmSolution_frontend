@@ -1,9 +1,6 @@
-// src/components/tq-logs/TQLogTable.jsx
 import { Pencil, Trash2 } from "lucide-react";
-import { useAuthStore } from "../../store/authStore";
 
-const TQLogTable = ({ tqLogList = [], onEdit, onDelete }) => {
-  const user = useAuthStore((state) => state.user);
+const TQLogTable = ({ tqLogList = [], onEdit, onDelete, canEdit, canDelete }) => {
 
   if (!tqLogList.length) {
     return <div className="p-4 text-gray-500">No TQ logs found.</div>;
@@ -16,9 +13,8 @@ const TQLogTable = ({ tqLogList = [], onEdit, onDelete }) => {
       High: "bg-orange-100 text-orange-800",
       Critical: "bg-red-100 text-red-800",
     };
-    return `px-2 py-1 text-xs rounded ${
-      colors[priority] || "bg-gray-100 text-gray-800"
-    }`;
+    return `px-2 py-1 text-xs rounded ${colors[priority] || "bg-gray-100 text-gray-800"
+      }`;
   };
 
   const getStatusBadge = (status) => {
@@ -28,9 +24,8 @@ const TQLogTable = ({ tqLogList = [], onEdit, onDelete }) => {
       "Pending Review": "bg-purple-100 text-purple-800",
       Closed: "bg-green-100 text-green-800",
     };
-    return `px-2 py-1 text-xs rounded ${
-      colors[status] || "bg-gray-100 text-gray-800"
-    }`;
+    return `px-2 py-1 text-xs rounded ${colors[status] || "bg-gray-100 text-gray-800"
+      }`;
   };
 
   return (
@@ -39,7 +34,7 @@ const TQLogTable = ({ tqLogList = [], onEdit, onDelete }) => {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
-              {user.permissions === "all" && (
+              {(canEdit || canDelete) && (
                 <th className="px-3 py-2 text-left text-xs w-20">Actions</th>
               )}
               <th className="px-3 py-2 text-left text-xs">#</th>
@@ -60,21 +55,21 @@ const TQLogTable = ({ tqLogList = [], onEdit, onDelete }) => {
                 key={log.id}
                 className="border-b border-gray-300 hover:bg-gray-50"
               >
-                {user.permissions === "all" && (
+                {(canEdit || canDelete) && (
                   <td className="px-3 py-2">
                     <div className="flex gap-2">
-                      <button
+                      {canEdit && <button
                         onClick={() => onEdit && onEdit(log)}
                         className="text-gray-700 hover:text-gray-900"
                       >
                         <Pencil size={16} />
-                      </button>
-                      <button
+                      </button>}
+                      {canDelete && <button
                         onClick={() => onDelete && onDelete(log)}
                         className="text-red-600 hover:text-red-800"
                       >
                         <Trash2 size={16} />
-                      </button>
+                      </button>}
                     </div>
                   </td>
                 )}

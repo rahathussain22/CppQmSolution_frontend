@@ -1,5 +1,4 @@
 import { Pencil, Trash2 } from "lucide-react";
-import { useAuthStore } from "../../store/authStore";
 
 export function WelderTable({
   welderList = [],
@@ -7,8 +6,9 @@ export function WelderTable({
   onEdit,
   onSelectWelder,
   onDelete,
+  canEdit,
+  canDelete,
 }) {
-  const user = useAuthStore((state) => state.user);
 
   if (!welderList.length) {
     return <div className="p-4 text-gray-500">No welder records found.</div>;
@@ -20,7 +20,7 @@ export function WelderTable({
         <table className="min-w-max text-sm">
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
-              {user.permissions === "all" && (
+              {(canEdit || canDelete) && (
                 <th className="px-3 py-2 text-left text-xs w-10"></th>
               )}
               <th className="px-3 py-2 text-left text-xs">#</th>
@@ -44,16 +44,15 @@ export function WelderTable({
               <tr
                 key={welder.id}
                 onClick={() => onSelectWelder && onSelectWelder(welder)}
-                className={`border-b border-gray-300 cursor-pointer transition-colors ${
-                  selectedWelder?.id === welder.id
-                    ? "bg-red-100"
-                    : "hover:bg-gray-50"
-                }`}
+                className={`border-b border-gray-300 cursor-pointer transition-colors ${selectedWelder?.id === welder.id
+                  ? "bg-red-100"
+                  : "hover:bg-gray-50"
+                  }`}
               >
-                {user.permissions === "all" && (
+                {(canEdit || canDelete) && (
                   <td className="px-3 py-2">
                     <div className="flex gap-2">
-                      <button
+                      {canEdit && <button
                         onClick={(e) => {
                           e.stopPropagation();
                           onEdit && onEdit(welder);
@@ -61,8 +60,8 @@ export function WelderTable({
                         className="text-gray-700 hover:text-gray-900"
                       >
                         <Pencil size={16} />
-                      </button>
-                      <button
+                      </button>}
+                      {canDelete && <button
                         onClick={(e) => {
                           e.stopPropagation();
                           onDelete && onDelete(welder);
@@ -70,7 +69,7 @@ export function WelderTable({
                         className="text-red-600 hover:text-red-800"
                       >
                         <Trash2 size={16} />
-                      </button>
+                      </button>}
                     </div>
                   </td>
                 )}

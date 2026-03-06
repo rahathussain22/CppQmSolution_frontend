@@ -13,6 +13,8 @@ export function RFILogTable({
   onSubmitFinalInspection,
   onEdit,
   onDelete,
+  canEdit,
+  canDelete,
 }) {
   // const user = useAuthStore((state) => state.user);
 
@@ -73,15 +75,14 @@ export function RFILogTable({
                 <td className="px-3 py-2">{rfiLog.pmt}</td>
                 <td className="px-3 py-2">
                   <span
-                    className={`px-2 py-1 text-xs rounded font-medium ${
-                      rfiLog.status === "Open"
-                        ? "bg-blue-100 text-blue-800"
-                        : rfiLog.status === "Accepted & Closed"
-                          ? "bg-green-100 text-green-800"
-                          : rfiLog.status === "Rejected"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-gray-100 text-gray-800"
-                    }`}
+                    className={`px-2 py-1 text-xs rounded font-medium ${rfiLog.status === "Open"
+                      ? "bg-blue-100 text-blue-800"
+                      : rfiLog.status === "Accepted & Closed"
+                        ? "bg-green-100 text-green-800"
+                        : rfiLog.status === "Rejected"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
                   >
                     {rfiLog.status}
                   </span>
@@ -111,18 +112,21 @@ export function RFILogTable({
                       <DropdownMenuItem onClick={() => onGenerateForm?.(rfiLog)}>
                         Generate Form
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onSubmitFinalInspection?.(rfiLog)}>
-                        Submit Final Inspection
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onEdit?.(rfiLog)}>
-                        Update Record
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
+                      {canEdit && (
+                        <>
+                          <DropdownMenuItem onClick={() => onSubmitFinalInspection?.(rfiLog)}>
+                            Submit Final Inspection
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => onEdit?.(rfiLog)}>
+                            Update Record
+                          </DropdownMenuItem>
+                        </>)}
+                      {canDelete && <DropdownMenuItem
                         variant="destructive"
                         onClick={() => onDelete?.(rfiLog)}
                       >
                         Delete Record
-                      </DropdownMenuItem>
+                      </DropdownMenuItem>}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </td>
