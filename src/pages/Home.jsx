@@ -1,7 +1,7 @@
-import Projects from './dcl/Projects'
+import Projects from './Projects'
 
 const Home = () => {
- 
+
   return (
     <>
       <Projects />

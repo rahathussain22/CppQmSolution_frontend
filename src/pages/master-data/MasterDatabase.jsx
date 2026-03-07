@@ -17,12 +17,12 @@ const MasterDatabase = () => {
   const user = useAuthStore((state) => state.user);
   const canBulkUpload = user?.permissions === "view+add" || user?.permissions === "view+add+update" || user?.permissions === "all";
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
         const response = await getDatabase();
-        console.log("API Response:", response); 
+        console.log("API Response:", response);
         setMasterData(response.data || []);
       } catch (error) {
         console.error("Error fetching master database:", error);
@@ -30,10 +30,10 @@ const MasterDatabase = () => {
       } finally {
         setIsLoading(false);
       }
-      
-  }
-  fetchData();
-},[])
+
+    }
+    fetchData();
+  }, [])
 
   const handleBulkUploadClick = () => {
     fileInputRef.current?.click();
@@ -101,25 +101,27 @@ const MasterDatabase = () => {
 
   return (
     <div className="p-6 bg-white rounded shadow-md">
-      <h1 className="text-2xl font-bold mb-2">Master Database</h1>
 
-      {/* Action Buttons */}
-      <div className="flex justify-end gap-3 mb-6">
-        {canBulkUpload && <Button
-          onClick={handleBulkUploadClick}
-          disabled={isLoading}
-          className="px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Sheet size={18} />
-          Bulk Upload
-        </Button>}
-        <Button
-          onClick={handleDownload}
-          className="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
-        >
-          <Download size={18} />
-          Download
-        </Button>
+      <div className="flex justify-between">
+        <h1 className="text-2xl font-bold mb-2">Master Database</h1>
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-3 mb-6">
+          {canBulkUpload && <Button
+            onClick={handleBulkUploadClick}
+            disabled={isLoading}
+            className="px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Sheet size={18} />
+            Bulk Upload
+          </Button>}
+          <Button
+            onClick={handleDownload}
+            className="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+          >
+            <Download size={18} />
+            Download
+          </Button>
+        </div>
       </div>
 
       {/* Hidden file input */}

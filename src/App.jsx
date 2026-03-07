@@ -14,17 +14,16 @@ import ReactQueryProvider from "./providers/ReactQueryProvider";
 import MainLayout from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import AppLayout from "./layouts/AppLayout";
-import Projects from "./pages/dcl/Projects";
-import ISODrawings from "./pages/engineering-design/ISODrawings";
-import WPS from "./pages/quality-procedures/WPS";
-import Welder from "./pages/quality-procedures/Welder";
-import Joints from "./pages/engineering-design/Joints";
-import Components from "./pages/materials-documents/Components";
-import RFILogs from "./pages/quality-control-logs/RFILogs";
-import NCRLogs from "./pages/quality-control-logs/NCRLogs";
-import TQLogs from "./pages/quality-control-logs/TQLogs";
-import FitUpRequestPage from "./pages/inspection/welding/FitUpRequestPage";
-import MasterDatabase from "./pages/dcl/MasterDatabase";
+import ISODrawings from "./pages/engineering/ISODrawings";
+import WPS from "./pages/welder-wpq/WPS";
+import Welder from "./pages/welder-wpq/Welder";
+import Joints from "./pages/engineering/Joints";
+import Components from "./pages/engineering/Components";
+import RFILogs from "./pages/master-data/RFILogs";
+import NCRLogs from "./pages/master-data/NCRLogs";
+import TQLogs from "./pages/master-data/TQLogs";
+import FitUpRequestPage from "./pages/inspection/FitUpRequestPage";
+import MasterDatabase from "./pages/master-data/MasterDatabase";
 import ManageUsers from "./pages/ManageUsers";
 
 function RouteLogger() {
@@ -54,34 +53,26 @@ function App() {
 
               <Route path="/manage-users" element={<ManageUsers />} />
 
-              <Route path="/dcl">
-                <Route path="master-database" element={<MasterDatabase />} />
+              <Route path="/master-data">
+                <Route path="data-logs" element={<MasterDatabase />} />
+                <Route path="rfi-logs" element={<RFILogs />} />
+                <Route path="ncr-logs" element={<NCRLogs />} />
+                <Route path="tq-logs" element={<TQLogs />} />
               </Route>
 
-              <Route path="/engineering-design">
+              <Route path="welder-wpq">
+                <Route path="wps" element={<WPS />} />
+                <Route path="welder" element={<Welder />} />
+              </Route>
+
+              <Route path="/engineering">
                 <Route path="iso-drawings" element={<ISODrawings />} />
                 <Route path="joints" element={<Joints />} />
-              </Route>
-
-              <Route path="/quality-procedures">
-                <Route path="wps-management" element={<WPS />} />
-                <Route path="welder-management" element={<Welder />} />
-              </Route>
-
-              <Route path="/materials-documents">
                 <Route path="components" element={<Components />} />
               </Route>
 
-              <Route path="/quality-control-logs">
-                <Route path="rfi-log" element={<RFILogs />} />
-                <Route path="ncr-log" element={<NCRLogs />} />
-                <Route path="tq-log" element={<TQLogs />} />
-              </Route>
-
               <Route path="/inspection">
-                <Route path="welding">
-                  <Route path="fit-up-request" element={<FitUpRequestPage />} />
-                </Route>
+                <Route path="fitup-request" element={<FitUpRequestPage />} />
               </Route>
             </Route>
             {/* Default */}

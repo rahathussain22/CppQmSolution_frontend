@@ -65,34 +65,39 @@ function NavItem({
         : "right-full mr-1 mt-5"
       } min-w-[200px] bg-white rounded-md shadow-lg border border-gray-200 py-1 z-40`;
 
+  const linkClassName = `relative z-20 flex items-center gap-1 px-4 rounded text-sm whitespace-nowrap h-10
+    ${isActive(item.pathname)
+      ? level === 0
+        ? "bg-black text-white font-bold"
+        : "bg-gray-100 text-black font-bold"
+      : ""
+    }
+    ${isOpen && level === 0
+      ? "bg-black text-white font-bold"
+      : isOpen && level > 0
+        ? "bg-gray-100 text-black font-bold"
+        : level === 0
+          ? "text-white hover:bg-black hover:font-bold"
+          : "text-gray-900 hover:bg-gray-100 hover:text-black hover:font-bold"
+    }
+  `;
+
   return (
     <div
       ref={containerRef}
       className="relative"
       onMouseEnter={handleMouseEnter}
     >
-      <Link
-        to={fullPath}
-        className={`relative z-20 flex items-center gap-1 px-4 rounded text-sm whitespace-nowrap h-10
-          ${isActive(item.pathname)
-            ? level === 0
-              ? "bg-red-700 text-white font-bold"
-              : "bg-red-100 text-red-700 font-bold"
-            : ""
-          }
-          ${isOpen && level === 0
-            ? "bg-red-700 text-white font-bold"
-            : isOpen && level > 0
-              ? "bg-red-100 text-red-700 font-bold"
-              : level === 0
-                ? "text-white hover:bg-red-700 hover:font-bold"
-                : "text-gray-900 hover:bg-red-100 hover:text-red-700 hover:font-bold"
-          }
-        `}
-      >
-        {item.label}
-        {hasChildren && <ChevronDown className="h-4 w-4" />}
-      </Link>
+      {hasChildren ? (
+        <div className={linkClassName}>
+          {item.label}
+          <ChevronDown className="h-4 w-4" />
+        </div>
+      ) : (
+        <Link to={fullPath} className={linkClassName}>
+          {item.label}
+        </Link>
+      )}
 
       {hasChildren && isOpen && (
         <div className={dropdownClasses}>
@@ -160,7 +165,7 @@ function NavBar() {
   return (
     <nav
       ref={navRef}
-      className="bg-linear-to-b from-red-500 to-red-600 border-b-2 border-red-700 shadow-md px-2 py-1"
+      className="bg-linear-to-b from-gray-800 to-black border-b-2 border-gray-700 shadow-md px-2 py-1"
     >
       <div className="flex gap-1 flex-wrap">
         {filteredNavItems.map((item) => (
@@ -179,7 +184,7 @@ function NavBar() {
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 px-4 h-10 text-sm font-semibold
-             text-white bg-red-600 rounded hover:bg-red-700 transition cursor-pointer"
+             text-white bg-gray-800 rounded hover:bg-black transition cursor-pointer"
         >
           <LogOut size={16} />
           Logout
