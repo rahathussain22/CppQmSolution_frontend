@@ -96,7 +96,7 @@ function PipelineSection({ project, pipelines, canAdd, canEdit, canDelete }) {
         <p className="font-semibold text-gray-700">Pipelines</p>
 
         {canAdd && <Button
-          className="px-3 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 cursor-pointer flex items-center gap-1"
+          className="px-3 py-2 text-sm bg-gray-800 text-white rounded hover:bg-black cursor-pointer flex items-center gap-1"
           onClick={handleAddPipelineClick}
         >
           <Plus size={16} />

@@ -38,9 +38,9 @@ export function PipelineForm({
   };
 
   return (
-    <div className="bg-linear-to-b from-red-50 to-red-100 border-2 border-red-300 rounded shadow-md mb-4">
+    <div className="bg-linear-to-b from-gray-50 to-gray-100 border-2 border-gray-300 rounded shadow-md mb-4">
       {/* Header */}
-      <div className="bg-linear-to-b from-red-600 to-red-700 text-white px-3 py-2 flex items-center justify-between">
+      <div className="bg-linear-to-b from-gray-800 to-black text-white px-3 py-2 flex items-center justify-between">
         <h2 className="flex items-center gap-2">Pipelines</h2>
       </div>
 
@@ -58,7 +58,7 @@ export function PipelineForm({
               onChange={(e) => updateField("lineNumber", e.target.value)}
               disabled={!isEditing}
               placeholder="e.g., 12-P-001"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-800"
             />
           </div>
           <div className="col-span-3">
@@ -71,7 +71,7 @@ export function PipelineForm({
               onChange={(e) => updateField("lineSize", e.target.value)}
               disabled={!isEditing}
               placeholder='e.g., 24"'
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-800"
             />
           </div>
           <div className="col-span-3">
@@ -84,7 +84,7 @@ export function PipelineForm({
               onChange={(e) => updateField("lineClass", e.target.value)}
               disabled={!isEditing}
               placeholder="e.g., 300#"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-800"
             />
           </div>
           <div className="col-span-3">
@@ -97,7 +97,7 @@ export function PipelineForm({
               onChange={(e) => updateField("location", e.target.value)}
               disabled={!isEditing}
               placeholder="e.g., KP 0+000 to KP 5+500"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-800"
             />
           </div>
         </div>
@@ -106,7 +106,7 @@ export function PipelineForm({
         <div className="flex gap-2 mt-4">
           <Button
             type="submit"
-            className="px-4 py-1 text-sm bg-red-600 text-white border border-red-700 rounded hover:bg-red-700"
+            className="px-4 py-1 text-sm bg-gray-800 text-white border border-gray-700 rounded hover:bg-black"
             disabled={isSaving}
           >
             {isSaving ? "Saving..." : "Save"}

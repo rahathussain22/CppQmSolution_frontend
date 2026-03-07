@@ -235,7 +235,7 @@ const ManageUsers = () => {
               <Button
                 onClick={handleAdd}
                 disabled={mode !== "idle"}
-                className="bg-red-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:bg-gray-400"
+                className="bg-gray-800 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-black disabled:bg-gray-400"
               >
                 + Add User
               </Button>

@@ -118,7 +118,7 @@ export function SubmitFinalInspectionDialog({
           <AlertDialogAction
             onClick={handleSubmit}
             disabled={isSaving || !status}
-            className="px-4 py-2 text-sm bg-red-600 text-white border border-red-700 rounded hover:bg-red-700 disabled:bg-gray-400 disabled:border-gray-400"
+            className="px-4 py-2 text-sm bg-gray-800 text-white border border-gray-800 rounded hover:bg-black disabled:bg-gray-400 disabled:border-gray-400"
           >
             {isSaving ? "Submitting..." : "Submit"}
           </AlertDialogAction>

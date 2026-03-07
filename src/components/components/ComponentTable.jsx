@@ -13,7 +13,7 @@ export function ComponentTable({ componentList = [], onEdit, onDelete, canEdit, 
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
               {(canEdit || canDelete) && (
-                <th className="px-3 py-2 text-left text-xs w-20">Actions</th>
+                <th className="px-3 py-2 text-left text-xs w-20"></th>
               )}
               <th className="px-3 py-2 text-left text-xs">#</th>
               <th className="px-3 py-2 text-left text-xs">Project</th>
@@ -34,7 +34,7 @@ export function ComponentTable({ componentList = [], onEdit, onDelete, canEdit, 
                 key={component.id}
                 className="border-b border-gray-300 hover:bg-gray-50"
               >
-                {(canEdit || canDelete)&& (
+                {(canEdit || canDelete) && (
                   <td className="px-3 py-2">
                     <div className="flex gap-2">
                       {canEdit && <button

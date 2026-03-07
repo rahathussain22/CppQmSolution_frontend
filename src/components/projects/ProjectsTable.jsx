@@ -54,7 +54,7 @@ function ProjectsList({
                     key={project.id}
                     onClick={() => toggleProject(project.id)}
                     className={`border-b border-gray-300 cursor-pointer transition-colors ${
-                      isOpen ? "bg-red-100" : "hover:bg-gray-50"
+                      isOpen ? "bg-gray-100" : "hover:bg-gray-50"
                     }`}
                   >
                     {(canEdit || canDelete) && (

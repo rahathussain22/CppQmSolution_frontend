@@ -120,7 +120,7 @@ const TQLogs = () => {
           {canAdd && mode === "idle" && (
             <Button
               onClick={handleAdd}
-              className="bg-red-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-red-700"
+              className="bg-gray-800 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-black"
             >
               + Add TQ Log
             </Button>
@@ -140,7 +140,7 @@ const TQLogs = () => {
         {isLoading ? (
           <div className="p-4 text-gray-600">Loading TQ logs...</div>
         ) : error ? (
-          <div className="p-4 text-red-700">
+          <div className="p-4 text-gray-700">
             Error loading TQ logs: {error.message}
           </div>
         ) : (

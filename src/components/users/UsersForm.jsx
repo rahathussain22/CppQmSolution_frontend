@@ -84,8 +84,8 @@ export function UsersForm({
   };
 
   return (
-    <div className="bg-linear-to-b from-red-50 to-red-100 border-2 border-red-300 rounded shadow-md mb-4">
-      <div className="bg-linear-to-b from-red-600 to-red-700 text-white px-3 py-2 flex items-center justify-between">
+    <div className="bg-linear-to-b from-gray-50 to-gray-100 border-2 border-gray-300 rounded shadow-md mb-4">
+      <div className="bg-linear-to-b from-gray-800 to-black text-white px-3 py-2 flex items-center justify-between">
         <h2 className="text-sm font-bold">
           {isEditing ? "Edit User" : "Create User"}
         </h2>
@@ -221,7 +221,7 @@ export function UsersForm({
         <div className="flex gap-2 mt-4">
           <Button
             type="submit"
-            className="px-4 py-1 text-sm bg-red-600 text-white border border-red-700 rounded hover:bg-red-700"
+            className="px-4 py-1 text-sm bg-gray-800 text-white border border-gray-800 rounded hover:bg-black"
             disabled={isSaving || !isValid}
           >
             {isSaving ? "Saving..." : "Save"}

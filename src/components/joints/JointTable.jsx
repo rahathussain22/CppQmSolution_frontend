@@ -17,7 +17,7 @@ export function JointTable({
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 text-sm">
           <thead className="bg-gray-100">
-            <tr>
+            <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
               {(canEdit || canDelete) && (
                 <th className="px-4 py-2 text-left text-xs">&nbsp;</th>
               )}

@@ -127,31 +127,19 @@ export default function Projects() {
     <>
       <div className="min-h-screen bg-gray-100">
         <div className="p-4 space-y-4">
-          <div className="flex items-center">
+          <div className="flex items-center justify-between">
             <h4 className="text-3xl font-bold">Projects</h4>
 
-            <div className="ml-auto flex gap-2">
-              <DownloadTableExcel
-                filename="projects"
-                sheet="sheet1"
-                currentTableRef={tableRef.current}
-              >
-                <Button className="bg-blue-600 hover:bg-blue-500 text-white cursor-pointer">
-                  <Download className="size-4" />
-                  Download
-                </Button>
-              </DownloadTableExcel>
 
-              {canAdd && mode === "idle" && (
-                <Button
-                  onClick={handleAdd}
-                  className="bg-green-600 hover:bg-green-700 text-white cursor-pointer"
-                >
-                  <Plus className="size-4" />
-                  Add Project
-                </Button>
-              )}
-            </div>
+            {canAdd && mode === "idle" && (
+              <Button
+                onClick={handleAdd}
+                className="bg-gray-800 hover:bg-black text-white cursor-pointer"
+              >
+                <Plus className="size-4" />
+                Add Project
+              </Button>
+            )}
           </div>
 
           {(mode === "adding" || mode === "editing") && (
@@ -167,7 +155,7 @@ export default function Projects() {
           {isLoading ? (
             <div className="p-4 text-gray-600">Loading projects...</div>
           ) : error ? (
-            <div className="p-4 text-red-700">
+            <div className="p-4 text-gray-700">
               Error loading projects: {error.message}
             </div>
           ) : (

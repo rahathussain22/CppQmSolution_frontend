@@ -229,7 +229,7 @@ export default function RFILogs() {
                 <Button
                   onClick={handleAdd}
                   disabled={mode !== "idle"}
-                  className="bg-red-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:bg-gray-400"
+                  className="bg-gray-800 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-black disabled:bg-gray-400"
                 >
                   + Create RFI
                 </Button>
@@ -264,7 +264,7 @@ export default function RFILogs() {
         {isLoading ? (
           <div className="p-4 text-gray-600">Loading RFI logs...</div>
         ) : error ? (
-          <div className="p-4 text-red-700">
+          <div className="p-4 text-gray-700">
             Error loading RFI logs: {error.message}
           </div>
         ) : (
@@ -278,7 +278,7 @@ export default function RFILogs() {
             canDelete={canDelete}
           />
         )}
-        
+
       </div>
 
       {/* Delete Confirmation Dialog */}

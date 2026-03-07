@@ -124,7 +124,7 @@ export default function WPS() {
           {canAdd && mode === "idle" && (
             <Button
               onClick={handleAdd}
-              className="bg-red-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-red-700"
+              className="bg-gray-800 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-black"
             >
               + Add WPS
             </Button>
