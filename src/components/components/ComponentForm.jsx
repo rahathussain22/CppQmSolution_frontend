@@ -16,7 +16,6 @@ export function ComponentForm({
     projectId: component?.projectId || 0,
     componentCode: component?.componentCode || "",
     name: component?.name || "",
-    componentType: component?.componentType || "",
     material: component?.material || "",
     diameter: component?.diameter || "",
     length: component?.length || "",
@@ -41,7 +40,6 @@ export function ComponentForm({
       projectId: component?.projectId || 0,
       componentCode: component?.componentCode || "",
       name: component?.name || "",
-      componentType: component?.componentType || "",
       material: component?.material || "",
       diameter: component?.diameter || "",
       length: component?.length || "",
@@ -64,7 +62,6 @@ export function ComponentForm({
     formData.projectId &&
     formData.componentCode &&
     formData.name &&
-    formData.componentType &&
     formData.material &&
     formData.diameter &&
     formData.length &&
@@ -118,22 +115,9 @@ export function ComponentForm({
             <label className="block text-xs text-gray-700 mb-1">
               Name *
             </label>
-            <input
-              type="text"
+            <select
               value={formData.name}
               onChange={(e) => updateField("name", e.target.value)}
-              disabled={!isEditing || isSaving}
-              placeholder="e.g., Main Pipe"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Component Type *
-            </label>
-            <select
-              value={formData.componentType}
-              onChange={(e) => updateField("componentType", e.target.value)}
               disabled={!isEditing || isSaving}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             >

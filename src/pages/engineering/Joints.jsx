@@ -99,9 +99,10 @@ export default function Joints() {
   };
 
   const handleSave = (formData) => {
-    // formData contains: weldNumber, drawingNumber, jointType, initialProduction, component1Id, component2Id
+    // formData contains: weldNumber, wpsNumber, drawingNumber, jointType, initialProduction, component1Id, component2Id
     const payload = {
       weldNumber: formData.weldNumber,
+      wpsNumber: formData.wpsNumber,
       drawingNumber: formData.drawingNumber,
       jointType: formData.jointType,
       initialProduction: formData.initialProduction,

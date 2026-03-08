@@ -12,6 +12,7 @@ export function WeldJointForm({
 }) {
   const [formData, setFormData] = useState({
     weldNumber: joint?.weldNumber || "",
+    wpsNumber: joint?.wpsNumber || "",
     drawingNumber: joint?.drawingNumber || "",
     jointType: joint?.jointType || "",
     initialProduction: joint?.initialProduction || "",
@@ -26,6 +27,7 @@ export function WeldJointForm({
   useEffect(() => {
     setFormData({
       weldNumber: joint?.weldNumber || "",
+      wpsNumber: joint?.wpsNumber || "",
       drawingNumber: joint?.drawingNumber || "",
       jointType: joint?.jointType || "",
       initialProduction: joint?.initialProduction || "",
@@ -76,6 +78,20 @@ export function WeldJointForm({
           </div>
           <div className="col-span-4">
             <label className="block text-xs text-gray-700 mb-1">
+              WPS No. *
+            </label>
+            <input
+              type="text"
+              placeholder="e.g., WPS-001"
+              value={formData.wpsNumber}
+              onChange={(e) => updateField("wpsNumber", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              required
+            />
+          </div>
+          <div className="col-span-4">
+            <label className="block text-xs text-gray-700 mb-1">
               Joint Type *
             </label>
             <select
@@ -109,9 +125,7 @@ export function WeldJointForm({
               <option value="IP3">IP3</option>
             </select>
           </div>
-        </div>
-        <div className="grid grid-cols-12 gap-3">
-          <div className="col-span-12">
+          <div className="col-span-8">
             <label className="block text-xs text-gray-700 mb-1">Drawing No. *</label>
             <input
               type="text"
@@ -139,7 +153,7 @@ export function WeldJointForm({
               <option value={0}>Select Component 1</option>
               {availableComponents.map((comp) => (
                 <option key={comp.id} value={comp.id}>
-                  {comp.componentCode} - {comp.componentType} - {comp.material}
+                  {comp.componentCode} - {comp.name} - {comp.material}
                 </option>
               ))}
             </select>
@@ -157,7 +171,7 @@ export function WeldJointForm({
               <option value={0}>Select Component 2</option>
               {availableComponents.map((comp) => (
                 <option key={comp.id} value={comp.id}>
-                  {comp.componentCode} - {comp.componentType} - {comp.material}
+                  {comp.componentCode} - {comp.name} - {comp.material}
                 </option>
               ))}
             </select>

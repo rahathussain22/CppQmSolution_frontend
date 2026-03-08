@@ -119,8 +119,7 @@ function ComponentsSection({ joint }) {
                     className="w-4 h-4"
                   />
                   <span>
-                    {comp.componentCode} - {comp.componentType} -{" "}
-                    {comp.material}
+                    {comp.componentCode} - {comp.name} - {comp.material}
                   </span>
                 </label>
               ))}
@@ -189,7 +188,7 @@ function ComponentsSection({ joint }) {
             <thead className="bg-gray-100">
               <tr>
                 <th className="px-4 py-2 text-left">Component Code</th>
-                <th className="px-4 py-2 text-left">Type</th>
+                <th className="px-4 py-2 text-left">Name</th>
                 <th className="px-4 py-2 text-left">Material</th>
                 <th className="px-4 py-2 text-left">Diameter</th>
                 <th className="px-4 py-2 text-left">Length</th>
@@ -206,7 +205,7 @@ function ComponentsSection({ joint }) {
                     {c.attachedComponent.componentCode}
                   </td>
                   <td className="px-4 py-2">
-                    {c.attachedComponent.componentType}
+                    {c.attachedComponent.name}
                   </td>
                   <td className="px-4 py-2">{c.attachedComponent.material}</td>
                   <td className="px-4 py-2">{c.attachedComponent.diameter}</td>

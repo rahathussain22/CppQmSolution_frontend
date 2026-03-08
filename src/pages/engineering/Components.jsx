@@ -167,7 +167,7 @@ export default function Components() {
             <AlertDialogTitle>Delete Component</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete the component "
-              {componentToDelete?.componentType || componentToDelete?.pipeNumber}"? This action cannot be undone.
+              {componentToDelete?.name || componentToDelete?.pipeNumber}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

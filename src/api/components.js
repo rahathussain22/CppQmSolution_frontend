@@ -1,7 +1,6 @@
 import api from "../config/api";
 
 export async function createComponent({
-  componentType,
   componentCode,
   name,
   material,
@@ -13,7 +12,6 @@ export async function createComponent({
   projectId,
 }) {
   return await api.post("/component/add", {
-    componentType,
     componentCode,
     name,
     material,
@@ -37,7 +35,6 @@ export async function getComponents({ projectId }) {
 
 export async function updateComponent({
   componentId,
-  componentType,
   componentCode,
   name,
   material,
@@ -50,7 +47,6 @@ export async function updateComponent({
 }) {
   return await api.patch("/component/update", {
     componentId,
-    componentType,
     componentCode,
     name,
     material,
