@@ -10,23 +10,25 @@ export function ISODrawingForm({
   onCancel,
 }) {
   const [formData, setFormData] = useState({
-    projectCode: drawing?.projectCode || "",
     drawingNumber: drawing?.drawingNumber || "",
     title: drawing?.title || "",
     revisionNumber: drawing?.revisionNumber || "",
     issuedAs: drawing?.issuedAs || "",
     spoolNumber: drawing?.spoolNumber || "",
+    sheetNumber: drawing?.sheetNumber || "",
+    lineNumber: drawing?.lineNumber || "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     setFormData({
-      projectCode: drawing?.projectCode || "",
       drawingNumber: drawing?.drawingNumber || "",
       title: drawing?.title || "",
       revisionNumber: drawing?.revisionNumber || "",
       issuedAs: drawing?.issuedAs || "",
       spoolNumber: drawing?.spoolNumber || "",
+      sheetNumber: drawing?.sheetNumber || "",
+      lineNumber: drawing?.lineNumber || "",
     });
     setSelectedFile(null);
   }, [drawing, isEditing]);
@@ -59,12 +61,12 @@ export function ISODrawingForm({
   };
 
   const isValid =
-    formData.projectCode &&
     formData.drawingNumber &&
+    formData.sheetNumber &&
     formData.title &&
+    formData.lineNumber &&
     formData.revisionNumber &&
     formData.issuedAs &&
-    formData.spoolNumber &&
     (selectedFile || isEditing);
 
   return (
@@ -74,19 +76,6 @@ export function ISODrawingForm({
       </div>
       <form onSubmit={handleSubmit} className="p-4">
         <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-4">
-            <label className="block text-xs text-gray-700 mb-1">
-              Project Code *
-            </label>
-            <input
-              type="text"
-              value={formData.projectCode}
-              onChange={(e) => updateField("projectCode", e.target.value)}
-              disabled={!isEditing}
-              placeholder="e.g., PROJ-001"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
           <div className="col-span-4">
             <label className="block text-xs text-gray-700 mb-1">
               Drawing No. *:
@@ -102,7 +91,20 @@ export function ISODrawingForm({
           </div>
           <div className="col-span-4">
             <label className="block text-xs text-gray-700 mb-1">
-              Spool No. *:
+              Sheet No. *:
+            </label>
+            <input
+              type="text"
+              value={formData.sheetNumber}
+              onChange={(e) => updateField("sheetNumber", e.target.value)}
+              disabled={!isEditing || isSaving}
+              placeholder="e.g., 1"
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-4">
+            <label className="block text-xs text-gray-700 mb-1">
+              Spool No.:
             </label>
             <input
               type="text"
@@ -115,7 +117,7 @@ export function ISODrawingForm({
           </div>
         </div>
         <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-4">
+          <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Title *
             </label>
@@ -128,7 +130,20 @@ export function ISODrawingForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
-          <div className="col-span-4">
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              Line No. *:
+            </label>
+            <input
+              type="text"
+              value={formData.lineNumber}
+              onChange={(e) => updateField("lineNumber", e.target.value)}
+              disabled={!isEditing || isSaving}
+              placeholder="e.g., LN-001"
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Revision No. *:
             </label>
@@ -141,7 +156,7 @@ export function ISODrawingForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
-          <div className="col-span-4">
+          <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Issued As *:
             </label>

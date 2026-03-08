@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-import { useAuthStore } from "../../store/authStore";
-import { useQuery } from "@tanstack/react-query";
-import { getProjects } from "../../api/project";
 import { Button } from "@/components/ui/button";
 
 export function WelderForm({
@@ -11,45 +8,25 @@ export function WelderForm({
   onSave,
   onCancel,
 }) {
-  const user = useAuthStore((state) => state.user);
   const [formData, setFormData] = useState({
-    projectId: welder?.projectId || 0,
-    stampNumber: welder?.stampNumber || "",
-    name: welder?.name || "",
-    employeeId: welder?.employeeId || "",
-    company: welder?.company || "",
-    nationality: welder?.nationality || "",
-    passportNumber: welder?.passportNumber || "",
-    contactNumber: welder?.contactNumber || "",
-    qualificationDate: welder?.qualificationDate || "",
-    expiryDate: welder?.expiryDate || "",
-    status: welder?.status || "Active",
-  });
-
-  const {
-    data: availableProjects = [],
-    isLoading: isLoadingProjects,
-    error: errorProjects,
-  } = useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getProjects({ createdBy: user.id }),
-    select: (data) => (data && data.projects) || [],
-    refetchOnWindowFocus: false,
+    rootA: welder?.rootA || "",
+    rootB: welder?.rootB || "",
+    fillA: welder?.fillA || "",
+    fillB: welder?.fillB || "",
+    capA: welder?.capA || "",
+    capB: welder?.capB || "",
+    weldNumber: welder?.weldNumber || "",
   });
 
   useEffect(() => {
     setFormData({
-      projectId: welder?.projectId || 0,
-      stampNumber: welder?.stampNumber || "",
-      name: welder?.name || "",
-      employeeId: welder?.employeeId || "",
-      company: welder?.company || "",
-      nationality: welder?.nationality || "",
-      passportNumber: welder?.passportNumber || "",
-      contactNumber: welder?.contactNumber || "",
-      qualificationDate: welder?.qualificationDate || "",
-      expiryDate: welder?.expiryDate || "",
-      status: welder?.status || "Active",
+      rootA: welder?.rootA || "",
+      rootB: welder?.rootB || "",
+      fillA: welder?.fillA || "",
+      fillB: welder?.fillB || "",
+      capA: welder?.capA || "",
+      capB: welder?.capB || "",
+      weldNumber: welder?.weldNumber || "",
     });
   }, [welder, isEditing]);
 
@@ -63,81 +40,53 @@ export function WelderForm({
   };
 
   const isValid =
-    formData.projectId &&
-    formData.stampNumber &&
-    formData.name &&
-    formData.employeeId &&
-    formData.company &&
-    formData.nationality &&
-    formData.passportNumber &&
-    formData.contactNumber &&
-    formData.qualificationDate &&
-    formData.expiryDate &&
-    formData.status;
+    formData.rootA &&
+    formData.rootB &&
+    formData.weldNumber;
 
   return (
     <div className="bg-linear-to-b from-gray-50 to-gray-100 border-2 border-gray-300 rounded shadow-md mb-4">
       <div className="bg-linear-to-b from-gray-800 to-black text-white px-3 py-2 flex items-center justify-between">
-        <h2 className="flex items-center gap-2">Welder Management</h2>
+        <h2 className="flex items-center gap-2">Welder WPQ</h2>
       </div>
       <form onSubmit={handleSubmit} className="p-4">
         <div className="grid grid-cols-12 gap-3 mb-3">
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Project *
-            </label>
-            <select
-              value={formData.projectId}
-              onChange={(e) => updateField("projectId", Number(e.target.value))}
-              disabled={!isEditing || isLoadingProjects || errorProjects}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            >
-              {errorProjects ? (
-                <option>Error loading projects</option>
-              ) : (
-                <option value={0}>Select Project</option>
-              )}
-              {availableProjects.map((project) => (
-                <option key={project.id} value={project.id}>
-                  {project.projectCode} - {project.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Stamp Number *
+              Weld Number *
             </label>
             <input
               type="text"
-              value={formData.stampNumber}
-              onChange={(e) => updateField("stampNumber", e.target.value)}
+              value={formData.weldNumber}
+              onChange={(e) => updateField("weldNumber", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="e.g., STAMP-001"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">Name *</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => updateField("name", e.target.value)}
-              disabled={!isEditing || isSaving}
-              placeholder="Welder name"
+              placeholder="e.g., W-001"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Employee ID *
+              Root A *
             </label>
             <input
               type="text"
-              value={formData.employeeId}
-              onChange={(e) => updateField("employeeId", e.target.value)}
+              value={formData.rootA}
+              onChange={(e) => updateField("rootA", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="e.g., EMP-123"
+              placeholder="Root A"
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              Root B *
+            </label>
+            <input
+              type="text"
+              value={formData.rootB}
+              onChange={(e) => updateField("rootB", e.target.value)}
+              disabled={!isEditing || isSaving}
+              placeholder="Root B"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
@@ -145,94 +94,55 @@ export function WelderForm({
         <div className="grid grid-cols-12 gap-3 mb-3">
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Company *
+              Fill A
             </label>
             <input
               type="text"
-              value={formData.company}
-              onChange={(e) => updateField("company", e.target.value)}
+              value={formData.fillA}
+              onChange={(e) => updateField("fillA", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="Company name"
+              placeholder="Fill A"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Nationality *
+              Fill B
             </label>
             <input
               type="text"
-              value={formData.nationality}
-              onChange={(e) => updateField("nationality", e.target.value)}
+              value={formData.fillB}
+              onChange={(e) => updateField("fillB", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="e.g., Indian"
+              placeholder="Fill B"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Passport Number *
+              Cap A
             </label>
             <input
               type="text"
-              value={formData.passportNumber}
-              onChange={(e) => updateField("passportNumber", e.target.value)}
+              value={formData.capA}
+              onChange={(e) => updateField("capA", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="e.g., P1234567"
+              placeholder="Cap A"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
-              Contact Number *
+              Cap B
             </label>
             <input
               type="text"
-              value={formData.contactNumber}
-              onChange={(e) => updateField("contactNumber", e.target.value)}
+              value={formData.capB}
+              onChange={(e) => updateField("capB", e.target.value)}
               disabled={!isEditing || isSaving}
-              placeholder="e.g., +1234567890"
+              placeholder="Cap B"
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
-          </div>
-        </div>
-        <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Qualification Date *
-            </label>
-            <input
-              type="date"
-              value={formData.qualificationDate}
-              onChange={(e) => updateField("qualificationDate", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Expiry Date *
-            </label>
-            <input
-              type="date"
-              value={formData.expiryDate}
-              onChange={(e) => updateField("expiryDate", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">Status *</label>
-            <select
-              value={formData.status}
-              onChange={(e) => updateField("status", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            >
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-              <option value="Expired">Expired</option>
-            </select>
           </div>
         </div>
         <div className="flex gap-2 mt-4">

@@ -58,7 +58,7 @@ export default function Welder() {
         queryClient.invalidateQueries({ queryKey: ["welders"] });
         setMode("idle");
         setEditingWelder(null);
-        toast.success("Welder has been saved.");
+        toast.success("Welder WPQ has been saved.");
       },
       onError: (error) => {
         toast.error(error.message || "Failed to save welder.");
@@ -106,7 +106,7 @@ export default function Welder() {
     <>
       <div className="p-4 space-y-4">
         <div className="flex justify-between items-center">
-          <h4 className="text-3xl font-bold">Welder Management</h4>
+          <h4 className="text-3xl font-bold">Welder Details</h4>
           {canAdd && mode === "idle" && (
             <Button
               onClick={handleAdd}
@@ -146,10 +146,10 @@ export default function Welder() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent className="bg-white">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Welder</AlertDialogTitle>
+            <AlertDialogTitle>Delete Welder WPQ</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete the welder "{welderToDelete?.name}
-              "? This action cannot be undone.
+              Are you sure you want to delete the record for weld "
+              {welderToDelete?.weldNumber}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { getComponents } from "../../api/components";
-import { getPipelines } from "../../api/pipelines";
 
 export function WeldJointForm({
   joint,
@@ -13,7 +12,7 @@ export function WeldJointForm({
 }) {
   const [formData, setFormData] = useState({
     weldNumber: joint?.weldNumber || "",
-    pipelineLineNumber: joint?.pipelineLineNumber || "",
+    drawingNumber: joint?.drawingNumber || "",
     jointType: joint?.jointType || "",
     initialProduction: joint?.initialProduction || "",
     component1Id: joint?.component1Id || 0,
@@ -27,7 +26,7 @@ export function WeldJointForm({
   useEffect(() => {
     setFormData({
       weldNumber: joint?.weldNumber || "",
-      pipelineLineNumber: joint?.pipelineLineNumber || "",
+      drawingNumber: joint?.drawingNumber || "",
       jointType: joint?.jointType || "",
       initialProduction: joint?.initialProduction || "",
       component1Id: joint?.component1Id || 0,
@@ -48,15 +47,6 @@ export function WeldJointForm({
     refetchOnWindowFocus: false,
   });
 
-  const {
-    data: availablePipelines = [],
-    isLoading: isLoadingPipelines,
-  } = useQuery({
-    queryKey: ["pipelines"],
-    queryFn: () => getPipelines({}),
-    select: (data) => (data && data.pipelines) || [],
-    refetchOnWindowFocus: false,
-  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -122,21 +112,16 @@ export function WeldJointForm({
         </div>
         <div className="grid grid-cols-12 gap-3">
           <div className="col-span-12">
-            <label className="block text-xs text-gray-700 mb-1">Pipeline *</label>
-            <select
-              value={formData.pipelineLineNumber}
-              onChange={(e) => updateField("pipelineLineNumber", e.target.value)}
-              disabled={!isEditing || isSaving || isLoadingPipelines}
+            <label className="block text-xs text-gray-700 mb-1">Drawing No. *</label>
+            <input
+              type="text"
+              placeholder="e.g., ISO-001"
+              value={formData.drawingNumber}
+              onChange={(e) => updateField("drawingNumber", e.target.value)}
+              disabled={!isEditing || isSaving}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
               required
-            >
-              <option value="">Select Pipeline</option>
-              {availablePipelines.map((pipeline) => (
-                <option key={pipeline.id} value={pipeline.lineNumber}>
-                  {pipeline.lineNumber} - {pipeline.location}
-                </option>
-              ))}
-            </select>
+            />
           </div>
         </div>
 

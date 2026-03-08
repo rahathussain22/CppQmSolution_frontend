@@ -1,30 +1,22 @@
 import api from "../config/api";
 
 export async function createWelder({
-  projectId,
-  stampNumber,
-  name,
-  employeeId,
-  company,
-  nationality,
-  passportNumber,
-  contactNumber,
-  qualificationDate,
-  expiryDate,
-  status,
+  rootA,
+  rootB,
+  fillA,
+  fillB,
+  capA,
+  capB,
+  weldNumber,
 }) {
   return await api.post("/welder/create", {
-    projectId,
-    stampNumber,
-    name,
-    employeeId,
-    company,
-    nationality,
-    passportNumber,
-    contactNumber,
-    qualificationDate,
-    expiryDate,
-    status,
+    rootA,
+    rootB,
+    fillA,
+    fillB,
+    capA,
+    capB,
+    weldNumber,
   });
 }
 

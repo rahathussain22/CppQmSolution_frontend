@@ -23,9 +23,10 @@ export function ISODrawingsTable({
                 <th className="px-3 py-2 text-left text-xs w-10">&nbsp;</th>
               )}
               <th className="px-3 py-2 text-left text-xs">#</th>
-              <th className="px-3 py-2 text-left text-xs">Project Code</th>
               <th className="px-3 py-2 text-left text-xs">Drawing No.</th>
+              <th className="px-3 py-2 text-left text-xs">Sheet No.</th>
               <th className="px-3 py-2 text-left text-xs">Title</th>
+              <th className="px-3 py-2 text-left text-xs">Line No.</th>
               <th className="px-3 py-2 text-left text-xs">Revision</th>
               <th className="px-3 py-2 text-left text-xs">Issued As</th>
               <th className="px-3 py-2 text-left text-xs">Spool No.</th>
@@ -56,16 +57,17 @@ export function ISODrawingsTable({
                     </td>
                   )}
                   <td className="px-3 py-2 text-gray-600">{index + 1}</td>
-                  <td className="px-3 py-2">{drawing.projectCode || "-"}</td>
                   <td className="px-3 py-2">{drawing.drawingNumber}</td>
+                  <td className="px-3 py-2">{drawing.sheetNumber || "-"}</td>
                   <td className="px-3 py-2">{drawing.title || "-"}</td>
+                  <td className="px-3 py-2">{drawing.lineNumber || "-"}</td>
                   <td className="px-3 py-2">{drawing.revisionNumber || "-"}</td>
                   <td className="px-3 py-2 text-xs">
                     <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded">
                       {drawing.issuedAs || "-"}
                     </span>
                   </td>
-                  <td className="px-3 py-2">{drawing.spoolNumber}</td>
+                  <td className="px-3 py-2">{drawing.spoolNumber || "-"}</td>
                   <td className="px-3 py-2 text-xs ">
                     {drawing.fileUrl ? (
                       <a

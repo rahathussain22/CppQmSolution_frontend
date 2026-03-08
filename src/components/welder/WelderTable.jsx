@@ -17,26 +17,20 @@ export function WelderTable({
   return (
     <div className="bg-white border-2 border-gray-300 rounded shadow-md overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-max text-sm">
+        <table className="w-full text-sm">
           <thead>
             <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
               {(canEdit || canDelete) && (
                 <th className="px-3 py-2 text-left text-xs w-10"></th>
               )}
               <th className="px-3 py-2 text-left text-xs">#</th>
-              <th className="px-3 py-2 text-left text-xs">Project</th>
-              <th className="px-3 py-2 text-left text-xs">Stamp Number</th>
-              <th className="px-3 py-2 text-left text-xs">Name</th>
-              <th className="px-3 py-2 text-left text-xs">Employee ID</th>
-              <th className="px-3 py-2 text-left text-xs">Company</th>
-              <th className="px-3 py-2 text-left text-xs">Nationality</th>
-              <th className="px-3 py-2 text-left text-xs">Passport Number</th>
-              <th className="px-3 py-2 text-left text-xs">Contact Number</th>
-              <th className="px-3 py-2 text-left text-xs">
-                Qualification Date
-              </th>
-              <th className="px-3 py-2 text-left text-xs">Expiry Date</th>
-              <th className="px-3 py-2 text-left text-xs">Status</th>
+              <th className="px-3 py-2 text-left text-xs">Weld Number</th>
+              <th className="px-3 py-2 text-left text-xs">Root A</th>
+              <th className="px-3 py-2 text-left text-xs">Root B</th>
+              <th className="px-3 py-2 text-left text-xs">Fill A</th>
+              <th className="px-3 py-2 text-left text-xs">Fill B</th>
+              <th className="px-3 py-2 text-left text-xs">Cap A</th>
+              <th className="px-3 py-2 text-left text-xs">Cap B</th>
             </tr>
           </thead>
           <tbody>
@@ -74,30 +68,13 @@ export function WelderTable({
                   </td>
                 )}
                 <td className="px-3 py-2 text-gray-600">{index + 1}</td>
-                <td className="px-3 py-2">
-                  {welder.projectName ||
-                    welder.project?.name ||
-                    welder.projectCode ||
-                    "-"}
-                </td>
-                <td className="px-3 py-2">{welder.stampNumber}</td>
-                <td className="px-3 py-2">{welder.name}</td>
-                <td className="px-3 py-2">{welder.employeeId}</td>
-                <td className="px-3 py-2">{welder.company}</td>
-                <td className="px-3 py-2">{welder.nationality}</td>
-                <td className="px-3 py-2">{welder.passportNumber}</td>
-                <td className="px-3 py-2">{welder.contactNumber}</td>
-                <td className="px-3 py-2">
-                  {welder.qualificationDate
-                    ? new Date(welder.qualificationDate).toLocaleDateString()
-                    : "-"}
-                </td>
-                <td className="px-3 py-2">
-                  {welder.expiryDate
-                    ? new Date(welder.expiryDate).toLocaleDateString()
-                    : "-"}
-                </td>
-                <td className="px-3 py-2">{welder.status}</td>
+                <td className="px-3 py-2">{welder.weldNumber}</td>
+                <td className="px-3 py-2">{welder.rootA}</td>
+                <td className="px-3 py-2">{welder.rootB}</td>
+                <td className="px-3 py-2">{welder.fillA || "-"}</td>
+                <td className="px-3 py-2">{welder.fillB || "-"}</td>
+                <td className="px-3 py-2">{welder.capA || "-"}</td>
+                <td className="px-3 py-2">{welder.capB || "-"}</td>
               </tr>
             ))}
           </tbody>
