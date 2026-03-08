@@ -25,6 +25,7 @@ import TQLogs from "./pages/master-data/TQLogs";
 import FitUpRequestPage from "./pages/inspection/FitUpRequestPage";
 import MasterDatabase from "./pages/master-data/MasterDatabase";
 import ManageUsers from "./pages/ManageUsers";
+import IRW001 from "./pages/reports/IRW001";
 
 function RouteLogger() {
   const location = useLocation();
@@ -73,6 +74,10 @@ function App() {
 
               <Route path="/inspection">
                 <Route path="fitup-request" element={<FitUpRequestPage />} />
+              </Route>
+
+              <Route path="/reports">
+                <Route path="ir-w-001" element={<IRW001 />} />
               </Route>
             </Route>
             {/* Default */}

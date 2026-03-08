@@ -97,6 +97,7 @@ export const navItems = [
     pathname: "/reports",
     hasDropdown: true,
     children: [
+      { label: "Daily Weld Fit-Up Inspection Report (IR-W-001)", pathname: "/reports/ir-w-001" },
       { label: "Weld Summary Weekly Report (SATR-W-2008)", pathname: "/reports/satr-w-2008" },
       { label: "Weekly Weld Repair and Tracer Weld Report (SATR-W-2018)", pathname: "/reports/satr-w-2018" },
       { label: "Weekly Cummulative Weld Status Report (SATR-W-2019)", pathname: "/reports/satr-w-2019" },
