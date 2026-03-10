@@ -61,7 +61,7 @@ export default function IRW001() {
     <div className="p-4 space-y-4">
       <div className="flex items-center justify-between">
         <h4 className="text-3xl font-bold">
-          Daily Weld Fit-up Inspection Report (IR-W-001)
+          Daily Weld Fit-up & Production Inspection Report (IR-CSSP-W-001)
         </h4>
       </div>
 

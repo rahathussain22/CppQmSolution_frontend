@@ -68,7 +68,7 @@ export const navItems = [
       { label: "View WeldVI Request (SATR-W-2007)", pathname: "/inspection/weld-request" },
       { label: "NDE Requirement", pathname: "/inspection/nde-requirement" },
       { label: "Stage Inspection Requirement", pathname: "/inspection/stage-requirement" },
-      { label: "NDT Inspection Request (SATR-NDE-2008)", pathname: "/inspection/nde-request" },
+      { label: "NDT Inspection Request (IR-CSSP-NDT-001)", pathname: "/inspection/ndt-request" },
       { label: "Coating Test - Production", pathname: "/inspection/coating-production" },
       { label: "Coating Test - Inspection", pathname: "/inspection/coating-inspection" },
       { label: "Hydrostatic Test - Production", pathname: "/inspection/hydrostatic-production" },
@@ -97,7 +97,7 @@ export const navItems = [
     pathname: "/reports",
     hasDropdown: true,
     children: [
-      { label: "Daily Weld Fit-Up Inspection Report (IR-W-001)", pathname: "/reports/ir-w-001" },
+      { label: "Daily Weld Fit-Up Inspection Report (IR-CSSP-W-001)", pathname: "/reports/ir-cssp-w-001" },
       { label: "Weld Summary Weekly Report (SATR-W-2008)", pathname: "/reports/satr-w-2008" },
       { label: "Weekly Weld Repair and Tracer Weld Report (SATR-W-2018)", pathname: "/reports/satr-w-2018" },
       { label: "Weekly Cummulative Weld Status Report (SATR-W-2019)", pathname: "/reports/satr-w-2019" },

@@ -26,6 +26,7 @@ import FitUpRequestPage from "./pages/inspection/FitUpRequestPage";
 import MasterDatabase from "./pages/master-data/MasterDatabase";
 import ManageUsers from "./pages/ManageUsers";
 import IRW001 from "./pages/reports/IRW001";
+import NDTRequest from "./pages/inspection/NDTRequest";
 
 function RouteLogger() {
   const location = useLocation();
@@ -74,10 +75,11 @@ function App() {
 
               <Route path="/inspection">
                 <Route path="fitup-request" element={<FitUpRequestPage />} />
+                <Route path="ndt-request" element={<NDTRequest />} />
               </Route>
 
               <Route path="/reports">
-                <Route path="ir-w-001" element={<IRW001 />} />
+                <Route path="ir-cssp-w-001" element={<IRW001 />} />
               </Route>
             </Route>
             {/* Default */}
