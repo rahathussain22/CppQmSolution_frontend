@@ -98,10 +98,7 @@ export const navItems = [
     hasDropdown: true,
     children: [
       { label: "Daily Weld Fit-Up Inspection Report (IR-CSSP-W-001)", pathname: "/reports/ir-cssp-w-001" },
-      { label: "Weld Summary Weekly Report (SATR-W-2008)", pathname: "/reports/satr-w-2008" },
-      { label: "Weekly Weld Repair and Tracer Weld Report (SATR-W-2018)", pathname: "/reports/satr-w-2018" },
-      { label: "Weekly Cummulative Weld Status Report (SATR-W-2019)", pathname: "/reports/satr-w-2019" },
-      { label: "Weekly Weld Repair Rate Report (SATR-W-2013)", pathname: "/reports/satr-w-2013" },
+      { label: "Weld Summary & NDT Tracking System (IR-CSSP-W-002)", pathname: "/reports/ir-cssp-w-002" },
       { label: "Welder Initial Production Joint Status", pathname: "/reports/wipjs" },
       { label: "Weld Master Log", pathname: "/reports/weld-logs" },
       { label: "Weld Master Log (Repair Joints)", pathname: "/reports/weld-repair-logs" },

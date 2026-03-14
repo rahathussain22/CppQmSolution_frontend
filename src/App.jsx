@@ -27,6 +27,7 @@ import MasterDatabase from "./pages/master-data/MasterDatabase";
 import ManageUsers from "./pages/ManageUsers";
 import IRW001 from "./pages/reports/IRW001";
 import NDTRequest from "./pages/inspection/NDTRequest";
+import IRW002 from "./pages/reports/IRW002";
 
 function RouteLogger() {
   const location = useLocation();
@@ -80,6 +81,7 @@ function App() {
 
               <Route path="/reports">
                 <Route path="ir-cssp-w-001" element={<IRW001 />} />
+                <Route path="ir-cssp-w-002" element={<IRW002 />} />
               </Route>
             </Route>
             {/* Default */}
