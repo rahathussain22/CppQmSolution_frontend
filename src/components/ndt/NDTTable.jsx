@@ -24,6 +24,7 @@ export function NDTTable({
                 <th className="px-4 py-2 text-left text-xs">&nbsp;</th>
               )}
               <th className="px-4 py-2 text-left text-xs">#</th>
+              <th className="px-4 py-2 text-left text-xs">Weld Number</th>
               <th className="px-4 py-2 text-left text-xs">RFI No.</th>
               <th className="px-4 py-2 text-left text-xs">Request Date</th>
               {type === "UT" && (
@@ -35,6 +36,8 @@ export function NDTTable({
               <th className="px-4 py-2 text-left text-xs">Tracer 2</th>
               <th className="px-4 py-2 text-left text-xs">Second Report</th>
               <th className="px-4 py-2 text-left text-xs">Second Result</th>
+              <th className="px-4 py-2 text-left text-xs">Third Report</th>
+              <th className="px-4 py-2 text-left text-xs">Third Result</th>
               {type === "RT" ? (
                 <>
                   <th className="px-4 py-2 text-left text-xs">Film Quality</th>
@@ -76,6 +79,7 @@ export function NDTTable({
                   </td>
                 )}
                 <td className="px-4 py-2 text-gray-600">{index + 1}</td>
+                <td className="px-4 py-2">{row.weldNumber || "-"}</td>
                 <td className="px-4 py-2">{row.rfiNumber || "-"}</td>
                 <td className="px-4 py-2">{row.requestDate || "-"}</td>
                 {type === "UT" && (
@@ -87,6 +91,8 @@ export function NDTTable({
                 <td className="px-4 py-2">{row.tracer2 || row.Tracer2 || "-"}</td>
                 <td className="px-4 py-2">{row.secondReport || "-"}</td>
                 <td className="px-4 py-2">{row.secondResult || "-"}</td>
+                <td className="px-4 py-2">{row.thirdReport || "-"}</td>
+                <td className="px-4 py-2">{row.thirdResult || "-"}</td>
                 {type === "RT" ? (
                   <>
                     <td className="px-4 py-2">{row.filmQuality || "-"}</td>

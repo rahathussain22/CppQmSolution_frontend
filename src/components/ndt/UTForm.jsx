@@ -10,6 +10,7 @@ import {
 
 export function UTForm({ initialValue, isEditing, isSaving, onSave, onCancel }) {
   const [formData, setFormData] = useState({
+    weldNumber: initialValue?.weldNumber || "",
     utType: initialValue?.utType || "",
     requestDate: initialValue?.requestDate || "",
     rfiNumber: initialValue?.rfiNumber || "",
@@ -19,12 +20,15 @@ export function UTForm({ initialValue, isEditing, isSaving, onSave, onCancel }) 
     tracer2: initialValue?.tracer2 || initialValue?.Tracer2 || "",
     secondReport: initialValue?.secondReport || "",
     secondResult: initialValue?.secondResult || "",
+    thirdReport: initialValue?.thirdReport || "",
+    thirdResult: initialValue?.thirdResult || "",
     ilfAggreement: initialValue?.ilfAggreement || initialValue?.ilfAgreement || "",
     reviewed: initialValue?.reviewed || "",
   });
 
   useEffect(() => {
     setFormData({
+      weldNumber: initialValue?.weldNumber || "",
       utType: initialValue?.utType || "",
       requestDate: initialValue?.requestDate || "",
       rfiNumber: initialValue?.rfiNumber || "",
@@ -34,6 +38,8 @@ export function UTForm({ initialValue, isEditing, isSaving, onSave, onCancel }) 
       tracer2: initialValue?.tracer2 || initialValue?.Tracer2 || "",
       secondReport: initialValue?.secondReport || "",
       secondResult: initialValue?.secondResult || "",
+      thirdReport: initialValue?.thirdReport || "",
+      thirdResult: initialValue?.thirdResult || "",
       ilfAggreement:
         initialValue?.ilfAggreement || initialValue?.ilfAgreement || "",
       reviewed: initialValue?.reviewed || "",
@@ -58,6 +64,20 @@ export function UTForm({ initialValue, isEditing, isSaving, onSave, onCancel }) 
       </div>
       <form onSubmit={handleSubmit} className="p-4 space-y-3">
         <div className="grid grid-cols-12 gap-3">
+          <div className="col-span-4">
+            <label className="block text-xs text-gray-700 mb-1">
+              Weld Number *
+            </label>
+            <input
+              type="text"
+              placeholder="e.g., SW-001, FW-002"
+              value={formData.weldNumber}
+              onChange={(e) => updateField("weldNumber", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              required
+            />
+          </div>
           <div className="col-span-4">
             <label className="block text-xs text-gray-700 mb-1">UT Type</label>
             <select
@@ -86,6 +106,9 @@ export function UTForm({ initialValue, isEditing, isSaving, onSave, onCancel }) 
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
+        </div>
+
+        <div className="grid grid-cols-12 gap-3">
           <div className="col-span-4">
             <label className="block text-xs text-gray-700 mb-1">
               RFI No. *
@@ -100,12 +123,9 @@ export function UTForm({ initialValue, isEditing, isSaving, onSave, onCancel }) 
               required
             />
           </div>
-        </div>
-
-        <div className="grid grid-cols-12 gap-3">
-          <div className="col-span-6">
+          <div className="col-span-4">
             <label className="block text-xs text-gray-700 mb-1">
-              First Report
+              First Report *
             </label>
             <input
               type="text"
@@ -114,9 +134,10 @@ export function UTForm({ initialValue, isEditing, isSaving, onSave, onCancel }) 
               onChange={(e) => updateField("firstReport", e.target.value)}
               disabled={!isEditing || isSaving}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              required
             />
           </div>
-          <div className="col-span-3">
+          <div className="col-span-4">
             <label className="block text-xs text-gray-700 mb-1">
               First Result *
             </label>
@@ -135,6 +156,26 @@ export function UTForm({ initialValue, isEditing, isSaving, onSave, onCancel }) 
               ))}
             </select>
           </div>
+        </div>
+
+        <div className="grid grid-cols-12 gap-3">
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">Tracer 1 *</label>
+            <select
+              value={formData.tracer1}
+              onChange={(e) => updateField("tracer1", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              required
+            >
+              <option value="">Select</option>
+              {RT_TRACER_OPTIONS.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">Reviewed</label>
             <select
@@ -145,25 +186,6 @@ export function UTForm({ initialValue, isEditing, isSaving, onSave, onCancel }) 
             >
               <option value="">Select</option>
               {NDT_RESULT_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-12 gap-3">
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">Tracer 1</label>
-            <select
-              value={formData.tracer1}
-              onChange={(e) => updateField("tracer1", e.target.value)}
-              disabled={!isEditing || isSaving}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            >
-              <option value="">Select</option>
-              {RT_TRACER_OPTIONS.map((opt) => (
                 <option key={opt} value={opt}>
                   {opt}
                 </option>
@@ -206,6 +228,40 @@ export function UTForm({ initialValue, isEditing, isSaving, onSave, onCancel }) 
             <select
               value={formData.secondResult}
               onChange={(e) => updateField("secondResult", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            >
+              <option value="">Select</option>
+              {RT_RESULT_OPTIONS.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-12 gap-3">
+          <div className="col-span-6">
+            <label className="block text-xs text-gray-700 mb-1">
+              Third Report
+            </label>
+            <input
+              type="text"
+              placeholder="Report ref"
+              value={formData.thirdReport}
+              onChange={(e) => updateField("thirdReport", e.target.value)}
+              disabled={!isEditing || isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-3">
+            <label className="block text-xs text-gray-700 mb-1">
+              Third Result
+            </label>
+            <select
+              value={formData.thirdResult}
+              onChange={(e) => updateField("thirdResult", e.target.value)}
               disabled={!isEditing || isSaving}
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             >

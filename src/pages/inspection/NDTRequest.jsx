@@ -195,19 +195,31 @@ export default function NDTRequest() {
   };
 
   const saveRT = (formData) => {
-    if (!formData?.rfiNumber || !formData?.firstResult) {
-      toast.error("RFI No. and First Result are required.");
+    if (
+      !formData?.weldNumber ||
+      !formData?.rfiNumber ||
+      !formData?.firstResult ||
+      !formData?.requestDate ||
+      !formData?.firstReport ||
+      !formData?.tracer1
+    ) {
+      toast.error(
+        "Weld Number, RFI No., First Result, Request Date, First Report, and Tracer 1 are required."
+      );
       return;
     }
     const body = {
-      requestDate: formData.requestDate || undefined,
+      weldNumber: formData.weldNumber,
+      requestDate: formData.requestDate,
       rfiNumber: formData.rfiNumber,
-      firstReport: formData.firstReport || undefined,
+      firstReport: formData.firstReport,
       firstResult: formData.firstResult,
-      tracer1: formData.tracer1 || undefined,
+      tracer1: formData.tracer1,
       tracer2: formData.tracer2 || undefined,
       secondReport: formData.secondReport || undefined,
       secondResult: formData.secondResult || undefined,
+      thirdReport: formData.thirdReport || undefined,
+      thirdResult: formData.thirdResult || undefined,
       filmQuality: formData.filmQuality || undefined,
       weldQuality: formData.weldQuality || undefined,
       reviewed: formData.reviewed || undefined,
@@ -221,20 +233,31 @@ export default function NDTRequest() {
   };
 
   const saveUT = (formData) => {
-    if (!formData?.rfiNumber || !formData?.firstResult) {
-      toast.error("RFI No. and First Result are required.");
+    if (
+      !formData?.weldNumber ||
+      !formData?.rfiNumber ||
+      !formData?.firstResult ||
+      !formData?.firstReport ||
+      !formData?.tracer1
+    ) {
+      toast.error(
+        "Weld Number, RFI No., First Result, First Report, and Tracer 1 are required."
+      );
       return;
     }
     const body = {
+      weldNumber: formData.weldNumber,
       utType: formData.utType || undefined,
       requestDate: formData.requestDate || undefined,
       rfiNumber: formData.rfiNumber,
-      firstReport: formData.firstReport || undefined,
+      firstReport: formData.firstReport,
       firstResult: formData.firstResult,
-      tracer1: formData.tracer1 || undefined,
+      tracer1: formData.tracer1,
       tracer2: formData.tracer2 || undefined,
       secondReport: formData.secondReport || undefined,
       secondResult: formData.secondResult || undefined,
+      thirdReport: formData.thirdReport || undefined,
+      thirdResult: formData.thirdResult || undefined,
       ilfAggreement: formData.ilfAggreement || undefined,
       reviewed: formData.reviewed || undefined,
     };
