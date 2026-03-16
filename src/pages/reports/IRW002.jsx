@@ -33,18 +33,23 @@ export default function IRW002() {
         weldNumber: formData.weldNumber.trim(),
       });
 
-      if (result?.path) {
-        // Trigger browser download using the provided file path
+      if (result?.fileUrl) {
+        // Trigger browser download using the provided file URL
         const link = document.createElement("a");
-        link.href = result.path;
+        link.href = result.fileUrl;
         link.target = "_blank";
         link.rel = "noreferrer";
+        // Let the server filename / headers decide the final name
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       }
 
-      toast.success(result?.message || "Weld Summary & NDT Tracking Report generated.");
+      if (result?.message) {
+        toast.success(result.message);
+      } else {
+        toast.success("Weld Summary & NDT Tracking Report generated.");
+      }
     } catch (error) {
       toast.error(error.message || "Failed to generate report.");
     } finally {
