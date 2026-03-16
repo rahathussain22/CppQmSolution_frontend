@@ -12,9 +12,25 @@ export function useGetRFILogsQuery(params = {}) {
   return useQuery({
     queryKey: ["rfiLogs", params],
     queryFn: () => getRFILogs(params),
-    select: (response) =>
-      response.rfis || response.data || response.results || [],
+    select: (response) => {
+      // Normalize response shape: { rfis, pagination, count }
+      if (response?.rfis) {
+        return {
+          rfis: response.rfis,
+          pagination: response.pagination || null,
+          count: response.count ?? null,
+        };
+      }
+
+      const data = response?.data || response?.results || response || {};
+      return {
+        rfis: data.rfis || data || [],
+        pagination: data.pagination || null,
+        count: data.count ?? null,
+      };
+    },
     refetchOnWindowFocus: false,
+    keepPreviousData: true,
   });
 }
 

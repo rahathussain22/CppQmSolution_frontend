@@ -153,7 +153,7 @@ export function WeldJointForm({
               <option value={0}>Select Component 1</option>
               {availableComponents.map((comp) => (
                 <option key={comp.id} value={comp.id}>
-                  {comp.componentCode} - {comp.name} - {comp.material}
+                  {comp.name} - {comp.material}
                 </option>
               ))}
             </select>
@@ -171,7 +171,7 @@ export function WeldJointForm({
               <option value={0}>Select Component 2</option>
               {availableComponents.map((comp) => (
                 <option key={comp.id} value={comp.id}>
-                  {comp.componentCode} - {comp.name} - {comp.material}
+                  {comp.name} - {comp.material}
                 </option>
               ))}
             </select>

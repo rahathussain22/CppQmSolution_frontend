@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { Upload, File } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { getProjects } from "../../api/project";
 import { Button } from "@/components/ui/button";
 
 // Static projects data removed — fetching from API
@@ -15,26 +13,14 @@ export function WPSForm({
   onCancel,
 }) {
   const [formData, setFormData] = useState({
-    projectCode: wps?.projectCode || "",
     wpsNumber: wps?.wpsNumber || "",
     weldingProcess: wps?.weldingProcess || "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
 
-  const {
-    data: availableProjects = [],
-    isLoading: isLoadingProjects,
-    error: errorProjects,
-  } = useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getProjects(),
-    select: (data) => (data && data.projects) || [],
-    refetchOnWindowFocus: false,
-  });
 
   useEffect(() => {
     setFormData({
-      projectCode: wps?.projectCode || "",
       wpsNumber: wps?.wpsNumber || "",
       weldingProcess: wps?.weldingProcess || "",
     });
@@ -64,7 +50,6 @@ export function WPSForm({
   };
 
   const isValid =
-    formData.projectCode &&
     formData.wpsNumber &&
     formData.weldingProcess &&
     (selectedFile || isEditing);
@@ -76,28 +61,6 @@ export function WPSForm({
       </div>
       <form onSubmit={handleSubmit} className="p-4">
         <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Project *
-            </label>
-            <select
-              value={formData.projectCode}
-              onChange={(e) => updateField("projectCode", e.target.value)}
-              disabled={!isEditing || isLoadingProjects || errorProjects}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            >
-              {errorProjects ? (
-                <option>Error loading projects</option>
-              ) : (
-                <option value="">Select Project</option>
-              )}
-              {availableProjects.map((project) => (
-                <option key={project.id} value={project.projectCode}>
-                  {project.projectCode} - {project.name}
-                </option>
-              ))}
-            </select>
-          </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               WPS Number *:

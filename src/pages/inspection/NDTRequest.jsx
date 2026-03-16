@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -57,21 +58,84 @@ export default function NDTRequest() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null); // { type: "RT"|"UT", row }
 
+  // Pagination state
+  const PAGE_SIZE = 20;
+  const [rtCursor, setRtCursor] = useState(null);
+  const [rtPrevCursor, setRtPrevCursor] = useState(null);
+  const [rtPage, setRtPage] = useState(1);
+
+  const [utCursor, setUtCursor] = useState(null);
+  const [utPrevCursor, setUtPrevCursor] = useState(null);
+  const [utPage, setUtPage] = useState(1);
+
   const rtQuery = useQuery({
-    queryKey: ["ndt", "RT"],
-    queryFn: () => getRT({}),
-    select: normalizeNdtList,
+    queryKey: ["ndt", "RT", { cursor: rtCursor, prevCursor: rtPrevCursor, limit: PAGE_SIZE }],
+    queryFn: () => getRT({ cursor: rtCursor, prevCursor: rtPrevCursor, limit: PAGE_SIZE }),
     enabled: canView,
     refetchOnWindowFocus: false,
+    keepPreviousData: true,
   });
 
   const utQuery = useQuery({
-    queryKey: ["ndt", "UT"],
-    queryFn: () => getUT({}),
-    select: normalizeNdtList,
+    queryKey: ["ndt", "UT", { cursor: utCursor, prevCursor: utPrevCursor, limit: PAGE_SIZE }],
+    queryFn: () => getUT({ cursor: utCursor, prevCursor: utPrevCursor, limit: PAGE_SIZE }),
     enabled: canView,
     refetchOnWindowFocus: false,
+    keepPreviousData: true,
   });
+
+  const rtResponse = rtQuery.data;
+  const utResponse = utQuery.data;
+
+  // Backend returns: { pagination, count, data: [...] }
+  const rtRows = normalizeNdtList(rtResponse);
+  const utRows = normalizeNdtList(utResponse);
+
+  const rtPagination = rtResponse?.pagination || {
+    hasNextPage: false,
+    nextCursor: null,
+    prevCursor: null,
+    limit: PAGE_SIZE,
+  };
+
+  const utPagination = utResponse?.pagination || {
+    hasNextPage: false,
+    nextCursor: null,
+    prevCursor: null,
+    limit: PAGE_SIZE,
+  };
+
+  const handleRtNextPage = () => {
+    if (rtPagination?.hasNextPage && rtPagination?.nextCursor) {
+      setRtPrevCursor(rtCursor);
+      setRtCursor(rtPagination.nextCursor);
+      setRtPage((prev) => prev + 1);
+    }
+  };
+
+  const handleRtPrevPage = () => {
+    if (rtPagination?.prevCursor) {
+      setRtCursor(rtPagination.prevCursor);
+      setRtPrevCursor(rtPagination.prevCursor);
+      setRtPage((prev) => Math.max(1, prev - 1));
+    }
+  };
+
+  const handleUtNextPage = () => {
+    if (utPagination?.hasNextPage && utPagination?.nextCursor) {
+      setUtPrevCursor(utCursor);
+      setUtCursor(utPagination.nextCursor);
+      setUtPage((prev) => prev + 1);
+    }
+  };
+
+  const handleUtPrevPage = () => {
+    if (utPagination?.prevCursor) {
+      setUtCursor(utPagination.prevCursor);
+      setUtPrevCursor(utPagination.prevCursor);
+      setUtPage((prev) => Math.max(1, prev - 1));
+    }
+  };
 
   const createRTMutation = useMutation({
     mutationFn: (body) => createRT(body),
@@ -269,9 +333,6 @@ export default function NDTRequest() {
     }
   };
 
-  const rtRows = rtQuery.data || [];
-  const utRows = utQuery.data || [];
-
   const isSavingRT = createRTMutation.isPending || updateRTMutation.isPending;
   const isSavingUT = createUTMutation.isPending || updateUTMutation.isPending;
 
@@ -329,14 +390,46 @@ export default function NDTRequest() {
             ) : rtQuery.error ? (
               <div className="p-4 text-red-700">Error loading RT requests.</div>
             ) : (
-              <NDTTable
-                type="RT"
-                rows={rtRows}
-                onEdit={(row) => handleEdit("RT", row)}
-                onDelete={(row) => handleDelete("RT", row)}
-                canEdit={canEdit}
-                canDelete={canDelete}
-              />
+              <>
+                <NDTTable
+                  type="RT"
+                  rows={rtRows}
+                  onEdit={(row) => handleEdit("RT", row)}
+                  onDelete={(row) => handleDelete("RT", row)}
+                  canEdit={canEdit}
+                  canDelete={canDelete}
+                />
+                <div className="flex items-center border border-t-0 border-gray-200 bg-gray-50 px-4 py-3 gap-2 rounded-b-md">
+                  {/* Previous button - left aligned */}
+                  <div className="flex-1">
+                    <button
+                      onClick={handleRtPrevPage}
+                      disabled={rtQuery.isFetching || !rtPagination?.prevCursor || rtPage <= 1}
+                      className="cursor-pointer inline-flex items-center gap-1 rounded border border-gray-300 px-3 py-1 text-xs text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      <span>Previous</span>
+                    </button>
+                  </div>
+
+                  {/* Page indicator - centered */}
+                  <div className="flex-1 text-center text-xs text-gray-600">
+                    Page {rtPage}
+                  </div>
+
+                  {/* Next button - right aligned */}
+                  <div className="flex-1 flex justify-end">
+                    <button
+                      onClick={handleRtNextPage}
+                      disabled={rtQuery.isFetching || !rtPagination?.hasNextPage}
+                      className="cursor-pointer inline-flex items-center gap-1 rounded border border-gray-300 px-3 py-1 text-xs text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <span>Next</span>
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </>
             )}
           </TabsContent>
 
@@ -371,14 +464,46 @@ export default function NDTRequest() {
             ) : utQuery.error ? (
               <div className="p-4 text-red-700">Error loading UT requests.</div>
             ) : (
-              <NDTTable
-                type="UT"
-                rows={utRows}
-                onEdit={(row) => handleEdit("UT", row)}
-                onDelete={(row) => handleDelete("UT", row)}
-                canEdit={canEdit}
-                canDelete={canDelete}
-              />
+              <>
+                <NDTTable
+                  type="UT"
+                  rows={utRows}
+                  onEdit={(row) => handleEdit("UT", row)}
+                  onDelete={(row) => handleDelete("UT", row)}
+                  canEdit={canEdit}
+                  canDelete={canDelete}
+                />
+                <div className="flex items-center border border-t-0 border-gray-200 bg-gray-50 px-4 py-3 gap-2 rounded-b-md">
+                  {/* Previous button - left aligned */}
+                  <div className="flex-1">
+                    <button
+                      onClick={handleUtPrevPage}
+                      disabled={utQuery.isFetching || !utPagination?.prevCursor || utPage <= 1}
+                      className="cursor-pointer inline-flex items-center gap-1 rounded border border-gray-300 px-3 py-1 text-xs text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      <span>Previous</span>
+                    </button>
+                  </div>
+
+                  {/* Page indicator - centered */}
+                  <div className="flex-1 text-center text-xs text-gray-600">
+                    Page {utPage}
+                  </div>
+
+                  {/* Next button - right aligned */}
+                  <div className="flex-1 flex justify-end">
+                    <button
+                      onClick={handleUtNextPage}
+                      disabled={utQuery.isFetching || !utPagination?.hasNextPage}
+                      className="cursor-pointer inline-flex items-center gap-1 rounded border border-gray-300 px-3 py-1 text-xs text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <span>Next</span>
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </>
             )}
           </TabsContent>
         </Tabs>

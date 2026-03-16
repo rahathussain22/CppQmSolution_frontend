@@ -1,16 +1,25 @@
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
-  createWeldJoint,
-  getWeldJoints,
-  updateWeldJoint,
-  deleteWeldJoint,
-} from "@/api/joints";
+  useGetWeldJointsQuery,
+  useCreateWeldJointMutation,
+  useUpdateWeldJointMutation,
+  useDeleteWeldJointMutation,
+} from "@/hooks/useWeldJoints";
 import { WeldJointForm } from "@/components/joints/JointForm";
 import { JointTable } from "@/components/joints/JointTable";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -32,68 +41,89 @@ export default function Joints() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [jointToDelete, setJointToDelete] = useState(null);
 
+  // Pagination & filters
+  const [cursor, setCursor] = useState(null);
+  const [prevCursor, setPrevCursor] = useState(null);
+  const [limit] = useState(20);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [searchBy, setSearchBy] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   const canAdd = user?.permissions === "view+add" || user?.permissions === "view+add+update" || user?.permissions === "all";
   const canEdit = user?.permissions === "view+add+update" || user?.permissions === "all";
   const canDelete = user?.permissions === "all";
 
+  // Debounce search
+  useEffect(() => {
+    const handle = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+    }, 300);
+
+    return () => clearTimeout(handle);
+  }, [search]);
+
+  const effectiveSearchBy = debouncedSearch ? searchBy : "";
+
   const {
-    data: joints = [],
+    data: weldJointData,
     isLoading,
     error,
-  } = useQuery({
-    queryKey: ["weldJoints"],
-    queryFn: () => getWeldJoints({}),
-    select: (data) => (data && data.weldJoints) || [],
-    refetchOnWindowFocus: false,
+    isFetching,
+  } = useGetWeldJointsQuery({
+    cursor,
+    prevCursor,
+    limit,
+    search: debouncedSearch || undefined,
+    searchBy: effectiveSearchBy || undefined,
+    startDate: startDate || undefined,
+    endDate: endDate || undefined,
   });
 
-  const createMutation = useMutation({
-    mutationFn: (formData) => createWeldJoint(formData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["weldJoints"] });
-      setMode("idle");
-      setEditingJoint(null);
-      toast.success("Weld Joint has been saved.");
-    },
-    onError: (err) => {
-      toast.error(err.message || "Failed to save weld joint.");
-    },
-  });
+  const joints = weldJointData?.weldJoints || [];
+  const pagination = weldJointData?.pagination || {
+    hasNextPage: false,
+    nextCursor: null,
+    prevCursor: null,
+    limit,
+  };
 
-  const updateMutation = useMutation({
-    mutationFn: ({ weldJointId, formData }) => updateWeldJoint({ weldJointId, formData }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["weldJoints"] });
-      setMode("idle");
-      setEditingJoint(null);
-      toast.success("Weld Joint has been updated.");
-    },
-    onError: (err) => {
-      toast.error(err.message || "Failed to update weld joint.");
-    },
-  });
+  const handleNextPage = () => {
+    if (pagination?.hasNextPage && pagination?.nextCursor) {
+      setPrevCursor(cursor);
+      setCursor(pagination.nextCursor);
+      setPage((prev) => prev + 1);
+    }
+  };
 
-  const deleteMutation = useMutation({
-    mutationFn: ({ weldJointId }) => deleteWeldJoint({ weldJointId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["weldJoints"] });
-      setDeleteDialogOpen(false);
-      setJointToDelete(null);
-      toast.success("Weld Joint has been deleted.");
-    },
-    onError: (err) => {
-      toast.error(err.message || "Failed to delete weld joint.");
-      setDeleteDialogOpen(false);
-      setJointToDelete(null);
-    },
-  });
+  const handlePrevPage = () => {
+    if (pagination?.prevCursor) {
+      setCursor(pagination.prevCursor);
+      setPrevCursor(pagination.prevCursor);
+      setPage((prev) => Math.max(1, prev - 1));
+    }
+  };
+
+  const resetPagination = () => {
+    setCursor(null);
+    setPrevCursor(null);
+    setPage(1);
+  };
+
+  const createMutation = useCreateWeldJointMutation();
+  const updateMutation = useUpdateWeldJointMutation();
+  const deleteMutation = useDeleteWeldJointMutation();
 
   const handleAdd = () => {
+    resetPagination();
     setEditingJoint(null);
     setMode("adding");
   };
 
   const handleEdit = (joint) => {
+    resetPagination();
     setEditingJoint(joint);
     setMode("editing");
   };
@@ -110,9 +140,34 @@ export default function Joints() {
     };
 
     if (mode === "editing" && editingJoint) {
-      updateMutation.mutate({ weldJointId: editingJoint.id, formData: payload });
+      updateMutation.mutate(
+        { weldJointId: editingJoint.id, formData: payload },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["weldJoints"] });
+            resetPagination();
+            setMode("idle");
+            setEditingJoint(null);
+            toast.success("Weld Joint has been updated.");
+          },
+          onError: (err) => {
+            toast.error(err.message || "Failed to update weld joint.");
+          },
+        }
+      );
     } else {
-      createMutation.mutate(payload);
+      createMutation.mutate(payload, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["weldJoints"] });
+          resetPagination();
+          setMode("idle");
+          setEditingJoint(null);
+          toast.success("Weld Joint has been saved.");
+        },
+        onError: (err) => {
+          toast.error(err.message || "Failed to save weld joint.");
+        },
+      });
     }
   };
 
@@ -128,23 +183,120 @@ export default function Joints() {
 
   const confirmDelete = () => {
     if (jointToDelete) {
-      deleteMutation.mutate({ weldJointId: jointToDelete.id });
+      deleteMutation.mutate(
+        { weldJointId: jointToDelete.id },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["weldJoints"] });
+            resetPagination();
+            setDeleteDialogOpen(false);
+            setJointToDelete(null);
+            toast.success("Weld Joint has been deleted.");
+          },
+          onError: (err) => {
+            toast.error(err.message || "Failed to delete weld joint.");
+            setDeleteDialogOpen(false);
+            setJointToDelete(null);
+          },
+        }
+      );
     }
   };
 
   return (
     <>
       <div className="p-4 space-y-4">
-        <div className="flex justify-between items-center">
-          <h4 className="text-3xl font-bold">Weld Joints</h4>
-          {canAdd && mode === "idle" && (
-            <Button
-              onClick={handleAdd}
-              className="bg-gray-800 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-black"
-            >
-              + Add Weld Joint
-            </Button>
-          )}
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between items-center gap-4">
+            <h4 className="text-3xl font-bold">Weld Joints</h4>
+            {canAdd && mode === "idle" && (
+              <Button
+                onClick={handleAdd}
+                className="bg-gray-800 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-black"
+              >
+                + Add Weld Joint
+              </Button>
+            )}
+          </div>
+
+          {/* Search & Filters */}
+          <div className="flex flex-col lg:flex-row gap-3 lg:items-end lg:justify-between border border-gray-200 rounded-md bg-white px-3 py-3 shadow-sm">
+            <div className="flex flex-col md:flex-row gap-3 md:items-center flex-1">
+              {/* Search box */}
+              <div className="w-full md:w-64">
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Search
+                </label>
+                <Input
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    resetPagination();
+                  }}
+                  placeholder="Search weld joints..."
+                  className="h-9"
+                />
+              </div>
+
+              {/* Search By dropdown */}
+              <div className="w-full md:w-52">
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Search by
+                </label>
+                <Select
+                  value={searchBy}
+                  onValueChange={(value) => {
+                    setSearchBy(value);
+                    resetPagination();
+                  }}
+                >
+                  <SelectTrigger className="h-9">
+                    <SelectValue placeholder="Select field" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    <SelectItem value="weldNumber">Weld Number</SelectItem>
+                    <SelectItem value="jointType">Joint Type</SelectItem>
+                    <SelectItem value="initialProduction">
+                      Initial Production
+                    </SelectItem>
+                    <SelectItem value="wpsNumber">WPS Number</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Date range filters */}
+            <div className="flex flex-col md:flex-row gap-3 md:items-center">
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Start date
+                </label>
+                <Input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    resetPagination();
+                  }}
+                  className="h-9"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  End date
+                </label>
+                <Input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                    resetPagination();
+                  }}
+                  className="h-9"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         {(mode === "adding" || mode === "editing") && (
@@ -168,6 +320,11 @@ export default function Joints() {
             onDelete={handleDelete}
             canEdit={canEdit}
             canDelete={canDelete}
+            pagination={pagination}
+            onNextPage={handleNextPage}
+            onPrevPage={handlePrevPage}
+            page={page}
+            isFetching={isFetching}
           />
         ) : (
           <div className="p-4 text-gray-600">No weld joints found.</div>

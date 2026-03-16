@@ -5,8 +5,18 @@ export function useGetWelderQuery(params = {}) {
   return useQuery({
     queryKey: ["welders", params],
     queryFn: () => getWelders(params),
-    select: (data) => (data && data.welders) || [],
+    select: (response) => {
+      // Normalize: { welders, pagination, count }
+      if (!response) return { welders: [], pagination: null, count: null };
+      const raw = response;
+      return {
+        welders: raw.welders || [],
+        pagination: raw.pagination || null,
+        count: raw.count ?? null,
+      };
+    },
     refetchOnWindowFocus: false,
+    keepPreviousData: true,
   });
 }
 

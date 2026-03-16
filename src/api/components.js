@@ -1,7 +1,6 @@
 import api from "../config/api";
 
 export async function createComponent({
-  componentCode,
   name,
   material,
   diameter,
@@ -9,10 +8,8 @@ export async function createComponent({
   thickness,
   pipeNumber,
   heatNumber,
-  projectId,
 }) {
   return await api.post("/component/add", {
-    componentCode,
     name,
     material,
     diameter,
@@ -20,22 +17,36 @@ export async function createComponent({
     thickness,
     pipeNumber,
     heatNumber,
-    projectId,
   });
 }
 
-export async function getComponents({ projectId }) {
+export async function getComponents({
+  cursor,
+  prevCursor,
+  limit,
+  search,
+  searchBy,
+  startDate,
+  endDate,
+} = {}) {
   const queryParams = new URLSearchParams();
-  if (projectId) queryParams.append("projectId", projectId);
+  if (cursor) queryParams.append("cursor", cursor);
+  if (prevCursor) queryParams.append("prevCursor", prevCursor);
+  if (limit) queryParams.append("limit", limit);
+  if (search) queryParams.append("search", search);
+  if (searchBy) queryParams.append("searchBy", searchBy);
+  if (startDate) queryParams.append("startDate", startDate);
+  if (endDate) queryParams.append("endDate", endDate);
+
   const response = await api.get(
     `/component/get?${queryParams.toString()}`
   );
+  // Backend returns: { pagination, count, data: [...] }
   return response;
 }
 
 export async function updateComponent({
   componentId,
-  componentCode,
   name,
   material,
   diameter,
@@ -43,11 +54,9 @@ export async function updateComponent({
   thickness,
   pipeNumber,
   heatNumber,
-  projectId,
 }) {
   return await api.patch("/component/update", {
     componentId,
-    componentCode,
     name,
     material,
     diameter,
@@ -55,7 +64,6 @@ export async function updateComponent({
     thickness,
     pipeNumber,
     heatNumber,
-    projectId,
   });
 }
 

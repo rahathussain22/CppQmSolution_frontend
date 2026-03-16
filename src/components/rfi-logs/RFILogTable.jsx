@@ -1,4 +1,4 @@
-import { MoreVertical } from "lucide-react";
+import { ChevronLeft, ChevronRight, MoreVertical } from "lucide-react";
 // import { useAuthStore } from "../../store/authStore";
 import {
   DropdownMenu,
@@ -15,6 +15,11 @@ export function RFILogTable({
   onDelete,
   canEdit,
   canDelete,
+  pagination,
+  onNextPage,
+  onPrevPage,
+  page,
+  isFetching,
 }) {
   // const user = useAuthStore((state) => state.user);
 
@@ -134,6 +139,36 @@ export function RFILogTable({
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex items-center border-t border-gray-200 bg-gray-50 px-4 py-3 gap-2">
+        {/* Previous button - left aligned */}
+        <div className="flex-1">
+          <button
+            onClick={onPrevPage}
+            disabled={isFetching || !pagination?.prevCursor || page <= 1}
+            className="cursor-pointer inline-flex items-center gap-1 rounded border border-gray-300 px-3 py-1 text-xs text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span>Previous</span>
+          </button>
+        </div>
+
+        {/* Page indicator - centered */}
+        <div className="flex-1 text-center text-xs text-gray-600">
+          Page {page}
+        </div>
+
+        {/* Next button - right aligned */}
+        <div className="flex-1 flex justify-end">
+          <button
+            onClick={onNextPage}
+            disabled={isFetching || !pagination?.hasNextPage}
+            className="cursor-pointer inline-flex items-center gap-1 rounded border border-gray-300 px-3 py-1 text-xs text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span>Next</span>
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </div>
   );

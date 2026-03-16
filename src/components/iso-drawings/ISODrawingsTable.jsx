@@ -1,4 +1,4 @@
-import { Pencil } from "lucide-react";
+import { Pencil, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function ISODrawingsTable({
@@ -7,6 +7,11 @@ export function ISODrawingsTable({
   onSelectDrawing,
   canEdit,
   canDelete,
+  pagination,
+  onNextPage,
+  onPrevPage,
+  page,
+  isFetching,
 }) {
 
   if (!drawings.length) {
@@ -45,15 +50,17 @@ export function ISODrawingsTable({
                 >
                   {(canEdit || canDelete) && (
                     <td className="px-3 py-2">
-                      {canEdit && <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEdit && onEdit(drawing);
-                        }}
-                        className="text-gray-700 hover:text-gray-900"
-                      >
-                        <Pencil size={16} />
-                      </Button>}
+                      {canEdit && (
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onEdit && onEdit(drawing);
+                          }}
+                          className="text-gray-700 hover:text-gray-900"
+                        >
+                          <Pencil size={16} />
+                        </Button>
+                      )}
                     </td>
                   )}
                   <td className="px-3 py-2 text-gray-600">{index + 1}</td>
@@ -88,6 +95,40 @@ export function ISODrawingsTable({
             })}
           </tbody>
         </table>
+      </div>
+      <div className="flex items-center border-t border-gray-200 bg-gray-50 px-4 py-3 gap-2">
+        {/* Previous button - left aligned */}
+        <div className="flex-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onPrevPage}
+            disabled={isFetching || !pagination?.prevCursor || page <= 1}
+            className="flex items-center gap-1 cursor-pointer"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span>Previous</span>
+          </Button>
+        </div>
+
+        {/* Page indicator - centered */}
+        <div className="flex-1 text-center text-xs text-gray-600">
+          Page {page}
+        </div>
+
+        {/* Next button - right aligned */}
+        <div className="flex-1 flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onNextPage}
+            disabled={isFetching || !pagination?.hasNextPage}
+            className="flex items-center gap-1 cursor-pointer"
+          >
+            <span>Next</span>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

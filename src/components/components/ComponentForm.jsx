@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-import { useAuthStore } from "../../store/authStore";
-import { useQuery } from "@tanstack/react-query";
-import { getProjects } from "../../api/project";
 import { Button } from "@/components/ui/button";
 
 export function ComponentForm({
@@ -11,10 +8,7 @@ export function ComponentForm({
   onSave,
   onCancel,
 }) {
-  const user = useAuthStore((state) => state.user);
   const [formData, setFormData] = useState({
-    projectId: component?.projectId || 0,
-    componentCode: component?.componentCode || "",
     name: component?.name || "",
     material: component?.material || "",
     diameter: component?.diameter || "",
@@ -24,21 +18,8 @@ export function ComponentForm({
     heatNumber: component?.heatNumber || "",
   });
 
-  const {
-    data: availableProjects = [],
-    isLoading: isLoadingProjects,
-    error: errorProjects,
-  } = useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getProjects({ createdBy: user.id }),
-    select: (data) => (data && data.projects) || [],
-    refetchOnWindowFocus: false,
-  });
-
   useEffect(() => {
     setFormData({
-      projectId: component?.projectId || 0,
-      componentCode: component?.componentCode || "",
       name: component?.name || "",
       material: component?.material || "",
       diameter: component?.diameter || "",
@@ -59,8 +40,6 @@ export function ComponentForm({
   };
 
   const isValid =
-    formData.projectId &&
-    formData.componentCode &&
     formData.name &&
     formData.material &&
     formData.diameter &&
@@ -76,41 +55,6 @@ export function ComponentForm({
       </div>
       <form onSubmit={handleSubmit} className="p-4">
         <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Project *
-            </label>
-            <select
-              value={formData.projectId}
-              onChange={(e) => updateField("projectId", Number(e.target.value))}
-              disabled={!isEditing || isLoadingProjects || errorProjects}
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            >
-              {errorProjects ? (
-                <option>Error loading projects</option>
-              ) : (
-                <option value={0}>Select Project</option>
-              )}
-              {availableProjects.map((project) => (
-                <option key={project.id} value={project.id}>
-                  {project.projectCode} - {project.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="col-span-3">
-            <label className="block text-xs text-gray-700 mb-1">
-              Component Code *
-            </label>
-            <input
-              type="text"
-              value={formData.componentCode}
-              onChange={(e) => updateField("componentCode", e.target.value)}
-              disabled={!isEditing || isSaving}
-              placeholder="e.g., COMP-001"
-              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
-            />
-          </div>
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Name *
@@ -133,8 +77,6 @@ export function ComponentForm({
               <option value="Vlv.">Vlv.</option>
             </select>
           </div>
-        </div>
-        <div className="grid grid-cols-12 gap-3 mb-3">
           <div className="col-span-3">
             <label className="block text-xs text-gray-700 mb-1">
               Material *
@@ -176,7 +118,10 @@ export function ComponentForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
-          <div className="col-span-3">
+
+        </div>
+        <div className="grid grid-cols-12 gap-3 mb-3">
+          <div className="col-span-4">
             <label className="block text-xs text-gray-700 mb-1">
               Thickness *
             </label>
@@ -189,9 +134,7 @@ export function ComponentForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
-        </div>
-        <div className="grid grid-cols-12 gap-3 mb-3">
-          <div className="col-span-6">
+          <div className="col-span-4">
             <label className="block text-xs text-gray-700 mb-1">
               Pipe Number *
             </label>
@@ -204,7 +147,7 @@ export function ComponentForm({
               className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
             />
           </div>
-          <div className="col-span-6">
+          <div className="col-span-4">
             <label className="block text-xs text-gray-700 mb-1">
               Heat Number *
             </label>

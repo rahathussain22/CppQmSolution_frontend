@@ -1,6 +1,17 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
-export function ComponentTable({ componentList = [], onEdit, onDelete, canEdit, canDelete }) {
+export function ComponentTable({
+  componentList = [],
+  onEdit,
+  onDelete,
+  canEdit,
+  canDelete,
+  pagination,
+  onNextPage,
+  onPrevPage,
+  page,
+  isFetching,
+}) {
 
   if (!componentList.length) {
     return <div className="p-4 text-gray-500">No components found.</div>;
@@ -16,10 +27,7 @@ export function ComponentTable({ componentList = [], onEdit, onDelete, canEdit, 
                 <th className="px-3 py-2 text-left text-xs w-20"></th>
               )}
               <th className="px-3 py-2 text-left text-xs">#</th>
-              <th className="px-3 py-2 text-left text-xs">Project</th>
-              <th className="px-3 py-2 text-left text-xs">Component Code</th>
               <th className="px-3 py-2 text-left text-xs">Name</th>
-              {/* <th className="px-3 py-2 text-left text-xs">Component</th> */}
               <th className="px-3 py-2 text-left text-xs">Material</th>
               <th className="px-3 py-2 text-left text-xs">Diameter</th>
               <th className="px-3 py-2 text-left text-xs">Length</th>
@@ -53,15 +61,7 @@ export function ComponentTable({ componentList = [], onEdit, onDelete, canEdit, 
                   </td>
                 )}
                 <td className="px-3 py-2 text-gray-600">{index + 1}</td>
-                <td className="px-3 py-2">
-                  {component.projectName ||
-                    component.project?.name ||
-                    component.projectCode ||
-                    "-"}
-                </td>
-                <td className="px-3 py-2">{component.componentCode || "-"}</td>
                 <td className="px-3 py-2">{component.name || "-"}</td>
-                {/* <td className="px-3 py-2">{component.componentType}</td> */}
                 <td className="px-3 py-2">{component.material}</td>
                 <td className="px-3 py-2">{component.diameter}</td>
                 <td className="px-3 py-2">{component.length}</td>
@@ -72,6 +72,36 @@ export function ComponentTable({ componentList = [], onEdit, onDelete, canEdit, 
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex items-center border-t border-gray-200 bg-gray-50 px-4 py-3 gap-2">
+        {/* Previous button - left aligned */}
+        <div className="flex-1">
+          <button
+            onClick={onPrevPage}
+            disabled={isFetching || !pagination?.prevCursor || page <= 1}
+            className="cursor-pointer inline-flex items-center gap-1 rounded border border-gray-300 px-3 py-1 text-xs text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span>Previous</span>
+          </button>
+        </div>
+
+        {/* Page indicator - centered */}
+        <div className="flex-1 text-center text-xs text-gray-600">
+          Page {page}
+        </div>
+
+        {/* Next button - right aligned */}
+        <div className="flex-1 flex justify-end">
+          <button
+            onClick={onNextPage}
+            disabled={isFetching || !pagination?.hasNextPage}
+            className="cursor-pointer inline-flex items-center gap-1 rounded border border-gray-300 px-3 py-1 text-xs text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span>Next</span>
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </div>
   );

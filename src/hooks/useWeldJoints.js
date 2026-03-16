@@ -12,8 +12,18 @@ export function useGetWeldJointsQuery(params = {}) {
   return useQuery({
     queryKey: ["weldJoints", params],
     queryFn: () => getWeldJoints(params),
-    select: (data) => (data && data.weldJoints) || [],
+    select: (response) => {
+      // Normalize: { weldJoints, pagination, count }
+      if (!response) return { weldJoints: [], pagination: null, count: null };
+      const raw = response;
+      return {
+        weldJoints: raw.weldJoints || [],
+        pagination: raw.pagination || null,
+        count: raw.count ?? null,
+      };
+    },
     refetchOnWindowFocus: false,
+    keepPreviousData: true,
   });
 }
 

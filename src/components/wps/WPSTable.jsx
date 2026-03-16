@@ -1,4 +1,4 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
 export function WPSTable({
   wpsList = [],
@@ -7,7 +7,12 @@ export function WPSTable({
   onSelectWPS,
   onDelete,
   canEdit,
-  canDelete
+  canDelete,
+  pagination,
+  onNextPage,
+  onPrevPage,
+  page,
+  isFetching,
 }) {
 
   if (!wpsList.length) {
@@ -24,7 +29,6 @@ export function WPSTable({
                 <th className="px-3 py-2 text-left text-xs w-10"></th>
               )}
               <th className="px-3 py-2 text-left text-xs">#</th>
-              <th className="px-3 py-2 text-left text-xs">Project</th>
               <th className="px-3 py-2 text-left text-xs">WPS Number</th>
               <th className="px-3 py-2 text-left text-xs">Weld Process</th>
               <th className="px-3 py-2 text-left text-xs">File</th>
@@ -63,12 +67,6 @@ export function WPSTable({
                   </td>
                 )}
                 <td className="px-3 py-2 text-gray-600">{index + 1}</td>
-                <td className="px-3 py-2">
-                  {wps.projectName ||
-                    wps.project?.name ||
-                    wps.projectCode ||
-                    "-"}
-                </td>
                 <td className="px-3 py-2">{wps.wpsNumber}</td>
                 <td className="px-3 py-2">{wps.weldProcess || "-"}</td>
                 <td className="px-3 py-2 text-xs">
@@ -89,6 +87,36 @@ export function WPSTable({
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex items-center border-t border-gray-200 bg-gray-50 px-4 py-3 gap-2">
+        {/* Previous button - left aligned */}
+        <div className="flex-1">
+          <button
+            onClick={onPrevPage}
+            disabled={isFetching || !pagination?.prevCursor || page <= 1}
+            className="cursor-pointer inline-flex items-center gap-1 rounded border border-gray-300 px-3 py-1 text-xs text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span>Previous</span>
+          </button>
+        </div>
+
+        {/* Page indicator - centered */}
+        <div className="flex-1 text-center text-xs text-gray-600">
+          Page {page}
+        </div>
+
+        {/* Next button - right aligned */}
+        <div className="flex-1 flex justify-end">
+          <button
+            onClick={onNextPage}
+            disabled={isFetching || !pagination?.hasNextPage}
+            className="cursor-pointer inline-flex items-center gap-1 rounded border border-gray-300 px-3 py-1 text-xs text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span>Next</span>
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </div>
   );

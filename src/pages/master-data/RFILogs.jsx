@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sheet } from "lucide-react";
+import { Sheet, ChevronLeft, ChevronRight } from "lucide-react";
 import { RFILogForm } from "@/components/rfi-logs/RFILogForm";
 import { RFILogTable } from "@/components/rfi-logs/RFILogTable";
 import { SubmitFinalInspectionDialog } from "@/components/rfi-logs/SubmitFinalInspectionDialog";
@@ -52,8 +52,49 @@ export default function RFILogs() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [rfiLogToDelete, setRfiLogToDelete] = useState(null);
 
+  // Pagination
+  const [cursor, setCursor] = useState(null);
+  const [prevCursor, setPrevCursor] = useState(null);
+  const [limit] = useState(20);
+  const [page, setPage] = useState(1);
+
   // Queries and mutations
-  const { data: rfiLogList = [], isLoading, error } = useGetRFILogsQuery({});
+  const {
+    data: rfiData,
+    isLoading,
+    error,
+    isFetching,
+  } = useGetRFILogsQuery({ cursor, prevCursor, limit });
+
+  const rfiLogList = rfiData?.rfis || [];
+  const pagination = rfiData?.pagination || {
+    hasNextPage: false,
+    nextCursor: null,
+    prevCursor: null,
+    limit,
+  };
+
+  const handleNextPage = () => {
+    if (pagination?.hasNextPage && pagination?.nextCursor) {
+      setPrevCursor(cursor);
+      setCursor(pagination.nextCursor);
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (pagination?.prevCursor) {
+      setCursor(pagination.prevCursor);
+      setPrevCursor(pagination.prevCursor);
+      setPage((prev) => Math.max(1, prev - 1));
+    }
+  };
+
+  const resetPagination = () => {
+    setCursor(null);
+    setPrevCursor(null);
+    setPage(1);
+  };
 
   const createRFILogMutation = useCreateRFILogMutation();
   const updateRFILogMutation = useUpdateRFILogMutation();
@@ -139,6 +180,7 @@ export default function RFILogs() {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["rfiLogs"] });
+            resetPagination();
             setMode("idle");
             setEditingRFILog(null);
             toast.success("RFI Log has been updated.");
@@ -152,6 +194,7 @@ export default function RFILogs() {
       createRFILogMutation.mutate(formData, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["rfiLogs"] });
+          resetPagination();
           setMode("idle");
           setEditingRFILog(null);
           toast.success("RFI Log has been created.");
@@ -276,6 +319,11 @@ export default function RFILogs() {
             onDelete={handleDelete}
             canEdit={canEdit}
             canDelete={canDelete}
+            pagination={pagination}
+            onNextPage={handleNextPage}
+            onPrevPage={handlePrevPage}
+            page={page}
+            isFetching={isFetching}
           />
         )}
 

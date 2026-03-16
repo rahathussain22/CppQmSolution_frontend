@@ -2,13 +2,21 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 
 import { getWPS, createWPS, deleteWPS } from "../api/wps";
 
-export function useGetWPSQuery({ projectId } = {}) {
+export function useGetWPSQuery(params = {}) {
   return useQuery({
-    queryKey: ["wps", projectId],
-    queryFn: () => getWPS({ projectId }),
-    select: (response) =>
-      response.wps || response.data || response.results || [],
+    queryKey: ["wps", params],
+    queryFn: () => getWPS(params),
+    select: (response) => {
+      // Normalize: { wps, pagination, count }
+      if (!response) return { wps: [], pagination: null, count: null };
+      return {
+        wps: response.wps || [],
+        pagination: response.pagination || null,
+        count: response.count ?? null,
+      };
+    },
     refetchOnWindowFocus: false,
+    keepPreviousData: true,
   });
 }
 

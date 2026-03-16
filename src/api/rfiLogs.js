@@ -5,12 +5,24 @@ export async function createRFILog(formData) {
   return await api.post("/rfi/create", formData);
 }
 
-export async function getRFILogs({ projectCode, discipline, status } = {}) {
+export async function getRFILogs({
+  projectCode,
+  discipline,
+  status,
+  cursor,
+  prevCursor,
+  limit,
+} = {}) {
   const queryParams = new URLSearchParams();
   if (projectCode) queryParams.append("projectCode", projectCode);
   if (discipline) queryParams.append("discipline", discipline);
   if (status) queryParams.append("status", status);
+  if (cursor) queryParams.append("cursor", cursor);
+  if (prevCursor) queryParams.append("prevCursor", prevCursor);
+  if (limit) queryParams.append("limit", limit);
+
   const response = await api.get(`/rfi/get?${queryParams.toString()}`);
+  // Backend responds with: { pagination, count, rfis }
   return response;
 }
 
