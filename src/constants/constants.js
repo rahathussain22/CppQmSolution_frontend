@@ -99,6 +99,9 @@ export const navItems = [
     children: [
       { label: "Daily Weld Fit-Up Inspection Report (IR-CSSP-W-001)", pathname: "/reports/ir-cssp-w-001" },
       { label: "Weld Summary & NDT Tracking System (IR-CSSP-W-002)", pathname: "/reports/ir-cssp-w-002" },
+      { label: "Weekly and Cummulative Weld & NDT Status (IR-CSSP-W-003)", pathname: "/reports/ir-cssp-w-003" },
+      { label: "Welders' Assessment & Tracer tracking Records (IR-CSSP-W-004)", pathname: "/reports/ir-cssp-w-004" },
+      { label: "Welders' Performance Report - Weekly & Cumulative (IR-CSSP-W-005)", pathname: "/reports/ir-cssp-w-005" },
       { label: "Welder Initial Production Joint Status", pathname: "/reports/wipjs" },
       { label: "Weld Master Log", pathname: "/reports/weld-logs" },
       { label: "Weld Master Log (Repair Joints)", pathname: "/reports/weld-repair-logs" },
