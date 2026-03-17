@@ -14,9 +14,9 @@ export default function IRW004() {
     try {
       const result = await getWeldVisualInspectionReport();
 
-      if (result?.path) {
+      if (result?.fileUrl) {
         const link = document.createElement("a");
-        link.href = result.path;
+        link.href = result.fileUrl;
         link.target = "_blank";
         link.rel = "noreferrer";
         document.body.appendChild(link);

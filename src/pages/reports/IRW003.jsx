@@ -14,9 +14,9 @@ export default function IRW003() {
     try {
       const result = await getWelderProgressStatusReport();
 
-      if (result?.path) {
+      if (result?.fileUrl) {
         const link = document.createElement("a");
-        link.href = result.path;
+        link.href = result.fileUrl;
         link.target = "_blank";
         link.rel = "noreferrer";
         document.body.appendChild(link);

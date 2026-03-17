@@ -14,9 +14,9 @@ export default function IRW005() {
     try {
       const result = await getNDTSummaryReport();
 
-      if (result?.path) {
+      if (result?.fileUrl) {
         const link = document.createElement("a");
-        link.href = result.path;
+        link.href = result.fileUrl;
         link.target = "_blank";
         link.rel = "noreferrer";
         document.body.appendChild(link);

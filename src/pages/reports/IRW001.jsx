@@ -17,9 +17,9 @@ export default function IRW001() {
   };
 
   const isValid =
-    formData.drawingNumber.trim() &&
-    formData.sheetNumber.trim() &&
-    formData.weldNumber.trim();
+    formData.drawingNumber.trim() ||
+    formData.sheetNumber.trim() ||
+    formData.weldNumber.trim(); // atleast one is available
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,7 +73,7 @@ export default function IRW001() {
           <div className="grid grid-cols-12 gap-3">
             <div className="col-span-4">
               <label className="block text-xs text-gray-700 mb-1">
-                Drawing Number *
+                Drawing Number 
               </label>
               <input
                 type="text"
@@ -85,7 +85,7 @@ export default function IRW001() {
             </div>
             <div className="col-span-4">
               <label className="block text-xs text-gray-700 mb-1">
-                Sheet Number *
+                Sheet Number 
               </label>
               <input
                 type="text"
@@ -97,7 +97,7 @@ export default function IRW001() {
             </div>
             <div className="col-span-4">
               <label className="block text-xs text-gray-700 mb-1">
-                Weld Number *
+                Weld Number 
               </label>
               <input
                 type="text"
