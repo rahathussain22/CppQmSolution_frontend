@@ -107,7 +107,7 @@ export default function NDTRequest() {
 
   const handleRtNextPage = () => {
     if (rtPagination?.hasNextPage && rtPagination?.nextCursor) {
-      setRtPrevCursor(rtCursor);
+      setRtPrevCursor(null);
       setRtCursor(rtPagination.nextCursor);
       setRtPage((prev) => prev + 1);
     }
@@ -115,7 +115,7 @@ export default function NDTRequest() {
 
   const handleRtPrevPage = () => {
     if (rtPagination?.prevCursor) {
-      setRtCursor(rtPagination.prevCursor);
+      setRtCursor(null);
       setRtPrevCursor(rtPagination.prevCursor);
       setRtPage((prev) => Math.max(1, prev - 1));
     }
@@ -123,7 +123,7 @@ export default function NDTRequest() {
 
   const handleUtNextPage = () => {
     if (utPagination?.hasNextPage && utPagination?.nextCursor) {
-      setUtPrevCursor(utCursor);
+      setUtPrevCursor(null);
       setUtCursor(utPagination.nextCursor);
       setUtPage((prev) => prev + 1);
     }
@@ -131,7 +131,7 @@ export default function NDTRequest() {
 
   const handleUtPrevPage = () => {
     if (utPagination?.prevCursor) {
-      setUtCursor(utPagination.prevCursor);
+      setUtCursor(null);
       setUtPrevCursor(utPagination.prevCursor);
       setUtPage((prev) => Math.max(1, prev - 1));
     }

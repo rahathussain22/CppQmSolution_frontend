@@ -88,7 +88,7 @@ export default function Components() {
 
   const handleNextPage = () => {
     if (pagination?.hasNextPage && pagination?.nextCursor) {
-      setPrevCursor(cursor);
+      setPrevCursor(null);
       setCursor(pagination.nextCursor);
       setPage((prev) => prev + 1);
     }
@@ -96,7 +96,7 @@ export default function Components() {
 
   const handlePrevPage = () => {
     if (pagination?.prevCursor) {
-      setCursor(pagination.prevCursor);
+      setCursor(null);
       setPrevCursor(pagination.prevCursor);
       setPage((prev) => Math.max(1, prev - 1));
     }

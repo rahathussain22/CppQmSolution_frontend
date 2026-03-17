@@ -76,16 +76,16 @@ export default function RFILogs() {
 
   const handleNextPage = () => {
     if (pagination?.hasNextPage && pagination?.nextCursor) {
-      setPrevCursor(cursor);
       setCursor(pagination.nextCursor);
+      setPrevCursor(null);
       setPage((prev) => prev + 1);
     }
   };
 
   const handlePrevPage = () => {
     if (pagination?.prevCursor) {
-      setCursor(pagination.prevCursor);
       setPrevCursor(pagination.prevCursor);
+      setCursor(null);
       setPage((prev) => Math.max(1, prev - 1));
     }
   };
