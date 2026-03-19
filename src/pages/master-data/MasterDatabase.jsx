@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { Download } from "lucide-react";
+import { Sheet, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MasterDatabaseTable } from "@/components/master-database/MasterDatabaseTable";
+import { MasterDatabaseForm } from "@/components/master-database/MasterDatabaseForm";
 import { toast } from "sonner";
 import { getDatabase } from "../../api/master-database";
 
 const MasterDatabase = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [masterData, setMasterData] = useState([]);
+  const [isAdding, setIsAdding] = useState(false);
 
   // Pagination
   const [cursor, setCursor] = useState(null);
@@ -67,19 +69,39 @@ const MasterDatabase = () => {
 
   return (
     <div className="p-6 bg-white rounded shadow-md">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-bold mb-2">Master Database</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Master Database</h1>
         {/* Action Buttons */}
-        <div className="flex justify-end gap-3 mb-6">
+        <div className="flex gap-3">
           <Button
             onClick={handleDownload}
-            className="px-4 py-2 text-sm bg-gray-800 text-white rounded hover:bg-black flex items-center gap-2"
+            className="cursor-pointer px-4 py-2 text-sm rounded bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
           >
-            <Download size={18} />
+            <Sheet size={18} />
             Download
+          </Button>
+          <Button
+            onClick={() => setIsAdding(true)}
+            disabled={isAdding}
+            className="cursor-pointer px-4 py-2 text-sm bg-gray-800 text-white rounded hover:bg-black flex items-center gap-2 disabled:bg-gray-400"
+          >
+            <Plus size={18} />
+            Create Record
           </Button>
         </div>
       </div>
+
+      {isAdding && (
+        <MasterDatabaseForm
+          isEditing={false}
+          onSave={(data) => {
+            console.log("Save triggered:", data);
+            toast.info("Save logic not yet implemented.");
+            setIsAdding(false);
+          }}
+          onCancel={() => setIsAdding(false)}
+        />
+      )}
 
       {/* Master Table */}
       {isLoading ? (
