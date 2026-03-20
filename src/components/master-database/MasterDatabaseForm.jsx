@@ -8,6 +8,13 @@ const LINE_NUMBER_OPTIONS = ["Lot A", "Lot B", "Lot C", "Lot D"];
 const JOINT_TYPES = ["Butt", "Skt", "Seal", "Fil."];
 const COMPONENT_TYPES = ["Pipe", "Flg", "Elb.", "Tee", "Wolet", "Solet", "Red.", "Nip.", "Vlv."];
 const MATERIAL_TYPES = ["X60", "X65", "X70", "GrB"];
+const RESULT_TYPES = ["Acc", "R", "R/S", "RW"];
+const TRACER_TYPES = ["FW", "SW"];
+const AGREEMENT_TYPES = ["Agr.", "Dagr."];
+const PERCENTAGE_TYPES = ["10%", "100%"];
+const UT_TYPES = ["UT", "UTT", "PAUT", "AUT"];
+const OTHER_NDE_TYPES = ["MT", "PT", "PMI"];
+const GIRTH_WELD_COATING_TYPES = ["Wrapping", "LE INT", "FBE INT", "FBE EXT"];
 
 function SearchableDropdown({
   label,
@@ -132,23 +139,23 @@ export function MasterDatabaseForm({
 }) {
   const [formData, setFormData] = useState({
     // 1. Pipeline Details
-    lineNumber: masterData?.pipeline?.lineNumber || "",
-    location: masterData?.pipeline?.location || "",
-    lineSize: masterData?.pipeline?.lineSize || "",
-    lineClass: masterData?.pipeline?.lineClass || "",
+    lineNumber: masterData?.lineNumber || "",
+    location: masterData?.location || "",
+    lineSize: masterData?.lineSize || "",
+    lineClass: masterData?.lineClass || "",
 
     // 2. Drawing Details
-    drawingNumber: masterData?.drawingDetail?.drawingNumber || "",
-    isoDrawingId: masterData?.drawingDetail?.id || "",
-    spoolNumber: masterData?.drawingDetail?.spoolNumber || "",
+    drawingNumber: masterData?.drawingNumber || "",
+    isoDrawingId: masterData?.isoDrawingId || "",
+    spoolNumber: masterData?.spoolNumber || "",
 
     // 3. Weld Joint Details
-    weldNumber: masterData?.weldJointDetail?.weldNumber || "",
-    jointType: masterData?.weldJointDetail?.jointType || "",
-    initialProduction: masterData?.weldJointDetail?.initialProduction || "",
+    weldNumber: masterData?.weldNumber || "",
+    jointType: masterData?.jointType || "",
+    initialProduction: masterData?.initialProduction || "",
 
     // 4. Fit-up Information
-    fitupDate: masterData?.fitupDate || "", // Wait, fitupDate isn't in original nested structure? The user didn't specify exactly where it is in the GET response, I'll put it flat.
+    fitupDate: masterData?.fitupDate || "",
     fitupRFI: masterData?.fitupRFI || "",
     fitupRfiId: masterData?.fitupRfiId || "",
 
@@ -158,34 +165,94 @@ export function MasterDatabaseForm({
     weldingRfiId: masterData?.weldingRfiId || "",
 
     // 6. Component 1 Information
-    comp1Type: masterData?.component1Info?.name || "",
-    comp1Material: masterData?.component1Info?.material || "",
-    comp1Diameter: masterData?.component1Info?.diameter || "",
-    comp1Thickness: masterData?.component1Info?.thickness || "",
-    comp1Length: masterData?.component1Info?.length || "",
-    comp1PipeNo: masterData?.component1Info?.pipeNumber || "",
-    comp1HeatNo: masterData?.component1Info?.heatNumber || "",
+    comp1Type: masterData?.component1Name || "",
+    comp1Material: masterData?.component1Material || "",
+    comp1Diameter: masterData?.component1Diameter || "",
+    comp1Thickness: masterData?.component1Thickness || "",
+    comp1Length: masterData?.component1Length || "",
+    comp1PipeNo: masterData?.component1PipeNumber || "",
+    comp1HeatNo: masterData?.component1HeatNumber || "",
 
     // 7. Component 2 Information
-    comp2Type: masterData?.component2Info?.name || "",
-    comp2Material: masterData?.component2Info?.material || "",
-    comp2Diameter: masterData?.component2Info?.diameter || "",
-    comp2Thickness: masterData?.component2Info?.thickness || "",
-    comp2Length: masterData?.component2Info?.length || "",
-    comp2PipeNo: masterData?.component2Info?.pipeNumber || "",
-    comp2HeatNo: masterData?.component2Info?.heatNumber || "",
+    comp2Type: masterData?.component2Name || "",
+    comp2Material: masterData?.component2Material || "",
+    comp2Diameter: masterData?.component2Diameter || "",
+    comp2Thickness: masterData?.component2Thickness || "",
+    comp2Length: masterData?.component2Length || "",
+    comp2PipeNo: masterData?.component2PipeNumber || "",
+    comp2HeatNo: masterData?.component2HeatNumber || "",
 
     // 8. Welding Procedure
-    wpsNumber: masterData?.weldingProcedure?.wpsNumber || "",
-    weldProcess: masterData?.weldingProcedure?.weldProcess || "",
+    wpsNumber: masterData?.wpsNumber || "",
+    weldProcess: masterData?.weldProcess || "",
 
     // 9. Welder Details (Pipeline/Piping)
-    rootA: masterData?.welderDetail?.rootA || "",
-    rootB: masterData?.welderDetail?.rootB || "",
-    fillA: masterData?.welderDetail?.fillA || "",
-    fillB: masterData?.welderDetail?.fillB || "",
-    capA: masterData?.welderDetail?.capA || "",
-    capB: masterData?.welderDetail?.capB || "",
+    rootA: masterData?.rootA || "",
+    rootB: masterData?.rootB || "",
+    fillA: masterData?.fillA || "",
+    fillB: masterData?.fillB || "",
+    capA: masterData?.capA || "",
+    capB: masterData?.capB || "",
+
+    // 10-12. Individual Values
+    preHeatTemp: masterData?.preheatTemp || "",
+    weldVisual: masterData?.weldVisual || "",
+    ndtPercent: masterData?.ndtPercent || "",
+
+    // 13. Radiographic Test
+    rtRequestDate: masterData?.rtRequestDate || "",
+    rtRfiNo: masterData?.rtRFINumber || "",
+    rtRfiId: masterData?.rtRfiId || "",
+    rtReport1: masterData?.rtFirstReportNumber || "",
+    rtResult1: masterData?.rtFirstResult || "",
+    rtTracer1: masterData?.rtTracter1 || "",
+    rtTracer2: masterData?.rtTracter2 || "",
+    rtReport2: masterData?.rtSecondReportNumber || "",
+    rtResult2: masterData?.rtSecondResult || "",
+    rtReport3: masterData?.rtThirdReportNumber || "",
+    rtResult3: masterData?.rtThirdResult || "",
+
+    // 14. ILF RT Review
+    ilfRtFilmQuality: masterData?.rtFilmQuality || "",
+    ilfRtWeldQuality: masterData?.rtWeldQuality || "",
+    ilfRtPercentage: masterData?.rtPercentReviewed || "",
+
+    // 15. Ultrasonic Test
+    utType: masterData?.utType || "",
+    utRequestDate: masterData?.utRequestDate || "",
+    utRfiNo: masterData?.utRFINumber || "",
+    utRfiId: masterData?.utRfiId || "",
+    utReport1: masterData?.utFirstReportNumber || "",
+    utResult1: masterData?.utFirstResult || "",
+    utTracer1: masterData?.utTracter1 || "",
+    utTracer2: masterData?.utTracter2 || "",
+    utReport2: masterData?.utSecondReportNumber || "",
+    utResult2: masterData?.utSecondResult || "",
+    utReport3: masterData?.utThirdReportNumber || "",
+    utResult3: masterData?.utThirdResult || "",
+
+    // 16. ILF UT Review
+    ilfUtAgreement: masterData?.utIlfAgreement || "",
+    ilfUtPercentage: masterData?.utPercentReviewed || "",
+
+    // 17. Other NDE
+    otherNdeType: masterData?.ndeType || "",
+    otherNdeRequestDate: masterData?.ndeRequestDate || "",
+    otherNdeResult: masterData?.ndeResult || "",
+    otherNdeReport: masterData?.ndeReportNumber || "",
+
+    // 18. PWHT
+    pwhtRequestDate: masterData?.pwhtRequestDate || "",
+    pwhtResult: masterData?.pwhtResult || "",
+    pwhtReport: masterData?.pwhtReportNumber || "",
+
+    // 19. Other Info.
+    girthWeldCoatingType: masterData?.girthWeldCoatingType || "",
+    coatingDate: masterData?.coatingDate || "",
+    coatingRfi: masterData?.coatingRFI || "",
+    holidayReport: masterData?.holidayReportNumber || "",
+    loweringRfi: masterData?.loweringRFINumber || "",
+    backfillRfi: masterData?.backfillRFINumber || "",
   });
 
   const updateField = (field, value) => {
@@ -218,11 +285,11 @@ export function MasterDatabaseForm({
 
   return (
     <div className="bg-linear-to-b from-gray-50 to-gray-100 border-2 border-gray-300 rounded shadow-md mb-4">
-      <div className="bg-linear-to-b from-gray-800 to-black text-white px-3 py-2 flex items-center justify-between">
+      {/* <div className="bg-linear-to-b from-gray-800 to-black text-white px-3 py-2 flex items-center justify-between">
         <h2 className="text-sm font-bold">
           {isEditing ? "Edit Master Database Record" : "Create Master Database Record"}
         </h2>
-      </div>
+      </div> */}
       <form onSubmit={handleSubmit} className="p-4 space-y-6">
         {/* SECTION 1: Pipeline Details */}
         <div>
@@ -485,7 +552,8 @@ export function MasterDatabaseForm({
             <div className="col-span-3">
               <label className="block text-xs text-gray-700 mb-1">Thickness 1</label>
               <input
-                type="text"
+                type="number"
+                step="0.00001"
                 value={formData.comp1Thickness}
                 onChange={(e) => updateField("comp1Thickness", e.target.value)}
                 disabled={isSaving}
@@ -495,7 +563,8 @@ export function MasterDatabaseForm({
             <div className="col-span-4">
               <label className="block text-xs text-gray-700 mb-1">Length 1</label>
               <input
-                type="text"
+                type="number"
+                step="0.01"
                 value={formData.comp1Length}
                 onChange={(e) => updateField("comp1Length", e.target.value)}
                 disabled={isSaving}
@@ -572,7 +641,8 @@ export function MasterDatabaseForm({
             <div className="col-span-3">
               <label className="block text-xs text-gray-700 mb-1">Thickness 2</label>
               <input
-                type="text"
+                type="number"
+                step="0.00001"
                 value={formData.comp2Thickness}
                 onChange={(e) => updateField("comp2Thickness", e.target.value)}
                 disabled={isSaving}
@@ -582,7 +652,8 @@ export function MasterDatabaseForm({
             <div className="col-span-4">
               <label className="block text-xs text-gray-700 mb-1">Length 2</label>
               <input
-                type="text"
+                type="number"
+                step="0.01"
                 value={formData.comp2Length}
                 onChange={(e) => updateField("comp2Length", e.target.value)}
                 disabled={isSaving}
@@ -716,6 +787,580 @@ export function MasterDatabaseForm({
                 onChange={(e) => updateField("capB", e.target.value)}
                 disabled={isSaving}
                 className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* SECTIONS 10-12: Independent Properties */}
+        <div className="grid grid-cols-12 gap-3">
+          <div className="col-span-4">
+            <h3 className="text-sm font-bold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+              10. Pre-Heat Temperature
+            </h3>
+            <input
+              type="number"
+              step="0.01"
+              value={formData.preHeatTemp}
+              onChange={(e) => updateField("preHeatTemp", e.target.value)}
+              disabled={isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+            />
+          </div>
+          <div className="col-span-4">
+            <h3 className="text-sm font-bold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+              11. Weld Visual
+            </h3>
+            <select
+              value={formData.weldVisual}
+              onChange={(e) => updateField("weldVisual", e.target.value)}
+              disabled={isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 bg-white"
+            >
+              <option value="">Select</option>
+              <option value="Acc">Acc</option>
+              <option value="Rej">Rej</option>
+            </select>
+          </div>
+          <div className="col-span-4">
+            <h3 className="text-sm font-bold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+              12. NDT%
+            </h3>
+            <select
+              value={formData.ndtPercent}
+              onChange={(e) => updateField("ndtPercent", e.target.value)}
+              disabled={isSaving}
+              className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100 bg-white"
+            >
+              <option value="">Select</option>
+              <option value="10%">10%</option>
+              <option value="100%">100%</option>
+            </select>
+          </div>
+        </div>
+
+        {/* SECTION 13: Radiographic Test */}
+        <div>
+          <h3 className="text-sm font-bold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+            13. Radiographic Test
+          </h3>
+          <div className="grid grid-cols-12 gap-3 mb-3">
+            <div className="col-span-6">
+              <label className="block text-xs text-gray-700 mb-1">RT Request Date</label>
+              <input
+                type="date"
+                value={formData.rtRequestDate}
+                onChange={(e) => updateField("rtRequestDate", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-6">
+              <SearchableDropdown
+                label="RT RFI No."
+                placeholder="Search RT RFI Number..."
+                value={formData.rtRfiNo}
+                onSearch={handleRfiSearch}
+                displayKey="rfiNumber"
+                onSelect={(rfi) => {
+                  updateField("rtRfiNo", rfi.rfiNumber);
+                  updateField("rtRfiId", rfi.id || rfi._id);
+                }}
+                onClear={() => {
+                  updateField("rtRfiNo", "");
+                  updateField("rtRfiId", "");
+                }}
+                disabled={isSaving}
+              />
+            </div>
+          </div>
+          <div className="p-3 bg-white border border-gray-300 rounded grid grid-cols-12 gap-3">
+            <div className="col-span-3">
+              <label className="block text-xs text-gray-700 mb-1">1st RT Report #</label>
+              <input
+                type="text"
+                value={formData.rtReport1}
+                onChange={(e) => updateField("rtReport1", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-3">
+              <label className="block text-xs text-gray-700 mb-1">1st RT Result</label>
+              <select
+                value={formData.rtResult1}
+                onChange={(e) => updateField("rtResult1", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {RESULT_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+            <div className="col-span-3">
+              <label className="block text-xs text-gray-700 mb-1">RT Tracer 1 (T1)</label>
+              <select
+                value={formData.rtTracer1}
+                onChange={(e) => updateField("rtTracer1", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {TRACER_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+            <div className="col-span-3">
+              <label className="block text-xs text-gray-700 mb-1">RT Tracer 2 (T2)</label>
+              <select
+                value={formData.rtTracer2}
+                onChange={(e) => updateField("rtTracer2", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {TRACER_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+
+            <div className="col-span-3 mt-2">
+              <label className="block text-xs text-gray-700 mb-1">2nd RT Report #</label>
+              <input
+                type="text"
+                value={formData.rtReport2}
+                onChange={(e) => updateField("rtReport2", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-3 mt-2">
+              <label className="block text-xs text-gray-700 mb-1">2nd RT Result</label>
+              <select
+                value={formData.rtResult2}
+                onChange={(e) => updateField("rtResult2", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {RESULT_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+
+            <div className="col-span-3 mt-2">
+              <label className="block text-xs text-gray-700 mb-1">3rd RT Report #</label>
+              <input
+                type="text"
+                value={formData.rtReport3}
+                onChange={(e) => updateField("rtReport3", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-3 mt-2">
+              <label className="block text-xs text-gray-700 mb-1">3rd RT Result</label>
+              <select
+                value={formData.rtResult3}
+                onChange={(e) => updateField("rtResult3", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {RESULT_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 14: ILF RT Review */}
+        <div>
+          <h3 className="text-sm font-bold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+            14. ILF RT Review
+          </h3>
+          <div className="grid grid-cols-12 gap-3">
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Film Quality</label>
+              <select
+                value={formData.ilfRtFilmQuality}
+                onChange={(e) => updateField("ilfRtFilmQuality", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {AGREEMENT_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Weld Quality</label>
+              <select
+                value={formData.ilfRtWeldQuality}
+                onChange={(e) => updateField("ilfRtWeldQuality", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {AGREEMENT_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">% Reviewed</label>
+              <select
+                value={formData.ilfRtPercentage}
+                onChange={(e) => updateField("ilfRtPercentage", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {PERCENTAGE_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 15: Ultrasonic Test */}
+        <div>
+          <h3 className="text-sm font-bold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+            15. Ultrasonic Test
+          </h3>
+          <div className="grid grid-cols-12 gap-3 mb-3">
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Type</label>
+              <select
+                value={formData.utType}
+                onChange={(e) => updateField("utType", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {UT_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">UT Request Date</label>
+              <input
+                type="date"
+                value={formData.utRequestDate}
+                onChange={(e) => updateField("utRequestDate", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-4">
+              <SearchableDropdown
+                label="UT RFI No."
+                placeholder="Search UT RFI Number..."
+                value={formData.utRfiNo}
+                onSearch={handleRfiSearch}
+                displayKey="rfiNumber"
+                onSelect={(rfi) => {
+                  updateField("utRfiNo", rfi.rfiNumber);
+                  updateField("utRfiId", rfi.id || rfi._id);
+                }}
+                onClear={() => {
+                  updateField("utRfiNo", "");
+                  updateField("utRfiId", "");
+                }}
+                disabled={isSaving}
+              />
+            </div>
+          </div>
+          <div className="p-3 bg-white border border-gray-300 rounded grid grid-cols-12 gap-3">
+            <div className="col-span-3">
+              <label className="block text-xs text-gray-700 mb-1">1st UT Report #</label>
+              <input
+                type="text"
+                value={formData.utReport1}
+                onChange={(e) => updateField("utReport1", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-3">
+              <label className="block text-xs text-gray-700 mb-1">1st UT Result</label>
+              <select
+                value={formData.utResult1}
+                onChange={(e) => updateField("utResult1", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {RESULT_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+            <div className="col-span-3">
+              <label className="block text-xs text-gray-700 mb-1">UT Tracer 1 (T1)</label>
+              <select
+                value={formData.utTracer1}
+                onChange={(e) => updateField("utTracer1", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {TRACER_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+            <div className="col-span-3">
+              <label className="block text-xs text-gray-700 mb-1">UT Tracer 2 (T2)</label>
+              <select
+                value={formData.utTracer2}
+                onChange={(e) => updateField("utTracer2", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {TRACER_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+
+            <div className="col-span-3 mt-2">
+              <label className="block text-xs text-gray-700 mb-1">2nd UT Report #</label>
+              <input
+                type="text"
+                value={formData.utReport2}
+                onChange={(e) => updateField("utReport2", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-3 mt-2">
+              <label className="block text-xs text-gray-700 mb-1">2nd UT Result</label>
+              <select
+                value={formData.utResult2}
+                onChange={(e) => updateField("utResult2", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {RESULT_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+
+            <div className="col-span-3 mt-2">
+              <label className="block text-xs text-gray-700 mb-1">3rd UT Report #</label>
+              <input
+                type="text"
+                value={formData.utReport3}
+                onChange={(e) => updateField("utReport3", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-3 mt-2">
+              <label className="block text-xs text-gray-700 mb-1">3rd UT Result</label>
+              <select
+                value={formData.utResult3}
+                onChange={(e) => updateField("utResult3", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {RESULT_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 16: ILF UT Review */}
+        <div>
+          <h3 className="text-sm font-bold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+            16. ILF UT Review
+          </h3>
+          <div className="grid grid-cols-12 gap-3">
+            <div className="col-span-6">
+              <label className="block text-xs text-gray-700 mb-1">ILF Agreement</label>
+              <select
+                value={formData.ilfUtAgreement}
+                onChange={(e) => updateField("ilfUtAgreement", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {AGREEMENT_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+            <div className="col-span-6">
+              <label className="block text-xs text-gray-700 mb-1">% Reviewed</label>
+              <select
+                value={formData.ilfUtPercentage}
+                onChange={(e) => updateField("ilfUtPercentage", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {PERCENTAGE_TYPES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 17: Other NDE */}
+        <div>
+          <h3 className="text-sm font-bold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+            17. Other NDE
+          </h3>
+          <div className="grid grid-cols-12 gap-3">
+            <div className="col-span-3">
+              <label className="block text-xs text-gray-700 mb-1">NDT Type</label>
+              <select
+                value={formData.otherNdeType}
+                onChange={(e) => updateField("otherNdeType", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {OTHER_NDE_TYPES.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+            </div>
+            <div className="col-span-3">
+              <label className="block text-xs text-gray-700 mb-1">Request Date</label>
+              <input
+                type="date"
+                value={formData.otherNdeRequestDate}
+                onChange={(e) => updateField("otherNdeRequestDate", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-3">
+              <label className="block text-xs text-gray-700 mb-1">Result</label>
+              <input
+                type="text"
+                value={formData.otherNdeResult}
+                onChange={(e) => updateField("otherNdeResult", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-3">
+              <label className="block text-xs text-gray-700 mb-1">Report #</label>
+              <input
+                type="text"
+                value={formData.otherNdeReport}
+                onChange={(e) => updateField("otherNdeReport", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 18: PWHT */}
+        <div>
+          <h3 className="text-sm font-bold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+            18. PWHT
+          </h3>
+          <div className="grid grid-cols-12 gap-3">
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Request Date</label>
+              <input
+                type="date"
+                value={formData.pwhtRequestDate}
+                onChange={(e) => updateField("pwhtRequestDate", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Result</label>
+              <input
+                type="text"
+                value={formData.pwhtResult}
+                onChange={(e) => updateField("pwhtResult", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Report #</label>
+              <input
+                type="text"
+                value={formData.pwhtReport}
+                onChange={(e) => updateField("pwhtReport", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 19: Other Info. */}
+        <div>
+          <h3 className="text-sm font-bold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+            19. Other Info.
+          </h3>
+          <div className="grid grid-cols-12 gap-3">
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Girth Weld Coating Type</label>
+              <select
+                value={formData.girthWeldCoatingType}
+                onChange={(e) => updateField("girthWeldCoatingType", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              >
+                <option value="">Select</option>
+                {GIRTH_WELD_COATING_TYPES.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+            </div>
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Coating Date</label>
+              <input
+                type="date"
+                value={formData.coatingDate}
+                onChange={(e) => updateField("coatingDate", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Coating RFI #</label>
+              <SearchableDropdown
+                label=""
+                placeholder="Search RFI Number..."
+                value={formData.coatingRfi}
+                onSearch={handleRfiSearch}
+                displayKey="rfiNumber"
+                onSelect={(rfi) => updateField("coatingRfi", rfi.rfiNumber)}
+                onClear={() => updateField("coatingRfi", "")}
+                disabled={isSaving}
+              />
+            </div>
+
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Holiday Report #</label>
+              <input
+                type="text"
+                value={formData.holidayReport}
+                onChange={(e) => updateField("holidayReport", e.target.value)}
+                disabled={isSaving}
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Lowering RFI #</label>
+              <SearchableDropdown
+                label=""
+                placeholder="Search RFI Number..."
+                value={formData.loweringRfi}
+                onSearch={handleRfiSearch}
+                displayKey="rfiNumber"
+                onSelect={(rfi) => updateField("loweringRfi", rfi.rfiNumber)}
+                onClear={() => updateField("loweringRfi", "")}
+                disabled={isSaving}
+              />
+            </div>
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Backfill RFI #</label>
+              <SearchableDropdown
+                label=""
+                placeholder="Search RFI Number..."
+                value={formData.backfillRfi}
+                onSearch={handleRfiSearch}
+                displayKey="rfiNumber"
+                onSelect={(rfi) => updateField("backfillRfi", rfi.rfiNumber)}
+                onClear={() => updateField("backfillRfi", "")}
+                disabled={isSaving}
               />
             </div>
           </div>
