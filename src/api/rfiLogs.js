@@ -12,6 +12,8 @@ export async function getRFILogs({
   cursor,
   prevCursor,
   limit,
+  search,
+  searchBy,
 } = {}) {
   const queryParams = new URLSearchParams();
   if (projectCode) queryParams.append("projectCode", projectCode);
@@ -20,9 +22,10 @@ export async function getRFILogs({
   if (cursor) queryParams.append("cursor", cursor);
   if (prevCursor) queryParams.append("prevCursor", prevCursor);
   if (limit) queryParams.append("limit", limit);
+  if (search) queryParams.append("search", search);
+  if (searchBy) queryParams.append("searchBy", searchBy);
 
   const response = await api.get(`/rfi/get?${queryParams.toString()}`);
-  // Backend responds with: { pagination, count, rfis }
   return response;
 }
 
