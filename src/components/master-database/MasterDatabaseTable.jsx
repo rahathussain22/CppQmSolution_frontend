@@ -1,5 +1,79 @@
 import { ChevronLeft, ChevronRight, Pencil, Trash2 } from "lucide-react";
 
+
+const SEARCH_COLUMNS = [
+  { value: "lineNumber", label: "Line No." },
+  { value: "location", label: "Location" },
+  { value: "lineSize", label: "Line Size" },
+  { value: "lineClass", label: "Line Class" },
+  { value: "drawingNumber", label: "Drawing No." },
+  { value: "sheetNumber", label: "Sheet No." },
+  { value: "spoolNumber", label: "Spool No." },
+  { value: "weldNumber", label: "Weld No." },
+  { value: "jointType", label: "Joint Type" },
+  { value: "initialProduction", label: "Initial Production" },
+  { value: "component1Name", label: "Component 1 Name" },
+  { value: "component1Material", label: "Component 1 Material" },
+  { value: "component1Diameter", label: "Component 1 Diameter" },
+  { value: "component1Thickness", label: "Component 1 Thickness" },
+  { value: "component1Length", label: "Component 1 Length" },
+  { value: "component1PipeNumber", label: "Component 1 Pipe No." },
+  { value: "component1HeatNumber", label: "Component 1 Heat No." },
+  { value: "component2Name", label: "Component 2 Name" },
+  { value: "component2Material", label: "Component 2 Material" },
+  { value: "component2Diameter", label: "Component 2 Diameter" },
+  { value: "component2Thickness", label: "Component 2 Thickness" },
+  { value: "component2Length", label: "Component 2 Length" },
+  { value: "component2PipeNumber", label: "Component 2 Pipe No." },
+  { value: "component2HeatNumber", label: "Component 2 Heat No." },
+  { value: "wpsNumber", label: "WPS No." },
+  { value: "weldProcess", label: "Weld Process" },
+  { value: "rootA", label: "Root A" },
+  { value: "rootB", label: "Root B" },
+  { value: "fillA", label: "Fill A" },
+  { value: "fillB", label: "Fill B" },
+  { value: "capA", label: "Cap A" },
+  { value: "capB", label: "Cap B" },
+  { value: "preHeatTemp", label: "Pre-Heat Temp" },
+  { value: "weldVisual", label: "Weld Visual" },
+  { value: "ndtPercent", label: "NDT %" },
+  { value: "rtReqDate", label: "RT Req Date" },
+  { value: "rtRfiNumber", label: "RT RFI No." },
+  { value: "rtFirstReportNumber", label: "1st RT Rep." },
+  { value: "rtFirstResult", label: "1st RT Res." },
+  { value: "rtTracer1", label: "RT Tracer 1" },
+  { value: "rtTracer2", label: "RT Tracer 2" },
+  { value: "rtSecondReportNumber", label: "2nd RT Rep." },
+  { value: "rtSecondResult", label: "2nd RT Res." },
+  { value: "rtThirdReportNumber", label: "3rd RT Rep." },
+  { value: "rtThirdResult", label: "3rd RT Res." },
+  { value: "rtFilmQuality", label: "Film Quality" },
+  { value: "rtWeldQuality", label: "Weld Quality" },
+  { value: "rtPercentReviewed", label: "RT % Reviewed" },
+  { value: "utType", label: "UT Type" },
+  { value: "utReqDate", label: "UT Req Date" },
+  { value: "utRfiNumber", label: "UT RFI No." },
+  { value: "utFirstReportNumber", label: "1st UT Rep." },
+  { value: "utFirstResult", label: "1st UT Res." },
+  { value: "utTracer1", label: "UT Tracer 1" },
+  { value: "utTracer2", label: "UT Tracer 2" },
+  { value: "utSecondReportNumber", label: "2nd UT Rep." },
+  { value: "utSecondResult", label: "2nd UT Res." },
+  { value: "utThirdReportNumber", label: "3rd UT Rep." },
+  { value: "utThirdResult", label: "3rd UT Res." },
+  { value: "utIlfAgreement", label: "ILF Agreement" },
+  { value: "utPercentReviewed", label: "UT % Reviewed" },
+  { value: "ndeType", label: "NDE Type" },
+  { value: "ndeResult", label: "NDE Result" },
+  { value: "ndeReportNumber", label: "NDE Report" },
+  { value: "pwhtResult", label: "PWHT Result" },
+  { value: "pwhtReportNumber", label: "PWHT Report" },
+  { value: "girthWeldCoatingType", label: "Girth Welding Coating Type" },
+  { value: "holidayReportNumber", label: "Holiday Report#" },
+  { value: "loweringRfiNumber", label: "Lowering RFI#" },
+  { value: "backfillRfiNumber", label: "Backfill RFI#" },
+];
+
 export function MasterDatabaseTable({
   data,
   pagination,
@@ -37,9 +111,9 @@ export function MasterDatabaseTable({
             onChange={(e) => onSearchByChange?.(e.target.value)}
             className="px-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
           >
-            <option value="weldNumber">Weld Number</option>
-            <option value="drawingNumber">Drawing No.</option>
-            <option value="lineNumber">Line No.</option>
+            {SEARCH_COLUMNS.map(({ value, label }) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
           </select>
         </div>
       </div>

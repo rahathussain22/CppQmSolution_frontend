@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sheet, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MasterDatabaseTable } from "@/components/master-database/MasterDatabaseTable";
@@ -48,7 +48,20 @@ const MasterDatabase = () => {
   const [page, setPage] = useState(1);
   // Search
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [searchBy, setSearchBy] = useState("weldNumber");
+
+  useEffect(() => {
+    const handle = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+      // reset pagination when search changes
+      setCursor(null);
+      setPrevCursor(null);
+      setPage(1);
+    }, 1000);
+    return () => clearTimeout(handle);
+  }, [search]);
+
 
   // React Query Fetch
   const {
@@ -60,8 +73,8 @@ const MasterDatabase = () => {
     cursor,
     prevCursor,
     limit,
-    search: search.trim() || undefined,
-    column: searchBy
+    search: debouncedSearch || undefined,
+    column: debouncedSearch ? searchBy : undefined,
   });
 
   const masterData = queryData?.data || [];
