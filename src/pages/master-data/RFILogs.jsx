@@ -28,7 +28,34 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { exportRFILogs } from "../../api/rfiLogs";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
+
+const SEARCH_COLUMNS = [
+  { value: "rfiNumber", label: "RFI Number" },
+  { value: "discipline", label: "Discipline" },
+  { value: "itpNumber", label: "ITP Number" },
+  { value: "reportNumber", label: "Report Number" },
+  { value: "description", label: "Description" },
+  { value: "location", label: "Location" },
+  { value: "inspectionLevel", label: "Inspection Level" },
+  { value: "companyInspectionLevel", label: "Company Inspection Level" },
+  { value: "drawingNumber", label: "Drawing Number" },
+  { value: "dateOfInspection", label: "Date of Inspection" },
+  { value: "qc", label: "QC" },
+  { value: "companyQC", label: "Company QC" },
+  { value: "pmt", label: "PMT" },
+  { value: "status", label: "Status" },
+  { value: "inspectionDocument", label: "Inspection Document" },
+
+];
 
 export default function RFILogs() {
   const queryClient = useQueryClient();
@@ -64,6 +91,8 @@ export default function RFILogs() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [searchBy, setSearchBy] = useState("rfiNumber");
   const [isExporting, setIsExporting] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     const handle = setTimeout(() => {
@@ -91,7 +120,9 @@ export default function RFILogs() {
     isFetching,
   } = useGetRFILogsQuery({
     cursor, prevCursor, limit, search: debouncedSearch,
-    searchBy: debouncedSearch ? searchBy : null
+    searchBy: debouncedSearch ? searchBy : null,
+    startDate: startDate || undefined,
+    endDate: endDate || undefined,
   });
 
   const rfiLogList = rfiData?.rfis || [];
@@ -357,6 +388,86 @@ export default function RFILogs() {
             }
           />
         )}
+
+        {/* Search & Filters */}
+        <div className="flex flex-col lg:flex-row gap-3 lg:items-end lg:justify-between border border-gray-200 rounded-md bg-white px-3 py-3 shadow-sm">
+          <div className="flex flex-col md:flex-row gap-3 md:items-center flex-1">
+            {/* Search box */}
+            <div className="w-full md:w-64">
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Search
+              </label>
+              <Input
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  resetPagination();
+                }}
+                placeholder="Search welders..."
+                className="h-9"
+              />
+            </div>
+
+            {/* Search By dropdown — matches Welder schema columns */}
+            <div className="w-full md:w-52">
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Search by
+              </label>
+
+              <Select
+                value={searchBy}
+                onValueChange={(value) => {
+                  setSearchBy(value);
+                  resetPagination();
+                }}
+              >
+                <SelectTrigger className="h-9">
+                  <SelectValue placeholder="Select field" />
+                </SelectTrigger>
+
+                <SelectContent className="bg-white">
+                  {SEARCH_COLUMNS.map(({ value, label }) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Date range filters */}
+          <div className="flex flex-col md:flex-row gap-3 md:items-center">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Start date
+              </label>
+              <Input
+                type="date"
+                value={startDate}
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                  resetPagination();
+                }}
+                className="h-9"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                End date
+              </label>
+              <Input
+                type="date"
+                value={endDate}
+                onChange={(e) => {
+                  setEndDate(e.target.value);
+                  resetPagination();
+                }}
+                className="h-9"
+              />
+            </div>
+          </div>
+        </div>
 
         {/* RFI Logs Table */}
         {isLoading ? (

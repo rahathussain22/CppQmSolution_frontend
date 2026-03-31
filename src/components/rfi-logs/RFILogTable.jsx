@@ -8,24 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 
-const SEARCH_COLUMNS = [
-  { value: "rfiNumber", label: "RFI Number" },
-  { value: "discipline", label: "Discipline" },
-  { value: "itpNumber", label: "ITP Number" },
-  { value: "reportNumber", label: "Report Number" },
-  { value: "description", label: "Description" },
-  { value: "location", label: "Location" },
-  { value: "inspectionLevel", label: "Inspection Level" },
-  { value: "companyInspectionLevel", label: "Company Inspection Level" },
-  { value: "drawingNumber", label: "Drawing Number" },
-  { value: "dateOfInspection", label: "Date of Inspection" },
-  { value: "qc", label: "QC" },
-  { value: "companyQC", label: "Company QC" },
-  { value: "pmt", label: "PMT" },
-  { value: "status", label: "Status" },
-  { value: "inspectionDocument", label: "Inspection Document" },
 
-];
 export function RFILogTable({
   rfiLogList = [],
   onGenerateForm,
@@ -39,10 +22,6 @@ export function RFILogTable({
   onPrevPage,
   page,
   isFetching,
-  search,
-  searchBy,
-  onSearchChange,
-  onSearchByChange
 }) {
   // const user = useAuthStore((state) => state.user);
 
@@ -52,29 +31,6 @@ export function RFILogTable({
 
   return (
     <div className="bg-white border-2 border-gray-300 rounded shadow-md overflow-hidden">
-
-      {/* Search Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border-b border-gray-200 gap-4 bg-gray-50">
-        <div className="flex items-center gap-2 w-full max-w-md">
-          <input
-            type="text"
-            placeholder="Search records..."
-            value={search || ""}
-            onChange={(e) => onSearchChange?.(e.target.value)}
-            className="flex-1 px-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
-          <select
-            value={searchBy || "rfiNumber"}
-            onChange={(e) => onSearchByChange?.(e.target.value)}
-            className="px-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
-          >
-            {SEARCH_COLUMNS.map(({ value, label }) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
 
       <div className="overflow-x-auto">
         <table className="min-w-max text-sm">
