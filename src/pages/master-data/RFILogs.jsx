@@ -63,6 +63,7 @@ export default function RFILogs() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [searchBy, setSearchBy] = useState("rfiNumber");
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     const handle = setTimeout(() => {
@@ -74,13 +75,21 @@ export default function RFILogs() {
     return () => clearTimeout(handle);
   }, [search]);
 
+  useEffect(() => {
+    document.body.style.cursor = isExporting ? "wait" : "default";
+
+    return () => {
+      document.body.style.cursor = "default";
+    };
+  }, [isExporting]);
+
   // Queries and mutations
   const {
     data: rfiData,
     isLoading,
     error,
     isFetching,
-  } = useGetRFILogsQuery({ 
+  } = useGetRFILogsQuery({
     cursor, prevCursor, limit, search: debouncedSearch,
     searchBy: debouncedSearch ? searchBy : null
   });
@@ -271,8 +280,11 @@ export default function RFILogs() {
 
   const handleExport = async () => {
     try {
-      const response = await exportRFILogs({ search: "", searchBy: "" });
+      setIsExporting(true);
+
+      const response = await exportRFILogs({ search: search ?? "", searchBy: searchBy ?? "" });
       const url = response?.data?.fileUrl || response?.fileUrl;
+
       if (url) {
         window.open(url, "_blank", "noopener,noreferrer");
         toast.success("RFI logs export started. Check your downloads.");
@@ -281,8 +293,10 @@ export default function RFILogs() {
       }
     } catch (error) {
       toast.error(error.message || "Failed to export RFI logs.");
+    } finally {
+      setIsExporting(false);
     }
-  }
+  };
 
   return (
     <>
@@ -298,14 +312,14 @@ export default function RFILogs() {
               <>
                 <Button
                   onClick={() => handleExport()}
-                  className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-blue-700"
+                  className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-blue-700 cursor-pointer"
                 >
                   <FileSpreadsheet />
                   Export
                 </Button>
                 <Button
                   onClick={() => setShowBulkUpload(true)}
-                  className="bg-green-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-green-700"
+                  className="bg-green-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-green-700 cursor-pointer"
                 >
                   <Sheet />
                   Bulk Upload
@@ -313,7 +327,7 @@ export default function RFILogs() {
                 <Button
                   onClick={handleAdd}
                   disabled={mode !== "idle"}
-                  className="bg-gray-800 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-black disabled:bg-gray-400"
+                  className="bg-gray-800 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-black disabled:bg-gray-400 cursor-pointer"
                 >
                   + Create RFI
                 </Button>
