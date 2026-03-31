@@ -28,7 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Upload } from "lucide-react";
+import { FileSpreadsheet, Upload } from "lucide-react";
+import { exportWelders } from "../../api/welder";
 
 export default function Welder() {
   const queryClient = useQueryClient();
@@ -50,6 +51,7 @@ export default function Welder() {
   const [searchBy, setSearchBy] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
 
   // Debounce search
   useEffect(() => {
@@ -58,6 +60,14 @@ export default function Welder() {
     }, 300);
     return () => clearTimeout(handle);
   }, [search]);
+
+  useEffect(() => {
+    document.body.style.cursor = isExporting ? "wait" : "default";
+
+    return () => {
+      document.body.style.cursor = "default";
+    };
+  }, [isExporting]);
 
   const effectiveSearchBy = debouncedSearch ? searchBy : "";
 
@@ -220,6 +230,27 @@ export default function Welder() {
     setMode("idle");
   };
 
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+
+      const response = await exportWelders({ search: search ?? "", searchBy: searchBy ?? "", startDate: startDate || undefined, endDate: endDate || undefined });
+      console.log("Export response:", response);
+      const url = response?.data?.fileUrl || response?.fileUrl;
+
+      if (url) {
+        window.open(url, "_blank", "noopener,noreferrer");
+        toast.success("Welder logs export started. Check your downloads.");
+      } else {
+        toast.error("Export initiated but no file URL was returned.");
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to export Welder logs.");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <>
       <div className="p-4 space-y-4">
@@ -228,6 +259,13 @@ export default function Welder() {
             <h4 className="text-3xl font-bold">Welder Details</h4>
             {canAdd && mode === "idle" && (
               <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => handleExport()}
+                  className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-blue-700 cursor-pointer"
+                >
+                  <FileSpreadsheet />
+                  Export
+                </Button>
                 {/* Bulk Upload */}
                 <label htmlFor="bulk-upload">
                   <Button

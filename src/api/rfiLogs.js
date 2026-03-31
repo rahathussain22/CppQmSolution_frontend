@@ -54,6 +54,8 @@ export async function exportRFILogs(filters) {
   const queryParams = new URLSearchParams();
   if (filters.search) queryParams.append("search", filters.search);
   if (filters.searchBy) queryParams.append("searchBy", filters.searchBy); 
+  if (filters.startDate) queryParams.append("startDate", filters.startDate);
+  if (filters.endDate) queryParams.append("endDate", filters.endDate);
 
   return await api.get(`/rfi/export?${queryParams.toString()}`);
 

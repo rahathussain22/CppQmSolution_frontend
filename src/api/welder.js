@@ -53,3 +53,14 @@ export async function updateWelder({ id, formData }) {
   });
   return response.data;
 }
+
+export const exportWelders = async ({ search, searchBy, startDate, endDate }) => {
+  const queryParams = new URLSearchParams();
+  if (search) queryParams.append("search", search);
+  if (searchBy) queryParams.append("searchBy", searchBy);
+  if (startDate) queryParams.append("startDate", startDate);
+  if (endDate) queryParams.append("endDate", endDate);
+
+  const response = await api.get(`/welder/export?${queryParams.toString()}`);
+  return response;
+}

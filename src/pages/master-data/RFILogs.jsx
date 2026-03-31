@@ -313,7 +313,7 @@ export default function RFILogs() {
     try {
       setIsExporting(true);
 
-      const response = await exportRFILogs({ search: search ?? "", searchBy: searchBy ?? "" });
+      const response = await exportRFILogs({ search: search ?? "", searchBy: searchBy ?? "", startDate: startDate || undefined, endDate: endDate || undefined });
       const url = response?.data?.fileUrl || response?.fileUrl;
 
       if (url) {
