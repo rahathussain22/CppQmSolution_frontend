@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sheet, ChevronLeft, ChevronRight, FileSpreadsheet } from "lucide-react";
 import { RFILogForm } from "@/components/rfi-logs/RFILogForm";
 import { RFILogTable } from "@/components/rfi-logs/RFILogTable";
@@ -60,13 +60,30 @@ export default function RFILogs() {
   const [limit] = useState(20);
   const [page, setPage] = useState(1);
 
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [searchBy, setSearchBy] = useState("rfiNumber");
+
+  useEffect(() => {
+    const handle = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+      setCursor(null);
+      setPrevCursor(null);
+      setPage(1);
+    }, 600);
+    return () => clearTimeout(handle);
+  }, [search]);
+
   // Queries and mutations
   const {
     data: rfiData,
     isLoading,
     error,
     isFetching,
-  } = useGetRFILogsQuery({ cursor, prevCursor, limit });
+  } = useGetRFILogsQuery({ 
+    cursor, prevCursor, limit, search: debouncedSearch,
+    searchBy: debouncedSearch ? searchBy : null
+  });
 
   const rfiLogList = rfiData?.rfis || [];
   const pagination = rfiData?.pagination || {
@@ -252,7 +269,7 @@ export default function RFILogs() {
     setShowBulkUpload(false);
   };
 
-  const handleExport = async() => {
+  const handleExport = async () => {
     try {
       const response = await exportRFILogs({ search: "", searchBy: "" });
       const url = response?.data?.fileUrl || response?.fileUrl;
@@ -348,6 +365,10 @@ export default function RFILogs() {
             onPrevPage={handlePrevPage}
             page={page}
             isFetching={isFetching}
+            search={search}
+            searchBy={searchBy}
+            onSearchChange={(value) => setSearch(value)}
+            onSearchByChange={(value) => setSearchBy(value)}
           />
         )}
 
