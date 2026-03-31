@@ -6,6 +6,7 @@ import {
   useCreateWelderMutation,
   useDeleteWelderMutation,
   useCreateBulkWeldersMutation,
+  useUpdateWelderMutation
 } from "../../hooks/useWelder";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -106,6 +107,7 @@ export default function Welder() {
   };
 
   const createWelderMutation = useCreateWelderMutation();
+  const updateWelderMutation = useUpdateWelderMutation();
   const deleteWelderMutation = useDeleteWelderMutation();
   const createBulkWeldersMutation = useCreateBulkWeldersMutation();
 
@@ -125,18 +127,38 @@ export default function Welder() {
   };
 
   const handleSave = (formData) => {
-    createWelderMutation.mutate(formData, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["welders"] });
-        resetPagination();
-        setMode("idle");
-        setEditingWelder(null);
-        toast.success("Welder record has been saved.");
-      },
-      onError: (error) => {
-        toast.error(error.message || "Failed to save welder.");
-      },
-    });
+    if (mode === "editing" && editingWelder?.id) {
+      // ✅ update existing record
+      updateWelderMutation.mutate(
+        { id: editingWelder.id, formData },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["welders"] });
+            resetPagination();
+            setMode("idle");
+            setEditingWelder(null);
+            toast.success("Welder record has been updated.");
+          },
+          onError: (error) => {
+            toast.error(error.message || "Failed to update welder.");
+          },
+        }
+      );
+    } else {
+      // ✅ create new record
+      createWelderMutation.mutate(formData, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["welders"] });
+          resetPagination();
+          setMode("idle");
+          setEditingWelder(null);
+          toast.success("Welder record has been saved.");
+        },
+        onError: (error) => {
+          toast.error(error.message || "Failed to save welder.");
+        },
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -328,7 +350,7 @@ export default function Welder() {
             isEditing={mode === "editing" || mode === "adding"}
             onSave={handleSave}
             onCancel={handleCancel}
-            isSaving={createWelderMutation.isPending}
+            isSaving={createWelderMutation.isPending || updateWelderMutation.isPending}
           />
         )}
 

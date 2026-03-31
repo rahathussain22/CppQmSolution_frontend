@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { createWelder, getWelders, deleteWelder, createBulkWelders } from "../api/welder";
+import { createWelder, getWelders, deleteWelder, createBulkWelders, updateWelder } from "../api/welder";
 
 export function useGetWelderQuery(params = {}) {
   return useQuery({
@@ -36,5 +36,11 @@ export function useDeleteWelderMutation() {
 export function useCreateBulkWeldersMutation() {
   return useMutation({
     mutationFn: createBulkWelders,
+  });
+}
+
+export function useUpdateWelderMutation() {
+  return useMutation({
+    mutationFn: updateWelder,
   });
 }

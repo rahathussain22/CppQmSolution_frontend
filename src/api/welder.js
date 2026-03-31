@@ -46,3 +46,10 @@ export async function createBulkWelders(formData) {
   });
   return response.data;
 }
+
+export async function updateWelder({ id, formData }) {
+  const response = await api.patch(`/welder/update/${id}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
+}
