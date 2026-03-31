@@ -49,3 +49,12 @@ export async function deleteRFILog({ id }) {
 export async function generateRFILogForm({ id }) {
   return await api.post("/rfi/generateForm", { id });
 }
+
+export async function exportRFILogs(filters) {
+  const queryParams = new URLSearchParams();
+  if (filters.search) queryParams.append("search", filters.search);
+  if (filters.searchBy) queryParams.append("searchBy", filters.searchBy); 
+
+  return await api.get(`/rfi/export?${queryParams.toString()}`);
+
+}

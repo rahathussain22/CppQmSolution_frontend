@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sheet, ChevronLeft, ChevronRight } from "lucide-react";
+import { Sheet, ChevronLeft, ChevronRight, FileSpreadsheet } from "lucide-react";
 import { RFILogForm } from "@/components/rfi-logs/RFILogForm";
 import { RFILogTable } from "@/components/rfi-logs/RFILogTable";
 import { SubmitFinalInspectionDialog } from "@/components/rfi-logs/SubmitFinalInspectionDialog";
@@ -27,6 +27,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { exportRFILogs } from "../../api/rfiLogs";
+
 
 export default function RFILogs() {
   const queryClient = useQueryClient();
@@ -250,6 +252,21 @@ export default function RFILogs() {
     setShowBulkUpload(false);
   };
 
+  const handleExport = async() => {
+    try {
+      const response = await exportRFILogs({ search: "", searchBy: "" });
+      const url = response?.data?.fileUrl || response?.fileUrl;
+      if (url) {
+        window.open(url, "_blank", "noopener,noreferrer");
+        toast.success("RFI logs export started. Check your downloads.");
+      } else {
+        toast.error("Export initiated but no file URL was returned.");
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to export RFI logs.");
+    }
+  }
+
   return (
     <>
       <LoadingOverlay
@@ -262,6 +279,13 @@ export default function RFILogs() {
           <div className="flex gap-2">
             {canAdd && (
               <>
+                <Button
+                  onClick={() => handleExport()}
+                  className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-blue-700"
+                >
+                  <FileSpreadsheet />
+                  Export
+                </Button>
                 <Button
                   onClick={() => setShowBulkUpload(true)}
                   className="bg-green-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-green-700"
