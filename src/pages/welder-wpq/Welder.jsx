@@ -5,14 +5,13 @@ import {
   useGetWelderQuery,
   useCreateWelderMutation,
   useDeleteWelderMutation,
+  useCreateBulkWeldersMutation,
 } from "../../hooks/useWelder";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuthStore } from "../../store/authStore";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -28,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Upload } from "lucide-react";
 
 export default function Welder() {
   const queryClient = useQueryClient();
@@ -38,7 +37,6 @@ export default function Welder() {
   const canEdit = user?.permissions === "view+add+update" || user?.permissions === "all";
   const canDelete = user?.permissions === "all";
 
-  // mode: 'idle', 'adding', 'editing'
   const [mode, setMode] = useState("idle");
   const [editingWelder, setEditingWelder] = useState(null);
   const [selectedWelder, setSelectedWelder] = useState(null);
@@ -57,7 +55,6 @@ export default function Welder() {
     const handle = setTimeout(() => {
       setDebouncedSearch(search.trim());
     }, 300);
-
     return () => clearTimeout(handle);
   }, [search]);
 
@@ -95,7 +92,7 @@ export default function Welder() {
   };
 
   const handlePrevPage = () => {
-    if (pagination?.prevCursor) {
+    if (pagination?.hasPrevPage && pagination?.prevCursor) {
       setCursor(null);
       setPrevCursor(pagination.prevCursor);
       setPage((prev) => Math.max(1, prev - 1));
@@ -110,6 +107,7 @@ export default function Welder() {
 
   const createWelderMutation = useCreateWelderMutation();
   const deleteWelderMutation = useDeleteWelderMutation();
+  const createBulkWeldersMutation = useCreateBulkWeldersMutation();
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [welderToDelete, setWelderToDelete] = useState(null);
@@ -133,7 +131,7 @@ export default function Welder() {
         resetPagination();
         setMode("idle");
         setEditingWelder(null);
-        toast.success("Welder WPQ has been saved.");
+        toast.success("Welder record has been saved.");
       },
       onError: (error) => {
         toast.error(error.message || "Failed to save welder.");
@@ -173,6 +171,28 @@ export default function Welder() {
     }
   };
 
+  const handleBulkUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    createBulkWeldersMutation.mutate(formData, {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({ queryKey: ["welders"] });
+        resetPagination();
+        toast.success(data?.message || "Welders imported successfully.");
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to import welders.");
+      },
+    });
+
+    // reset input so same file can be re-uploaded if needed
+    e.target.value = "";
+  };
+
   const handleSelectWelder = (welder) => {
     setSelectedWelder(welder);
     setMode("idle");
@@ -185,12 +205,36 @@ export default function Welder() {
           <div className="flex justify-between items-center gap-4">
             <h4 className="text-3xl font-bold">Welder Details</h4>
             {canAdd && mode === "idle" && (
-              <Button
-                onClick={handleAdd}
-                className="bg-gray-800 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-black"
-              >
-                + Add Welder
-              </Button>
+              <div className="flex items-center gap-2">
+                {/* Bulk Upload */}
+                <label htmlFor="bulk-upload">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="border-gray-800 text-gray-800 hover:bg-gray-100 cursor-pointer"
+                    disabled={createBulkWeldersMutation.isPending}
+                  >
+                    <span>
+                      <Upload className="w-4 h-4 mr-1" />
+                      {createBulkWeldersMutation.isPending ? "Importing..." : "Import Excel"}
+                    </span>
+                  </Button>
+                  <input
+                    id="bulk-upload"
+                    type="file"
+                    accept=".xlsx,.xls"
+                    className="hidden"
+                    onChange={handleBulkUpload}
+                  />
+                </label>
+
+                <Button
+                  onClick={handleAdd}
+                  className="bg-gray-800 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-black"
+                >
+                  + Add Welder
+                </Button>
+              </div>
             )}
           </div>
 
@@ -213,7 +257,7 @@ export default function Welder() {
                 />
               </div>
 
-              {/* Search By dropdown */}
+              {/* Search By dropdown — matches Welder schema columns */}
               <div className="w-full md:w-52">
                 <label className="block text-xs font-medium text-gray-600 mb-1">
                   Search by
@@ -229,13 +273,16 @@ export default function Welder() {
                     <SelectValue placeholder="Select field" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
-                    <SelectItem value="weldNumber">Weld Number</SelectItem>
-                    <SelectItem value="rootA">Root A</SelectItem>
-                    <SelectItem value="rootB">Root B</SelectItem>
-                    <SelectItem value="fillA">Fill A</SelectItem>
-                    <SelectItem value="fillB">Fill B</SelectItem>
-                    <SelectItem value="capA">Cap A</SelectItem>
-                    <SelectItem value="capB">Cap B</SelectItem>
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="jccNumber">JCC No.</SelectItem>
+                    <SelectItem value="symbol">Symbol</SelectItem>
+                    <SelectItem value="welderId">Welder ID / Passport</SelectItem>
+                    <SelectItem value="cpp">CPP</SelectItem>
+                    <SelectItem value="ilfOrBoc">ILF / BOC</SelectItem>
+                    <SelectItem value="weldingProcess">Welding Process</SelectItem>
+                    <SelectItem value="material">Material</SelectItem>
+                    <SelectItem value="location">Location</SelectItem>
+                    <SelectItem value="status">Status</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -274,6 +321,7 @@ export default function Welder() {
             </div>
           </div>
         </div>
+
         {(mode === "adding" || mode === "editing") && (
           <WelderForm
             welder={editingWelder}
@@ -283,6 +331,7 @@ export default function Welder() {
             isSaving={createWelderMutation.isPending}
           />
         )}
+
         {isLoading ? (
           <div className="p-4 text-gray-600">Loading welder records...</div>
         ) : error ? (
@@ -306,17 +355,20 @@ export default function Welder() {
           />
         )}
       </div>
+
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent className="bg-white">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Welder WPQ</AlertDialogTitle>
+            <AlertDialogTitle>Delete Welder</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete the record for weld "
-              {welderToDelete?.weldNumber}"? This action cannot be undone.
+              Are you sure you want to delete the record for "
+              {welderToDelete?.name}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+              Cancel
+            </Button>
             <Button
               onClick={confirmDelete}
               className="bg-red-600 hover:bg-red-700 text-white"

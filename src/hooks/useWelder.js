@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { createWelder, getWelders, deleteWelder } from "../api/welder";
+import { createWelder, getWelders, deleteWelder, createBulkWelders } from "../api/welder";
 
 export function useGetWelderQuery(params = {}) {
   return useQuery({
@@ -7,7 +7,7 @@ export function useGetWelderQuery(params = {}) {
     queryFn: () => getWelders(params),
     select: (response) => {
       // Normalize: { welders, pagination, count }
-      if (!response) return { welders: [], pagination: null, count: null };
+      if (response.welders.length === 0) return { welders: [], pagination: null, count: null };
       const raw = response;
       return {
         welders: raw.welders || [],
@@ -29,5 +29,12 @@ export function useCreateWelderMutation() {
 export function useDeleteWelderMutation() {
   return useMutation({
     mutationFn: deleteWelder,
+  });
+}
+
+
+export function useCreateBulkWeldersMutation() {
+  return useMutation({
+    mutationFn: createBulkWelders,
   });
 }

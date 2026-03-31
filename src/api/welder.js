@@ -1,28 +1,16 @@
 import api from "../config/api";
 
-export async function createWelder({
-  rootA,
-  rootB,
-  fillA,
-  fillB,
-  capA,
-  capB,
-  weldNumber,
-}) {
-  return await api.post("/welder/create", {
-    rootA,
-    rootB,
-    fillA,
-    fillB,
-    capA,
-    capB,
-    weldNumber,
+export async function createWelder(formData) {
+  const response = await api.post("/welder/create", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
+  return response.data;
 }
 
 export async function getWelders({
-  projectId,
-  welderId,
+  id,
   cursor,
   prevCursor,
   limit,
@@ -32,23 +20,29 @@ export async function getWelders({
   endDate,
 } = {}) {
   const queryParams = new URLSearchParams();
-  if (projectId) queryParams.append("projectId", projectId);
-  if (welderId) queryParams.append("welderId", welderId);
-  if (cursor) queryParams.append("cursor", cursor);
-  if (prevCursor) queryParams.append("prevCursor", prevCursor);
+  if (id) queryParams.append("id", id);
+  if (cursor) queryParams.append("cursor", cursor);         // null won't pass this
+  if (prevCursor) queryParams.append("prevCursor", prevCursor); // null won't pass this
   if (limit) queryParams.append("limit", limit);
   if (search) queryParams.append("search", search);
   if (searchBy) queryParams.append("searchBy", searchBy);
   if (startDate) queryParams.append("startDate", startDate);
   if (endDate) queryParams.append("endDate", endDate);
 
-  const response = await api.get(
-    `/welder/getWelders?${queryParams.toString()}`
-  );
-  // Backend returns: { pagination, welders, count }
-  return response;
+  const response = await api.get(`/welder/get?${queryParams.toString()}`);
+  return response
 }
 
 export async function deleteWelder({ welderId }) {
-  return await api.delete(`/welder/delete/${welderId}`);
+  const response = await api.delete(`/welder/delete/${welderId}`);
+  return response.data;
+}
+
+export async function createBulkWelders(formData) {
+  const response = await api.post("/welder/create-bulk", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
 }
