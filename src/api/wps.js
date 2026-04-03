@@ -26,11 +26,22 @@ export async function getWPS({
   if (startDate) queryParams.append("startDate", startDate);
   if (endDate) queryParams.append("endDate", endDate);
 
-  const response = await api.get(`/wps/getWPS?${queryParams.toString()}`);
-  // Backend returns: { pagination, wps, count }
-  return response;
+  const response = await api.get(`/wps/get?${queryParams.toString()}`);
+  console.log("getWPS response:", response);
+  return response
 }
 
 export async function deleteWPS({ wpsId }) {
   return await api.delete(`/wps/delete/${wpsId}`);
+}
+
+export const exportWPS = async ({ search, searchBy, startDate, endDate }) => {
+  const queryParams = new URLSearchParams();
+  if (search) queryParams.append("search", search);
+  if (searchBy) queryParams.append("searchBy", searchBy);
+  if (startDate) queryParams.append("startDate", startDate);
+  if (endDate) queryParams.append("endDate", endDate);
+
+  const response = await api.get(`/wps/export?${queryParams.toString()}`);
+  return response;
 }

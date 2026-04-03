@@ -8,11 +8,12 @@ export function useGetWPSQuery(params = {}) {
     queryFn: () => getWPS(params),
     select: (response) => {
       // Normalize: { wps, pagination, count }
-      if (!response) return { wps: [], pagination: null, count: null };
+      if (response.wps.length === 0) return { wps: [], pagination: null, count: null };
+      const raw = response;
       return {
-        wps: response.wps || [],
-        pagination: response.pagination || null,
-        count: response.count ?? null,
+        wps: raw.wps || [],
+        pagination: raw.pagination || null,
+        count: raw.count ?? null,
       };
     },
     refetchOnWindowFocus: false,

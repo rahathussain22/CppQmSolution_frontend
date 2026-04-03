@@ -27,6 +27,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { exportWPS } from "../../api/wps";
+import { FileSpreadsheet } from "lucide-react";
 
 export default function WPS() {
   const queryClient = useQueryClient();
@@ -49,6 +51,15 @@ export default function WPS() {
   const [searchBy, setSearchBy] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
+
+  useEffect(() => {
+    document.body.style.cursor = isExporting ? "wait" : "default";
+
+    return () => {
+      document.body.style.cursor = "default";
+    };
+  }, [isExporting]);
 
   // Debounce search
   useEffect(() => {
@@ -186,20 +197,50 @@ export default function WPS() {
     setMode("idle");
   };
 
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+
+      const response = await exportWPS({ search: search ?? "", searchBy: searchBy ?? "", startDate: startDate || undefined, endDate: endDate || undefined });
+      console.log("Export response:", response);
+      const url = response?.data?.fileUrl || response?.fileUrl;
+
+      if (url) {
+        window.open(url, "_blank", "noopener,noreferrer");
+        toast.success("WPS export started. Check your downloads.");
+      } else {
+        toast.error("Export initiated but no file URL was returned.");
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to export WPS.");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <>
       <div className="p-4 space-y-4">
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center gap-4">
             <h4 className="text-3xl font-bold">WPS Management</h4>
-            {canAdd && mode === "idle" && (
+            <div className="flex items-center gap-2">
               <Button
-                onClick={handleAdd}
-                className="bg-gray-800 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-black"
+                onClick={() => handleExport()}
+                className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-blue-700 cursor-pointer"
               >
-                + Add WPS
+                <FileSpreadsheet />
+                Export
               </Button>
-            )}
+              {canAdd && mode === "idle" && (
+                <Button
+                  onClick={handleAdd}
+                  className="bg-gray-800 text-white rounded px-4 py-2 text-sm font-semibold hover:bg-black"
+                >
+                  + Add WPS
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Search & Filters */}

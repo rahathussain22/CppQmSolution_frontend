@@ -22,54 +22,131 @@ export function WPSTable({
   return (
     <div className="bg-white border-2 border-gray-300 rounded shadow-md overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="min-w-max text-sm">
+
           <thead>
-            <tr className="bg-linear-to-b from-gray-200 to-gray-300 border-b-2 border-gray-400">
+            <tr>
               {(canEdit || canDelete) && (
-                <th className="px-3 py-2 text-left text-xs w-10"></th>
+                <th
+                  rowSpan={2}
+                  className="border border-gray-400 px-2 py-2 text-center font-bold bg-gray-200 w-20"
+                >
+                  Actions
+                </th>
               )}
-              <th className="px-3 py-2 text-left text-xs">#</th>
-              <th className="px-3 py-2 text-left text-xs">WPS Number</th>
-              <th className="px-3 py-2 text-left text-xs">Weld Process</th>
-              <th className="px-3 py-2 text-left text-xs">File</th>
+
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">#</th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">WPS Number</th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">Design Code</th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">
+                WPS & Welders' Qual Code
+              </th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">PQR No</th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">Material</th>
+
+              {/* Size */}
+              <th colSpan={2} className="border border-gray-400 px-2 py-2 text-center font-bold bg-gray-200">
+                Size
+              </th>
+
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">Process</th>
+
+              {/* Filler / Electrode / Progression */}
+              <th colSpan={3} className="border border-gray-400 px-2 py-2 text-center font-bold bg-gray-200">
+                Filler / Electrode / Progression
+              </th>
+
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">Weld Joint Type</th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">Hardness</th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">Impact</th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">PWHT</th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">ILF</th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">BOC</th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">Basic Uses</th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">File</th>
+            </tr>
+
+            <tr>
+              {/* Size subcolumns */}
+              <th className="border border-gray-400 px-2 py-2 bg-gray-200">
+                Diameter Range
+              </th>
+              <th className="border border-gray-400 px-2 py-2 bg-gray-200">
+                Thickness Range
+              </th>
+
+              {/* Filler subcolumns */}
+              <th className="border border-gray-400 px-2 py-2 bg-gray-200">Root</th>
+              <th className="border border-gray-400 px-2 py-2 bg-gray-200">Hot</th>
+              <th className="border border-gray-400 px-2 py-2 bg-gray-200">Fill/Cap</th>
             </tr>
           </thead>
+
           <tbody>
             {wpsList.map((wps, index) => (
               <tr
                 key={wps.id}
                 onClick={() => onSelectWPS && onSelectWPS(wps)}
-                className={`border-b border-gray-300 cursor-pointer transition-colors ${selectedWPS?.id === wps.id ? "bg-red-100" : "hover:bg-gray-50"
+                className={`cursor-pointer transition-colors ${selectedWPS?.id === wps.id ? "bg-red-100" : "hover:bg-gray-50"
                   }`}
               >
                 {(canEdit || canDelete) && (
-                  <td className="px-3 py-2">
+                  <td className="border border-gray-400 px-2 py-2">
                     <div className="flex gap-2">
-                      {canEdit && <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEdit && onEdit(wps);
-                        }}
-                        className="text-gray-700 hover:text-gray-900"
-                      >
-                        <Pencil size={16} />
-                      </button>}
-                      {canDelete && <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDelete && onDelete(wps);
-                        }}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        <Trash2 size={16} />
-                      </button>}
+                      {canEdit && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onEdit && onEdit(wps);
+                          }}
+                          className="text-gray-700 hover:text-gray-900"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete && onDelete(wps);
+                          }}
+                          className="text-red-600 hover:text-red-800"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 )}
-                <td className="px-3 py-2 text-gray-600">{index + 1}</td>
-                <td className="px-3 py-2">{wps.wpsNumber}</td>
-                <td className="px-3 py-2">{wps.weldProcess || "-"}</td>
-                <td className="px-3 py-2 text-xs">
+
+                <td className="border border-gray-400 px-2 py-2 text-gray-600">
+                  {index + 1}
+                </td>
+                <td className="border border-gray-400 px-2 py-2">{wps.wpsNumber}</td>
+                <td className="border border-gray-400 px-2 py-2">{wps.designCode || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">
+                  {wps.wpsAndWeldersQualCode || "-"}
+                </td>
+                <td className="border border-gray-400 px-2 py-2">{wps.pqrNumber || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">{wps.material || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">{wps.diameterRange || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">{wps.thicknessRange || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">{wps.process || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">{wps.fillerRoot || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">{wps.fillerHot || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">
+                  {wps.fillerFillCap || wps.fillerUpDown || "-"}
+                </td>
+                <td className="border border-gray-400 px-2 py-2">{wps.weldJointType || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">{wps.hardness || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">{wps.impact || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">{wps.pwht || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">{wps.ilfStatus || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">{wps.bocStatus || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">
+                  {wps.basicUses || wps.remarks || "-"}
+                </td>
+                <td className="border border-gray-400 px-2 py-2 text-xs">
                   {wps.fileUrl ? (
                     <a
                       href={wps.fileUrl}
