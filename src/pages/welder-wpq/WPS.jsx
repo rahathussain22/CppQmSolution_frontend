@@ -52,6 +52,9 @@ export default function WPS() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [isExporting, setIsExporting] = useState(false);
+  const [structuralWPS, setStructuralWPS] = useState([]);
+  const [apiWPS, setApiWPS] = useState([]);
+  const [asmeWPS, setAsmeWPS] = useState([]);
 
   useEffect(() => {
     document.body.style.cursor = isExporting ? "wait" : "default";
@@ -95,6 +98,14 @@ export default function WPS() {
     limit,
   };
 
+  useEffect(() => {
+    if (wpsList.length > 0) {
+      setStructuralWPS(wpsList.filter(wps => wps.wpsType?.toLowerCase() === "structural"));
+      setApiWPS(wpsList.filter(wps => wps.wpsType?.toLowerCase() === "api"));
+      setAsmeWPS(wpsList.filter(wps => wps.wpsType?.toLowerCase() === "asme"));
+    }
+  }, [wpsList])
+
   const handleNextPage = () => {
     if (pagination?.hasNextPage && pagination?.nextCursor) {
       setPrevCursor(null);
@@ -135,22 +146,20 @@ export default function WPS() {
     setMode("editing");
   };
 
+  // ✅ Fix - invalidate query on success, and wait for mutation to complete
   const handleSave = (formData) => {
-    // Create FormData object to handle file upload
     const formDataToSend = new FormData();
-    formDataToSend.append("wpsNumber", formData.wpsNumber);
-    formDataToSend.append("weldProcess", formData.weldingProcess);
-
-    // Append file if present
-    if (formData.file) {
-      formDataToSend.append("file", formData.file);
-    }
+    const { file, ...fields } = formData;
+    Object.entries(fields).forEach(([key, value]) => {
+      formDataToSend.append(key, value ?? "");
+    });
+    if (file) formDataToSend.append("file", file);
 
     createWPSMutation.mutate(formDataToSend, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["wps"] });
+        queryClient.invalidateQueries({ queryKey: ["wps"] }); // ✅ refetches the list
         resetPagination();
-        setMode("idle");
+        setMode("idle");       // ✅ close form only after success
         setEditingWPS(null);
         toast.success("WPS has been saved.");
       },
@@ -332,20 +341,61 @@ export default function WPS() {
         ) : error ? (
           <div className="p-4 text-red-700">Error loading WPS: {error.message}</div>
         ) : (
-          <WPSTable
-            wpsList={wpsList}
-            selectedWPS={selectedWPS}
-            onEdit={handleEdit}
-            onSelectWPS={handleSelectWPS}
-            onDelete={handleDelete}
-            canEdit={canEdit}
-            canDelete={canDelete}
-            pagination={pagination}
-            onNextPage={handleNextPage}
-            onPrevPage={handlePrevPage}
-            page={page}
-            isFetching={isFetching}
-          />
+          <div>
+            <h4 className="text-1xl font-bold my-2" >STRUCTURAL WPS (AWS D1.1)</h4>
+            <WPSTable
+              wpsList={structuralWPS}
+              selectedWPS={selectedWPS}
+              onEdit={handleEdit}
+              onSelectWPS={handleSelectWPS}
+              onDelete={handleDelete}
+              canEdit={canEdit}
+              canDelete={canDelete}
+              pagination={pagination}
+              onNextPage={handleNextPage}
+              onPrevPage={handlePrevPage}
+              page={page}
+              isFetching={isFetching}
+              wpsType="STRUCTURAL"
+            />
+
+            <h4 className="text-1xl font-bold my-2 mt-5" >PIPING/ PIPELINE  WPS (API 1104)</h4>
+
+            <WPSTable
+              wpsList={apiWPS}
+              selectedWPS={selectedWPS}
+              onEdit={handleEdit}
+              onSelectWPS={handleSelectWPS}
+              onDelete={handleDelete}
+              canEdit={canEdit}
+              canDelete={canDelete}
+              pagination={pagination}
+              onNextPage={handleNextPage}
+              onPrevPage={handlePrevPage}
+              page={page}
+              isFetching={isFetching}
+              wpsType="API"
+            />
+
+            <h4 className="text-1xl font-bold my-2 mt-5" >PIPING WPS (ASME IX)</h4>
+
+            <WPSTable
+              wpsList={asmeWPS}
+              selectedWPS={selectedWPS}
+              onEdit={handleEdit}
+              onSelectWPS={handleSelectWPS}
+              onDelete={handleDelete}
+              canEdit={canEdit}
+              canDelete={canDelete}
+              pagination={pagination}
+              onNextPage={handleNextPage}
+              onPrevPage={handlePrevPage}
+              page={page}
+              isFetching={isFetching}
+              wpsType="ASME"
+            />
+          </div>
+
         )}
       </div>
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

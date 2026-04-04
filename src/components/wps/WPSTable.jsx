@@ -13,6 +13,7 @@ export function WPSTable({
   onPrevPage,
   page,
   isFetching,
+  wpsType,
 }) {
 
   if (!wpsList.length) {
@@ -53,7 +54,7 @@ export function WPSTable({
 
               {/* Filler / Electrode / Progression */}
               <th colSpan={3} className="border border-gray-400 px-2 py-2 text-center font-bold bg-gray-200">
-                Filler / Electrode / Progression
+                Filler / Electrode and Progression
               </th>
 
               <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">Weld Joint Type</th>
@@ -62,7 +63,7 @@ export function WPSTable({
               <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">PWHT</th>
               <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">ILF</th>
               <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">BOC</th>
-              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">Basic Uses</th>
+              <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200"> {wpsType == "STRUCTURAL" ? "Basic Uses" :"Remarks"}</th>
               <th rowSpan={2} className="border border-gray-400 px-2 py-2 bg-gray-200">File</th>
             </tr>
 
@@ -76,9 +77,9 @@ export function WPSTable({
               </th>
 
               {/* Filler subcolumns */}
-              <th className="border border-gray-400 px-2 py-2 bg-gray-200">Root</th>
-              <th className="border border-gray-400 px-2 py-2 bg-gray-200">Hot</th>
-              <th className="border border-gray-400 px-2 py-2 bg-gray-200">Fill/Cap</th>
+              <th className="border border-gray-400 px-2 py-2 bg-gray-200"> {wpsType == "STRUCTURAL" ? "Root" : "Root/Hot"}</th>
+              <th className="border border-gray-400 px-2 py-2 bg-gray-200"> {wpsType == "STRUCTURAL" ? "Hot" : "Fill/Cap"}</th>
+              <th className="border border-gray-400 px-2 py-2 bg-gray-200"> {wpsType == "STRUCTURAL" ? "Fill/Cap" : "Up/Down"}</th>
             </tr>
           </thead>
 
@@ -133,7 +134,7 @@ export function WPSTable({
                 <td className="border border-gray-400 px-2 py-2">{wps.thicknessRange || "-"}</td>
                 <td className="border border-gray-400 px-2 py-2">{wps.process || "-"}</td>
                 <td className="border border-gray-400 px-2 py-2">{wps.fillerRoot || "-"}</td>
-                <td className="border border-gray-400 px-2 py-2">{wps.fillerHot || "-"}</td>
+                <td className="border border-gray-400 px-2 py-2">{ wpsType === "STRUCTURAL" ? wps.fillerHot || "-" : wps.fillerFillCap || "-"}</td>
                 <td className="border border-gray-400 px-2 py-2">
                   {wps.fillerFillCap || wps.fillerUpDown || "-"}
                 </td>
