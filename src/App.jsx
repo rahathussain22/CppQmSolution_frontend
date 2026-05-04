@@ -18,7 +18,7 @@ import ISODrawings from "./pages/engineering/ISODrawings";
 import WPS from "./pages/welder-wpq/WPS";
 import Welder from "./pages/welder-wpq/Welder";
 import Joints from "./pages/engineering/Joints";
-import Components from "./pages/engineering/Components";
+// import Components from "./pages/engineering/Components";
 import RFILogs from "./pages/master-data/RFILogs";
 import NCRLogs from "./pages/master-data/NCRLogs";
 import TQLogs from "./pages/master-data/TQLogs";
@@ -74,7 +74,7 @@ function App() {
               <Route path="/engineering">
                 <Route path="iso-drawings" element={<ISODrawings />} />
                 <Route path="joints" element={<Joints />} />
-                <Route path="components" element={<Components />} />
+                {/* <Route path="components" element={<Components />} /> */}
               </Route>
 
               <Route path="/inspection">

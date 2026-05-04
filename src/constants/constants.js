@@ -53,7 +53,7 @@ export const navItems = [
       { label: "ISO Drawings & Spools", pathname: "/engineering/iso-drawings" },
       { label: "Bill of Materials", pathname: "/engineering/materials-bill" },
       { label: "Joints", pathname: "/engineering/joints" },
-      { label: "Components", pathname: "/engineering/components" },
+      // { label: "Components", pathname: "/engineering/components" },
       { label: "Master Data Import", pathname: "/engineering/data-import" },
       { label: "Drawing Bulk Edit", pathname: "/engineering/drawing-bulk-edit" },
       { label: "Joints Bulk Edit", pathname: "/engineering/joints-bulk-edit" },

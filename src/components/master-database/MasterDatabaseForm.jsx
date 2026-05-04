@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { getISODrawings } from "../../api/iso-drawings";
 import { getRFILogs } from "../../api/rfiLogs";
 import { getWPS } from "../../api/wps";
+import { getWelders } from "../../api/welder";
 
 const LINE_NUMBER_OPTIONS = ["Lot A", "Lot B", "Lot C", "Lot D"];
 const JOINT_TYPES = ["Butt", "Skt", "Seal", "Fil."];
@@ -25,6 +26,7 @@ function SearchableDropdown({
   onClear,
   displayKey,
   secondaryDisplayKey,
+  secondaryLinePrefix = "Rev:",
   disabled = false,
 }) {
   const [searchTerm, setSearchTerm] = useState(value || "");
@@ -116,7 +118,10 @@ function SearchableDropdown({
                 >
                   <span className="font-medium">{opt[displayKey]}</span>
                   {secondaryDisplayKey && opt[secondaryDisplayKey] && (
-                    <span className="text-xs text-gray-500">Rev: {opt[secondaryDisplayKey]}</span>
+                    <span className="text-xs text-gray-500">
+                      {secondaryLinePrefix ? `${secondaryLinePrefix} ` : ""}
+                      {opt[secondaryDisplayKey]}
+                    </span>
                   )}
                 </li>
               ))}
@@ -132,7 +137,6 @@ function SearchableDropdown({
 
 export function MasterDatabaseForm({
   masterData,
-  isEditing,
   isSaving = false,
   onSave,
   onCancel,
@@ -272,6 +276,11 @@ export function MasterDatabaseForm({
   const handleWpsSearch = async (term) => {
     const response = await getWPS({ search: term, searchBy: "wpsNumber", limit: 5 });
     return response?.data?.wps || response?.wps || [];
+  };
+
+  const handleWelderSearch = async (term) => {
+    const response = await getWelders({ search: term, searchBy: "welderId", limit: 5 });
+    return response?.welders || [];
   };
 
   const handleSubmit = (e) => {
@@ -727,66 +736,90 @@ export function MasterDatabaseForm({
             9. Welder Details (Pipeline/Piping)
           </h3>
           <div className="grid grid-cols-12 gap-3">
-            <div className="col-span-2">
-              <label className="block text-xs text-gray-700 mb-1">Root A</label>
-              <input
-                type="text"
+            <div className="col-span-6">
+              <SearchableDropdown
+                label="Root A"
+                placeholder="Search Welder ID..."
                 value={formData.rootA}
-                onChange={(e) => updateField("rootA", e.target.value)}
+                onSearch={handleWelderSearch}
+                displayKey="welderId"
+                secondaryDisplayKey="name"
+                secondaryLinePrefix=""
+                onSelect={(welder) => updateField("rootA", welder.welderId || "")}
+                onClear={() => updateField("rootA", "")}
                 disabled={isSaving}
-                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
               />
             </div>
-            <div className="col-span-2">
-              <label className="block text-xs text-gray-700 mb-1">Root B</label>
-              <input
-                type="text"
+            <div className="col-span-6">
+              <SearchableDropdown
+                label="Root B"
+                placeholder="Search Welder ID..."
                 value={formData.rootB}
-                onChange={(e) => updateField("rootB", e.target.value)}
+                onSearch={handleWelderSearch}
+                displayKey="welderId"
+                secondaryDisplayKey="name"
+                secondaryLinePrefix=""
+                onSelect={(welder) => updateField("rootB", welder.welderId || "")}
+                onClear={() => updateField("rootB", "")}
                 disabled={isSaving}
-                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
               />
             </div>
 
-            <div className="col-span-2">
-              <label className="block text-xs text-gray-700 mb-1">Fill A</label>
-              <input
-                type="text"
+            <div className="col-span-6">
+              <SearchableDropdown
+                label="Fill A"
+                placeholder="Search Welder ID..."
                 value={formData.fillA}
-                onChange={(e) => updateField("fillA", e.target.value)}
+                onSearch={handleWelderSearch}
+                displayKey="welderId"
+                secondaryDisplayKey="name"
+                secondaryLinePrefix=""
+                onSelect={(welder) => updateField("fillA", welder.welderId || "")}
+                onClear={() => updateField("fillA", "")}
                 disabled={isSaving}
-                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
               />
             </div>
-            <div className="col-span-2">
-              <label className="block text-xs text-gray-700 mb-1">Fill B</label>
-              <input
-                type="text"
+            <div className="col-span-6">
+              <SearchableDropdown
+                label="Fill B"
+                placeholder="Search Welder ID..."
                 value={formData.fillB}
-                onChange={(e) => updateField("fillB", e.target.value)}
+                onSearch={handleWelderSearch}
+                displayKey="welderId"
+                secondaryDisplayKey="name"
+                secondaryLinePrefix=""
+                onSelect={(welder) => updateField("fillB", welder.welderId || "")}
+                onClear={() => updateField("fillB", "")}
                 disabled={isSaving}
-                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
               />
             </div>
 
-            <div className="col-span-2">
-              <label className="block text-xs text-gray-700 mb-1">Cap A</label>
-              <input
-                type="text"
+            <div className="col-span-6">
+              <SearchableDropdown
+                label="Cap A"
+                placeholder="Search Welder ID..."
                 value={formData.capA}
-                onChange={(e) => updateField("capA", e.target.value)}
+                onSearch={handleWelderSearch}
+                displayKey="welderId"
+                secondaryDisplayKey="name"
+                secondaryLinePrefix=""
+                onSelect={(welder) => updateField("capA", welder.welderId || "")}
+                onClear={() => updateField("capA", "")}
                 disabled={isSaving}
-                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
               />
             </div>
-            <div className="col-span-2">
-              <label className="block text-xs text-gray-700 mb-1">Cap B</label>
-              <input
-                type="text"
+            <div className="col-span-6">
+              <SearchableDropdown
+                label="Cap B"
+                placeholder="Search Welder ID..."
                 value={formData.capB}
-                onChange={(e) => updateField("capB", e.target.value)}
+                onSearch={handleWelderSearch}
+                displayKey="welderId"
+                secondaryDisplayKey="name"
+                secondaryLinePrefix=""
+                onSelect={(welder) => updateField("capB", welder.welderId || "")}
+                onClear={() => updateField("capB", "")}
                 disabled={isSaving}
-                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
               />
             </div>
           </div>
