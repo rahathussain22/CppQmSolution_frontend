@@ -150,6 +150,7 @@ export function MasterDatabaseForm({
 
     // 2. Drawing Details
     drawingNumber: masterData?.drawingNumber || "",
+    sheetNumber: masterData?.sheetNumber || "",
     isoDrawingId: masterData?.isoDrawingId || "",
     spoolNumber: masterData?.spoolNumber || "",
 
@@ -362,7 +363,7 @@ export function MasterDatabaseForm({
             2. Drawing Details
           </h3>
           <div className="grid grid-cols-12 gap-3">
-            <div className="col-span-6">
+            <div className="col-span-4">
               <SearchableDropdown
                 label="Drawing No. *"
                 placeholder="Search Drawing Number..."
@@ -381,7 +382,18 @@ export function MasterDatabaseForm({
                 disabled={isSaving}
               />
             </div>
-            <div className="col-span-6">
+            <div className="col-span-4">
+              <label className="block text-xs text-gray-700 mb-1">Sheet Number</label>
+              <input
+                type="text"
+                value={formData.sheetNumber}
+                onChange={(e) => updateField("sheetNumber", e.target.value)}
+                disabled={isSaving}
+                placeholder="e.g., Sh-1"
+                className="w-full px-2 py-1 text-sm border border-gray-400 rounded disabled:bg-gray-100"
+              />
+            </div>
+            <div className="col-span-4">
               <label className="block text-xs text-gray-700 mb-1">Spool Number</label>
               <input
                 type="text"

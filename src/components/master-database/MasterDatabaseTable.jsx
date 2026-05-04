@@ -132,7 +132,7 @@ export function MasterDatabaseTable({
                 Pipeline Details
               </th>
               {/* Drawing Details */}
-              <th colSpan="2" className="border border-gray-400 px-2 py-2 text-center font-bold bg-gray-200">
+              <th colSpan="3" className="border border-gray-400 px-2 py-2 text-center font-bold bg-gray-200">
                 Drawing Details
               </th>
               {/* Weld Joint Details */}
@@ -202,6 +202,7 @@ export function MasterDatabaseTable({
               <th className="border border-gray-400 px-2 py-2 bg-gray-200">Line Class</th>
               {/* Drawing Details columns */}
               <th className="border border-gray-400 px-2 py-2 bg-gray-200">Drawing No.</th>
+              <th className="border border-gray-400 px-2 py-2 bg-gray-200">Sheet No.</th>
               <th className="border border-gray-400 px-2 py-2 bg-gray-200">Spool No.</th>
               {/* Weld Joint Details columns */}
               <th className="border border-gray-400 px-2 py-2 bg-gray-200">Weld No.</th>
@@ -318,6 +319,7 @@ export function MasterDatabaseTable({
 
                   {/* Drawing Details */}
                   <td className="border border-gray-300 px-2 py-2">{row.drawingNumber || "-"}</td>
+                  <td className="border border-gray-300 px-2 py-2">{row.sheetNumber || "-"}</td>
                   <td className="border border-gray-300 px-2 py-2">{row.spoolNumber || "-"}</td>
 
                   {/* Weld Joint Details */}

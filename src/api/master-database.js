@@ -23,3 +23,12 @@ export async function updateDatabase(id, data) {
 export async function deleteDatabase(id) {
   return await api.delete(`/master-database/delete/${id}`);
 }
+
+export async function bulkEditDatabase(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return await api.post("/master-database/bulkEdit", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+}

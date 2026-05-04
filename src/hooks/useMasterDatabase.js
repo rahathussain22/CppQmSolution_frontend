@@ -4,6 +4,7 @@ import {
   createDatabase,
   updateDatabase,
   deleteDatabase,
+  bulkEditDatabase,
 } from "../api/master-database";
 
 export function useGetMasterDatabaseQuery(params = {}) {
@@ -14,8 +15,8 @@ export function useGetMasterDatabaseQuery(params = {}) {
       const data = response?.data || response?.results || response || {};
       return {
         data: data.data || data || [],
-        pagination: data.pagination || null,
-        count: data.count ?? null,
+        pagination: response?.pagination || null,
+        count: response?.count ?? null,
       };
     },
     refetchOnWindowFocus: false,
@@ -38,6 +39,12 @@ export function useUpdateMasterDatabaseMutation() {
 export function useDeleteMasterDatabaseMutation() {
   return useMutation({
     mutationFn: async ({ id }) => deleteDatabase(id),
+  });
+}
+
+export function useBulkEditMasterDatabaseMutation() {
+  return useMutation({
+    mutationFn: bulkEditDatabase,
   });
 }
 

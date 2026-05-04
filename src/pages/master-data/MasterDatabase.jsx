@@ -3,13 +3,15 @@ import { Sheet, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MasterDatabaseTable } from "@/components/master-database/MasterDatabaseTable";
 import { MasterDatabaseForm } from "@/components/master-database/MasterDatabaseForm";
+import { BulkEditDatabase } from "@/components/master-database/BulkEditDatabase";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetMasterDatabaseQuery,
   useCreateMasterDatabaseMutation,
   useUpdateMasterDatabaseMutation,
-  useDeleteMasterDatabaseMutation
+  useDeleteMasterDatabaseMutation,
+  useBulkEditMasterDatabaseMutation
 } from "../../hooks/useMasterDatabase";
 import {
   AlertDialog,
@@ -37,6 +39,7 @@ const MasterDatabase = () => {
 
   const queryClient = useQueryClient();
   const [isAdding, setIsAdding] = useState(false);
+  const [showBulkEdit, setShowBulkEdit] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState(null);
@@ -44,7 +47,7 @@ const MasterDatabase = () => {
   // Pagination
   const [cursor, setCursor] = useState(null);
   const [prevCursor, setPrevCursor] = useState(null);
-  const [limit] = useState(10);
+  const [limit] = useState(20);
   const [page, setPage] = useState(1);
   // Search
   const [search, setSearch] = useState("");
@@ -87,6 +90,20 @@ const MasterDatabase = () => {
   const createMutation = useCreateMasterDatabaseMutation();
   const updateMutation = useUpdateMasterDatabaseMutation();
   const deleteMutation = useDeleteMasterDatabaseMutation();
+  const bulkEditMutation = useBulkEditMasterDatabaseMutation();
+
+  const handleBulkEdit = (file) => {
+    bulkEditMutation.mutate(file, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["masterDatabase"] });
+        setShowBulkEdit(false);
+        toast.success("Master database updated successfully.");
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to update master database.");
+      },
+    });
+  };
 
   const handleNextPage = () => {
     if (pagination?.hasNextPage && pagination?.nextCursor) {
@@ -163,16 +180,35 @@ const MasterDatabase = () => {
             <Sheet size={18} />
             Download
           </Button>
-          {canAdd && <Button
-            onClick={() => setIsAdding(true)}
-            disabled={isAdding}
-            className="cursor-pointer px-4 py-2 text-sm bg-gray-800 text-white rounded hover:bg-black flex items-center gap-2 disabled:bg-gray-400"
-          >
-            <Plus size={18} />
-            Create Record
-          </Button>}
+          {canAdd && (
+            <>
+              <Button
+                onClick={() => setShowBulkEdit(true)}
+                className="cursor-pointer px-4 py-2 text-sm rounded bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+              >
+                <Sheet size={18} />
+                Bulk Edit
+              </Button>
+              <Button
+                onClick={() => setIsAdding(true)}
+                disabled={isAdding}
+                className="cursor-pointer px-4 py-2 text-sm bg-gray-800 text-white rounded hover:bg-black flex items-center gap-2 disabled:bg-gray-400"
+              >
+                <Plus size={18} />
+                Create Record
+              </Button>
+            </>
+          )}
         </div>
       </div>
+
+      {showBulkEdit && (
+        <BulkEditDatabase
+          isLoading={bulkEditMutation.isPending}
+          onUpload={handleBulkEdit}
+          onCancel={() => setShowBulkEdit(false)}
+        />
+      )}
 
       <Dialog
         open={isAdding || !!editingRecord}
