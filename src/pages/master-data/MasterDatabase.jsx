@@ -53,6 +53,7 @@ const MasterDatabase = () => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [searchBy, setSearchBy] = useState("weldNumber");
+  const [hasInitialLoadCompleted, setHasInitialLoadCompleted] = useState(false);
 
   useEffect(() => {
     const handle = setTimeout(() => {
@@ -79,6 +80,12 @@ const MasterDatabase = () => {
     search: debouncedSearch || undefined,
     column: debouncedSearch ? searchBy : undefined,
   });
+
+  useEffect(() => {
+    if (!hasInitialLoadCompleted && (queryData || error)) {
+      setHasInitialLoadCompleted(true);
+    }
+  }, [queryData, error, hasInitialLoadCompleted]);
 
   const masterData = queryData?.data || [];
   const pagination = queryData?.pagination || {
@@ -303,7 +310,7 @@ const MasterDatabase = () => {
       </Dialog>
 
       {/* Master Table */}
-      {isLoading ? (
+      {isLoading && !hasInitialLoadCompleted ? (
         <div className="p-4 text-gray-600">Loading master database...</div>
       ) : error ? (
         <div className="p-4 text-gray-700">Error loading master database: {error.message}</div>
