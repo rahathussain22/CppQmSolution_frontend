@@ -116,6 +116,9 @@ export function MasterDatabaseTable({
             ))}
           </select>
         </div>
+        {isFetching && (
+          <span className="text-xs text-gray-500">Loading data...</span>
+        )}
       </div>
 
       <div className="overflow-x-auto">
