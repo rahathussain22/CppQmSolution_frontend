@@ -29,6 +29,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useAuthStore } from "../../store/authStore";
+import { exportMasterDatabase } from "../../api/master-database";
 
 const MasterDatabase = () => {
   const user = useAuthStore((state) => state.user);
@@ -54,6 +55,7 @@ const MasterDatabase = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [searchBy, setSearchBy] = useState("weldNumber");
   const [hasInitialLoadCompleted, setHasInitialLoadCompleted] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     const handle = setTimeout(() => {
@@ -166,11 +168,24 @@ const MasterDatabase = () => {
 
   const handleDownload = async () => {
     try {
-      const { exportToXlsx } = await import("@/components/master-database/exportToXlsx");
-      exportToXlsx(masterData, "master-database.xlsx");
-    } catch (err) {
-      console.error("Export error:", err);
-      toast.error("Failed to generate Excel file.");
+      setIsExporting(true);
+
+      const response = await exportMasterDatabase({
+        search: search ?? "",
+        column: searchBy ?? "",
+      });
+      const url = response?.data?.fileUrl || response?.fileUrl;
+
+      if (url) {
+        window.open(url, "_blank", "noopener,noreferrer");
+        toast.success("Master database export started. Check your downloads.");
+      } else {
+        toast.error("Export initiated but no file URL was returned.");
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to export master database.");
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -182,10 +197,11 @@ const MasterDatabase = () => {
         <div className="flex gap-3">
           <Button
             onClick={handleDownload}
-            className="cursor-pointer px-4 py-2 text-sm rounded bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+            disabled={isExporting}
+            className="cursor-pointer px-4 py-2 text-sm rounded bg-green-600 hover:bg-green-700 text-white flex items-center gap-2 disabled:opacity-70"
           >
             <Sheet size={18} />
-            Download
+            {isExporting ? "Exporting..." : "Download"}
           </Button>
           {canAdd && (
             <>

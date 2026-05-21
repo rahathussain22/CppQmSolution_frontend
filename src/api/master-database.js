@@ -32,3 +32,11 @@ export async function bulkEditDatabase(file) {
     headers: { "Content-Type": "multipart/form-data" },
   });
 }
+
+export async function exportMasterDatabase({ search, column } = {}) {
+  const queryParams = new URLSearchParams();
+  if (search) queryParams.append("search", search);
+  if (column) queryParams.append("column", column);
+
+  return await api.get(`/master-database/export?${queryParams.toString()}`);
+}
